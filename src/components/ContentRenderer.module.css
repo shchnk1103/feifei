@@ -1,0 +1,640 @@
+.contentContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.block {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.imageBlock {
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.articleImage {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.articleImage:hover {
+  transform: scale(1.02);
+}
+
+.imageCaption {
+  text-align: center;
+  color: var(--foreground-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+  font-style: italic;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem;
+  color: var(--foreground);
+}
+
+.heading1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 2rem 0 1.5rem;
+  color: var(--foreground);
+}
+
+.heading2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem;
+  color: var(--foreground);
+}
+
+.heading3 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem;
+  color: var(--foreground);
+}
+
+.paragraph {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin: 1rem 0;
+  color: var(--foreground);
+}
+
+.linkBlock {
+  margin: 1.5rem 0;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.linkCard {
+  display: flex;
+  gap: 1rem;
+  /* 减小内边距 */
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.linkCard:hover {
+  transform: translateY(-2px);
+  background: var(--card-hover-bg, rgba(255, 255, 255, 0.15));
+  border-color: var(--border-hover-color, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.linkImage {
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  /* 调整图片尺寸 */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.linkContent {
+  flex: 1;
+  min-width: 0;
+  /* 添加内容区域最大宽度 */
+  max-width: calc(100% - 120px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.linkTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem;
+  color: var(--foreground);
+}
+
+.linkDescription {
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+  /* 添加文本截断 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.linkUrl {
+  font-size: 0.8rem;
+  color: var(--foreground-muted);
+  /* 修改链接显示样式 */
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: var(--url-bg, rgba(0, 0, 0, 0.1));
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.musicBlock {
+  margin: 1.5rem 0;
+}
+
+.musicCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加播放状态样式 */
+.musicCard[data-playing="true"] {
+  background: var(--card-playing-bg, rgba(255, 255, 255, 0.12));
+  border-color: var(--border-playing-color, rgba(255, 255, 255, 0.25));
+}
+
+/* 播放中的封面动画 */
+.musicCard[data-playing="true"] .musicCover {
+  animation: rotate 20s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 暂停时停止动画 */
+.musicCard[data-playing="false"] .musicCover {
+  animation-play-state: paused;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.musicCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-color, rgba(255, 255, 255, 0.2)),
+    transparent
+  );
+}
+
+.musicCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--border-hover-color, rgba(255, 255, 255, 0.2));
+}
+
+.musicCover {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  transition: all 0.3s ease;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.musicCard:hover .musicCover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.musicInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.musicTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--foreground);
+  letter-spacing: -0.02em;
+  /* 防止标题过长 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musicArtist {
+  font-size: 0.95rem;
+  color: var(--foreground-secondary);
+  margin: 0;
+  /* 防止艺术家名称过长 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musicAlbum {
+  font-size: 0.85rem;
+  color: var(--foreground-muted);
+  margin: 0;
+  opacity: 0.8;
+  /* 防止专辑名称过长 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musicPlayer {
+  width: 100%;
+  height: 36px;
+  border-radius: 18px;
+  background: var(--player-bg, rgba(0, 0, 0, 0.2));
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.musicPlayer:hover {
+  transform: scale(1.02);
+  opacity: 1;
+}
+
+/* 自定义音频播放器样式 */
+.musicPlayer::-webkit-media-controls-panel {
+  background: var(--player-bg, rgba(0, 0, 0, 0.2));
+  border-radius: 18px;
+}
+
+.musicPlayer::-webkit-media-controls-play-button {
+  background-color: var(--foreground);
+  border-radius: 50%;
+  transform: scale(1.2);
+}
+
+.musicPlayer::-webkit-media-controls-current-time-display,
+.musicPlayer::-webkit-media-controls-time-remaining-display {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.musicPlayer::-webkit-media-controls-timeline {
+  background-color: var(--foreground-muted);
+  border-radius: 2px;
+  height: 4px;
+  transition: height 0.2s ease;
+}
+
+.musicPlayer:hover::-webkit-media-controls-timeline {
+  height: 6px;
+}
+
+.musicPlayer::-webkit-media-controls-volume-slider {
+  background-color: var(--foreground-muted);
+  border-radius: 2px;
+  padding: 0 5px;
+}
+
+.musicPlayer::-webkit-media-controls-play-button:hover {
+  transform: scale(1.3);
+  transition: transform 0.2s ease;
+}
+
+.musicContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.musicOriginalTitle {
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+  margin: 0.2rem 0 0;
+  font-style: italic;
+}
+
+.musicDescription {
+  font-size: 0.9rem;
+  color: var(--foreground-muted);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0.5rem;
+  background: var(--description-bg, rgba(0, 0, 0, 0.05));
+  border-radius: 8px;
+}
+
+.musicWaveform {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-color, #fff) 0%,
+    transparent 50%,
+    var(--accent-color, #fff) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.musicCard[data-playing="true"] .musicWaveform {
+  opacity: 0.5;
+  animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0% {
+    transform: scaleX(0.5);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.5);
+  }
+}
+
+.musicControls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.musicTime {
+  font-size: 0.85rem;
+  color: var(--foreground-muted);
+  text-align: right;
+}
+
+.musicProgress {
+  width: 100%;
+  height: 4px;
+  background: var(--progress-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.musicProgressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--accent-color, rgba(255, 255, 255, 0.8));
+  transition: width 0.1s linear;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .musicCard {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .musicInfo {
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .musicCover {
+    width: 160px;
+    height: 160px;
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .musicTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--foreground);
+    text-align: center;
+    padding: 0 1rem;
+    /* 允许标题换行显示 */
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .musicArtist {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--foreground-secondary);
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  .musicAlbum {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--foreground-muted);
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  .musicPlayer {
+    width: 100%;
+    height: 32px;
+    margin-top: 1rem;
+    border-radius: 16px;
+  }
+
+  .musicContent {
+    width: 100%;
+    text-align: center;
+  }
+
+  .musicDescription {
+    text-align: left;
+    font-size: 0.85rem;
+  }
+
+  .musicControls {
+    padding: 0 1rem;
+  }
+
+  .musicTime {
+    font-size: 0.8rem;
+  }
+}
+
+/* 小屏幕但不是特别小的设备 */
+@media (min-width: 321px) and (max-width: 480px) {
+  .musicArtist {
+    display: block; /* 在稍大一点的屏幕上显示艺术家名称 */
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+}
+
+/* 平板适配 */
+@media (min-width: 481px) and (max-width: 768px) {
+  .musicCard {
+    padding: 1.2rem;
+    gap: 1.2rem;
+  }
+
+  .musicCover {
+    width: 100px;
+    height: 100px;
+  }
+
+  .musicInfo {
+    gap: 0.4rem;
+  }
+
+  .musicTitle {
+    font-size: 1.1rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .musicArtist,
+  .musicAlbum {
+    display: block;
+  }
+
+  .musicDescription {
+    font-size: 0.85rem;
+  }
+}
+
+/* 优化音频播放器在移动端的显示 */
+@media (max-width: 768px) {
+  .musicPlayer::-webkit-media-controls-panel {
+    padding: 0 5px;
+  }
+
+  .musicPlayer::-webkit-media-controls-timeline {
+    height: 3px;
+  }
+
+  .musicPlayer::-webkit-media-controls-volume-slider {
+    display: none;
+  }
+}
+
+/* 大屏幕设备 */
+@media (min-width: 769px) {
+  .musicCard {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .musicCover {
+    width: 120px;
+    height: 120px;
+  }
+
+  .musicInfo {
+    gap: 0.5rem;
+  }
+}
+
+.quoteBlock {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-left: 4px solid var(--accent-color, rgba(255, 255, 255, 0.8));
+  background: var(--quote-bg, rgba(255, 255, 255, 0.05));
+  border-radius: 0 12px 12px 0;
+  position: relative;
+}
+
+.quoteContent {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--foreground);
+  font-style: italic;
+}
+
+.quoteContent::before {
+  content: '"';
+  font-size: 3rem;
+  color: var(--accent-color, rgba(255, 255, 255, 0.8));
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  opacity: 0.2;
+}
+
+.quoteFooter {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+}
+
+.quoteAuthor {
+  font-style: normal;
+  font-weight: 500;
+}
+
+.quoteSource {
+  color: var(--foreground-muted);
+  &::before {
+    content: "—";
+    margin-right: 0.5rem;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .quoteBlock {
+    padding: 1.2rem;
+    margin: 1.5rem 0;
+  }
+
+  .quoteContent {
+    font-size: 1rem;
+  }
+
+  .quoteFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+}
