@@ -20,9 +20,11 @@
   height: auto;
   position: sticky;
   top: 80px; /* 根据 header 缩小后的高度预留足够空间 */
-  background-color: #f9f9f9;
+  /* 使用 CSS 变量来适配暗色模式 */
+  background-color: var(--background);
+  /* 调整阴影使其在暗色模式下不那么刺眼 */
+  box-shadow: 0 2px 8px var(--shadow-color);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   /* 隐藏 Firefox 下的滚动条 */
   scrollbar-width: none;
 }
@@ -34,9 +36,11 @@
 
 /* 每个列表项的样式 */
 .listItem {
-  background-color: #fff;
+  /* 使用 CSS 变量来适配暗色模式 */
+  background-color: var(--background);
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px var(--shadow-color);
+  transition: all 0.3s ease;
 }

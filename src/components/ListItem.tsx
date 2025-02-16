@@ -69,9 +69,6 @@ export default function ListItem({
               }`}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className={styles.closeButton} onClick={handleClose}>
-                ×
-              </button>
               <Image
                 src={imageSrc}
                 alt={title}
@@ -108,6 +105,9 @@ export default function ListItem({
                 <div className={styles.articleContent}>{articleContent}</div>
               </div>
             </div>
+            <button className={styles.closeButton} onClick={handleClose}>
+              ×
+            </button>
           </div>
         </Modal>
       )}

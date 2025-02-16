@@ -1,3 +1,12 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
 /* 整体容器样式，设置足够的高度确保页面可滚动 */
 .container {
   position: relative;
@@ -10,12 +19,12 @@
   position: fixed;
   top: 1rem;
   left: 1rem;
-  background: #ffffff;
-  color: #171717;
+  background: var(--header-bg);
+  color: var(--foreground);
   font-size: 2rem;
   padding: 0.5rem 1rem;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--shadow-color);
   z-index: 110;
   transition: all 0.3s ease;
 
@@ -78,6 +87,8 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 /* 滚动容器，启用垂直滚动捕捉 */
@@ -98,8 +109,8 @@
 .footer {
   padding: 2rem;
   text-align: center;
-  background-color: #f1f1f1;
-  color: #333;
+  background-color: var(--footer-bg);
+  color: var(--foreground);
   font-size: 1rem;
   margin-top: 2rem;
   transition: opacity 0.3s ease;

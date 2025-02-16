@@ -10,21 +10,22 @@
   },
   "dependencies": {
     "@use-gesture/react": "^10.3.1",
+    "@vercel/analytics": "^1.5.0",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-responsive-carousel": "^3.2.23",
-    "swiper": "^11.2.2"
+    "swiper": "^11.2.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@eslint/eslintrc": "^3.2.0",
+    "@types/node": "^20.17.19",
+    "@types/react": "^19.0.9",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "^9.20.1",
     "eslint-config-next": "15.1.6",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "postcss": "^8.5.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
   }
 }

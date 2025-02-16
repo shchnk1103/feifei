@@ -4,10 +4,11 @@
   cursor: pointer;
   overflow: hidden;
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px var(--shadow-color);
   margin-bottom: 1rem;
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
   height: 400px; /* 固定高度，可根据需要调整 */
+  background-color: var(--background);
 }
 
 .listItem:hover {
@@ -80,7 +81,7 @@
 
 /* 弹出内容容器 */
 .articleModalContent {
-  background: #fff;
+  background: var(--background);
   border-radius: 16px;
   overflow-y: auto;
   position: relative;
@@ -89,6 +90,7 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.35s ease-out;
   scrollbar-width: none;
+  color: var(--foreground);
 }
 
 .articleModalContent::-webkit-scrollbar {
@@ -124,7 +126,7 @@
 .modalTitle {
   font-size: 2rem;
   font-weight: bold;
-  color: #333;
+  color: var(--foreground); /* 使用主题颜色变量 */
   text-align: center;
   margin-bottom: 0.5rem;
 }
@@ -132,7 +134,7 @@
 /* 描述文字 */
 .modalDescription {
   font-size: 1.2rem;
-  color: #666;
+  color: var(--foreground-secondary, #999); /* 添加次要文本颜色 */
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -140,7 +142,7 @@
 /* 文章元数据 */
 .articleMeta {
   font-size: 0.9rem;
-  color: #777;
+  color: var(--foreground-muted, #888); /* 添加淡化文本颜色 */
   text-align: center;
   margin: 1rem 0;
 }
@@ -159,10 +161,11 @@
   margin-top: 0.5rem;
 }
 
+/* 标签样式调整 */
 .tag {
   display: inline-block;
-  background: #e0e0e0;
-  color: #555;
+  background: var(--tag-bg, #333); /* 暗色模式下的标签背景 */
+  color: var(--tag-text, #eee); /* 暗色模式下的标签文字 */
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   margin-right: 0.5rem;
@@ -173,33 +176,39 @@
 .articleContent {
   font-size: 1rem;
   line-height: 1.6;
-  color: #444;
+  color: var(--foreground); /* 使用主题颜色变量 */
   padding-top: 1rem;
 }
 
 /* 关闭按钮，圆形叉形按钮 */
 .closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1100;
-  border: none;
-  background: #0070f3;
-  color: #fff;
-  width: 40px;
-  height: 40px;
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
   font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s ease-out, transform 0.3s ease-out;
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
 
 .closeButton:hover {
-  background: #005bb5;
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.1);
+}
+
+.closeButton:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
 /* 动画效果 */
