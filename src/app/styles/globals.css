@@ -12,6 +12,12 @@
   --header-bg: rgba(255, 255, 255, 0.8);
   --footer-bg: #f1f1f1;
   --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-hover-bg: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-hover-color: rgba(255, 255, 255, 0.2);
+  --url-bg: rgba(0, 0, 0, 0.1);
+  --player-bg: rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] {
@@ -24,6 +30,12 @@
   --header-bg: rgba(23, 23, 23, 0.8);
   --footer-bg: #262626;
   --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-hover-bg: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover-color: rgba(255, 255, 255, 0.15);
+  --url-bg: rgba(0, 0, 0, 0.2);
+  --player-bg: rgba(0, 0, 0, 0.3);
 }
 
 body {

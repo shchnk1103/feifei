@@ -4,13 +4,15 @@ import { useState, useCallback } from "react";
 import Image from "next/image";
 import Modal from "./Modal";
 import styles from "./ListItem.module.css";
+import { ArticleContent } from "../types/article";
+import ContentRenderer from "./ContentRenderer";
 
 // 定义属性类型
 type ListItemProps = {
   imageSrc: string;
   title: string;
   description: string;
-  articleContent: string;
+  articleContent: ArticleContent; // 修改这里
   author?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -102,7 +104,9 @@ export default function ListItem({
                     )}
                   </div>
                 )}
-                <div className={styles.articleContent}>{articleContent}</div>
+                <div className={styles.articleContent}>
+                  <ContentRenderer content={articleContent} />
+                </div>
               </div>
             </div>
             <button className={styles.closeButton} onClick={handleClose}>
