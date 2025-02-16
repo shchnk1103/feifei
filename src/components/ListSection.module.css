@@ -1,0 +1,42 @@
+/* 列表区域，保持 100vh 高度并进行滚动捕捉 */
+.listSection {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: flex-start; /* 垂直顶部对齐 */
+  height: auto;
+  overflow: visible;
+  scroll-snap-align: start;
+  position: relative;
+  padding-top: 60px; /* 保证内容不会被 header 遮挡 */
+}
+
+/* 列表容器，sticky 实现“磁铁”效果，同时预留顶部空间 */
+.listContainer {
+  width: 100%;
+  max-width: 800px; /* 根据需求设置最大宽度 */
+  padding: 1rem;
+  margin: 1rem auto; /* 自动水平居中 */
+  overflow: visible;
+  height: auto;
+  position: sticky;
+  top: 80px; /* 根据 header 缩小后的高度预留足够空间 */
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* 隐藏 Firefox 下的滚动条 */
+  scrollbar-width: none;
+}
+
+/* 隐藏 Webkit 内核浏览器下的滚动条 */
+.listContainer::-webkit-scrollbar {
+  display: none;
+}
+
+/* 每个列表项的样式 */
+.listItem {
+  background-color: #fff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}

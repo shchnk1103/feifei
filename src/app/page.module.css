@@ -1,0 +1,107 @@
+/* 整体容器样式，设置足够的高度确保页面可滚动 */
+.container {
+  position: relative;
+  width: 100%;
+  min-height: 200vh;
+}
+
+/* 固定在左上角的 header 样式 */
+.header {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background: #ffffff;
+  color: #171717;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 110;
+  transition: all 0.3s ease;
+
+  /* 保证只显示一行 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* header 缩小时的样式 */
+.headerShrunk {
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 第一屏区域 */
+.carouselSection {
+  margin-top: 0;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* 第二页列表区域整体容器 */
+.listSection {
+  position: relative;
+  margin-top: 20px;
+  padding-top: 60px;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* 列表容器，sticky 达到“磁铁”效果，top 值提高以预留足够空间给 header */
+.listContainer {
+  position: sticky;
+  top: 80px; /* 将原来的 60px 调整为 80px，根据 header 高度进行调整 */
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+  height: calc(100% - 2rem);
+  overflow-y: auto;
+}
+
+/* 每个列表项的样式 */
+.listItem {
+  background-color: #fff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 整个页面容器 */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 滚动容器，启用垂直滚动捕捉 */
+.scrollContainer {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+/* 整个可滚动区域 */
+.mainContent {
+  height: 100vh;
+  overflow-y: auto;
+  /* 移除了 scroll-snap-type 与 scroll-behavior */
+}
+
+/* Footer 不参与 snap */
+.footer {
+  padding: 2rem;
+  text-align: center;
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 1rem;
+  margin-top: 2rem;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
