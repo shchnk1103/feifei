@@ -5,13 +5,25 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --foreground-secondary: #666;
+  --foreground-muted: #888;
+  --tag-bg: #e0e0e0;
+  --tag-text: #555;
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --footer-bg: #f1f1f1;
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="dark"] {
+  --background: #171717;
+  --foreground: #ffffff;
+  --foreground-secondary: #dddddd;
+  --foreground-muted: #bbbbbb;
+  --tag-bg: #333333;
+  --tag-text: #eeeeee;
+  --header-bg: rgba(23, 23, 23, 0.8);
+  --footer-bg: #262626;
+  --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 body {
