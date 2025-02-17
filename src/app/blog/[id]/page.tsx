@@ -17,10 +17,13 @@ interface BlogPostPageProps {
   };
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  // Remove await as params.id is already available
+// 添加 async 关键字
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  // 等待 params.id
+  const articleId = await params.id;
+
   const article = articles.find(
-    (article) => article.id.toString() === params.id
+    (article) => article.id.toString() === articleId
   );
 
   if (!article) {
@@ -30,7 +33,15 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   const renderBlock = (block: ContentBlock) => {
     switch (block.type) {
       case "heading":
-        return <HeadingBlock key={block.id} block={block} />;
+        return (
+          <HeadingBlock
+            key={block.id}
+            block={{
+              ...block,
+              level: block.level || 2, // 如果没有指定 level，默认使用 h2
+            }}
+          />
+        );
       case "text":
         return <TextBlock key={block.id} block={block} />;
       case "image":

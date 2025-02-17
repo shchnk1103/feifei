@@ -43,8 +43,8 @@ export const articles: Article[] = [
         {
           id: "1",
           type: "heading",
-          content: "第一次一起滑雪",
-          level: 1,
+          content: "标题文本",
+          level: 2,
         },
         {
           id: "2",

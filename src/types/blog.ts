@@ -6,6 +6,7 @@ export interface BaseBlock {
 
 export interface HeadingBlock extends BaseBlock {
   type: "heading";
+  level: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 export interface TextBlock extends BaseBlock {
@@ -46,6 +47,7 @@ export interface QuoteBlock extends BaseBlock {
   metadata?: {
     author?: string;
     source?: string;
+    date?: string; // 添加可选的 date 字段
   };
 }
 
