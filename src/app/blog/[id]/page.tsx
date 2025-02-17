@@ -11,37 +11,44 @@ import { LinkBlock } from "@/components/blocks/LinkBlock";
 import { MusicBlock } from "@/components/blocks/MusicBlock";
 import { QuoteBlock } from "@/components/blocks/QuoteBlock";
 
+// 1. 更新类型定义
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
+// 2. 修改组件以处理异步参数
 export default async function BlogPostPage({
   params,
   searchParams,
 }: BlogPostPageProps) {
-  const article = articles.find(
-    (article) => article.id.toString() === params.id
-  );
+  // 3. 等待 params 解析
+  const { id } = await params;
+
+  const article = articles.find((article) => article.id.toString() === id);
 
   if (!article) {
     notFound();
   }
 
   const renderBlock = (block: ContentBlock) => {
+    // 使用类型守卫确保类型安全
+    const isValidBlockType = (type: string): type is BlockType => {
+      return ["heading", "text", "image", "link", "music", "quote"].includes(
+        type
+      );
+    };
+
+    if (!isValidBlockType(block.type)) {
+      console.warn(`Unknown block type: ${block.type}`);
+      return null;
+    }
+
     switch (block.type) {
       case "heading":
-        return (
-          <HeadingBlock
-            key={block.id}
-            block={{
-              ...block,
-              level: block.level || 2, // 如果没有指定 level，默认使用 h2
-            }}
-          />
-        );
+        return <HeadingBlock key={block.id} block={block} />;
       case "text":
         return <TextBlock key={block.id} block={block} />;
       case "image":
@@ -69,7 +76,7 @@ export default async function BlogPostPage({
             </time>
           </div>
           <div className={styles.tags}>
-            {article.tags.map((tag) => (
+            {(article.tags || []).map((tag) => (
               <span key={tag} className={styles.tag}>
                 {tag}
               </span>

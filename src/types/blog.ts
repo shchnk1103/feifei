@@ -1,6 +1,14 @@
+export type BlockType =
+  | "heading"
+  | "text"
+  | "image"
+  | "link"
+  | "music"
+  | "quote";
+
 export interface BaseBlock {
   id: string;
-  type: string;
+  type: BlockType;
   content: string;
 }
 
@@ -33,11 +41,10 @@ export interface LinkBlock extends BaseBlock {
 export interface MusicBlock extends BaseBlock {
   type: "music";
   metadata: {
-    coverUrl: string;
     musicUrl: string;
-    title: string;
+    coverUrl: string;
     artist: string;
-    albumName: string;
+    albumName?: string;
     description?: string;
   };
 }
@@ -47,7 +54,6 @@ export interface QuoteBlock extends BaseBlock {
   metadata?: {
     author?: string;
     source?: string;
-    date?: string; // 添加可选的 date 字段
   };
 }
 
@@ -58,3 +64,18 @@ export type ContentBlock =
   | LinkBlock
   | MusicBlock
   | QuoteBlock;
+
+export interface ArticleContent {
+  blocks: ContentBlock[];
+}
+
+export interface Article {
+  id: string | number;
+  title: string;
+  description: string;
+  author: string;
+  createdAt: string;
+  imageSrc: string;
+  tags: string[];
+  articleContent: ArticleContent;
+}

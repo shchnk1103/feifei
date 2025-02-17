@@ -1,3 +1,5 @@
+import { Article } from "@/types/blog";
+
 export type Article = {
   id: number;
   imageSrc: string;
@@ -42,13 +44,13 @@ export const articles: Article[] = [
       blocks: [
         {
           id: "1",
-          type: "heading",
+          type: "heading" as const,
           content: "标题文本",
           level: 2,
         },
         {
           id: "2",
-          type: "text",
+          type: "text" as const,
           content:
             "这是一篇测试用的长文章。本文主要用于测试页面的滚动效果以及文本显示效果。",
         },
@@ -103,7 +105,7 @@ export const articles: Article[] = [
         },
         {
           id: "8",
-          type: "quote",
+          type: "quote" as const,
           content:
             "生活中最美好的事物都是免费的：拥抱、微笑、朋友、亲吻、家人、睡眠、爱、笑声和美好的回忆。",
           metadata: {
