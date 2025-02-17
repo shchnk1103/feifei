@@ -15,15 +15,15 @@ interface BlogPostPageProps {
   params: {
     id: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-// 添加 async 关键字
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  // 等待 params.id
-  const articleId = await params.id;
-
+export default async function BlogPostPage({
+  params,
+  searchParams,
+}: BlogPostPageProps) {
   const article = articles.find(
-    (article) => article.id.toString() === articleId
+    (article) => article.id.toString() === params.id
   );
 
   if (!article) {
