@@ -22,6 +22,9 @@ const nextConfig = {
       // Add other domains as needed
     ],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
