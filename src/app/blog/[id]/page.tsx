@@ -3,7 +3,7 @@ import { articles } from "@/data/articles";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
 import styles from "./page.module.css";
-import { ContentBlock } from "@/types/blog";
+import { ContentBlock, BlockType } from "@/types/blog";
 import { HeadingBlock } from "@/components/blocks/HeadingBlock";
 import { TextBlock } from "@/components/blocks/TextBlock";
 import { ImageBlock } from "@/components/blocks/ImageBlock";
@@ -16,7 +16,7 @@ interface BlogPostPageProps {
   params: Promise<{
     id: string;
   }>;
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // 2. 修改组件以处理异步参数
@@ -24,8 +24,13 @@ export default async function BlogPostPage({
   params,
   searchParams,
 }: BlogPostPageProps) {
-  // 3. 等待 params 解析
-  const { id } = await params;
+  // 等待所有参数解析完成
+  const [resolvedParams, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
+
+  const { id } = resolvedParams;
 
   const article = articles.find((article) => article.id.toString() === id);
 

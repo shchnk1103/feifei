@@ -1,40 +1,7 @@
-import { Article } from "@/types/blog";
+import { Article as ArticleType } from "@/types/blog";
 
-export type Article = {
-  id: number;
-  imageSrc: string;
-  title: string;
-  description: string;
-  articleContent: {
-    blocks: {
-      id: string;
-      type: string;
-      content: string;
-      level?: number;
-      metadata?: {
-        imageUrl?: string;
-        description?: string;
-        url?: string;
-        artist?: string;
-        title?: string;
-        // Music related properties
-        musicUrl?: string;
-        albumName?: string;
-        coverUrl?: string;
-        duration?: string;
-        // Quote related properties
-        author?: string;
-        source?: string;
-      };
-    }[];
-  };
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags?: string[];
-};
-
-export const articles: Article[] = [
+// Remove the local Article type definition since we're importing it
+export const articles: ArticleType[] = [
   {
     id: 1,
     imageSrc: "/images/list_img_0.jpeg",
@@ -95,12 +62,10 @@ export const articles: Article[] = [
               "https://upload.wikimedia.org/wikipedia/commons/8/84/Claude_Debussy_-_The_Maid_with_the_Flaxen_Hair.ogg",
             artist: "德彪西 (Claude Debussy)", // 艺术家名称
             albumName: "钢琴前奏曲集 (Préludes)", // 专辑名称
-            title: "La Fille aux Cheveux de Lin", // 原曲名
             coverUrl:
               "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Claude_Debussy_ca_1908%2C_foto_av_F%C3%A9lix_Nadar.jpg/800px-Claude_Debussy_ca_1908%2C_foto_av_F%C3%A9lix_Nadar.jpg",
             description:
               "德彪西最著名的钢琴小品之一，创作于1910年，描绘了一个温柔梦幻的场景。", // 音乐描述
-            duration: "2:32",
           },
         },
         {
@@ -117,7 +82,6 @@ export const articles: Article[] = [
     },
     author: "shchk",
     createdAt: "2025-02-01",
-    updatedAt: "2025-02-10",
     tags: ["滑雪", "旅行", "浪漫"],
   },
 ];
