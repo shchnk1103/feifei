@@ -1,36 +1,4 @@
-export type Article = {
-  id: number;
-  imageSrc: string;
-  title: string;
-  description: string;
-  articleContent: {
-    blocks: {
-      id: string;
-      type: string;
-      content: string;
-      level?: number;
-      metadata?: {
-        imageUrl?: string;
-        description?: string;
-        url?: string;
-        artist?: string;
-        title?: string;
-        // Music related properties
-        musicUrl?: string;
-        albumName?: string;
-        coverUrl?: string;
-        duration?: string;
-        // Quote related properties
-        author?: string;
-        source?: string;
-      };
-    }[];
-  };
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags?: string[];
-};
+import { Article } from "@/types/blog";
 
 export const articles: Article[] = [
   {
@@ -42,13 +10,13 @@ export const articles: Article[] = [
       blocks: [
         {
           id: "1",
-          type: "heading",
-          content: "第一次一起滑雪",
-          level: 1,
+          type: "heading" as const,
+          content: "标题文本",
+          level: 2,
         },
         {
           id: "2",
-          type: "text",
+          type: "text" as const,
           content:
             "这是一篇测试用的长文章。本文主要用于测试页面的滚动效果以及文本显示效果。",
         },
@@ -93,17 +61,15 @@ export const articles: Article[] = [
               "https://upload.wikimedia.org/wikipedia/commons/8/84/Claude_Debussy_-_The_Maid_with_the_Flaxen_Hair.ogg",
             artist: "德彪西 (Claude Debussy)", // 艺术家名称
             albumName: "钢琴前奏曲集 (Préludes)", // 专辑名称
-            title: "La Fille aux Cheveux de Lin", // 原曲名
             coverUrl:
               "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Claude_Debussy_ca_1908%2C_foto_av_F%C3%A9lix_Nadar.jpg/800px-Claude_Debussy_ca_1908%2C_foto_av_F%C3%A9lix_Nadar.jpg",
             description:
               "德彪西最著名的钢琴小品之一，创作于1910年，描绘了一个温柔梦幻的场景。", // 音乐描述
-            duration: "2:32",
           },
         },
         {
           id: "8",
-          type: "quote",
+          type: "quote" as const,
           content:
             "生活中最美好的事物都是免费的：拥抱、微笑、朋友、亲吻、家人、睡眠、爱、笑声和美好的回忆。",
           metadata: {
@@ -115,7 +81,8 @@ export const articles: Article[] = [
     },
     author: "shchk",
     createdAt: "2025-02-01",
-    updatedAt: "2025-02-10",
     tags: ["滑雪", "旅行", "浪漫"],
   },
 ];
+
+export type { Article };

@@ -1,27 +1,21 @@
 .container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--space-md);
-  padding-right: var(--space-md);
+  @apply w-full px-4;
 }
 
 .center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @apply flex flex-col items-center;
 }
 
 .small {
-  max-width: 640px;
+  @apply max-w-2xl mx-auto;
 }
 
 .medium {
-  max-width: 768px;
+  @apply max-w-4xl mx-auto;
 }
 
 .large {
-  max-width: 1024px;
+  @apply max-w-6xl mx-auto;
 }
 
 @media (max-width: 640px) {

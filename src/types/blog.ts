@@ -1,11 +1,24 @@
+// 基础块类型
+export type BlockType =
+  | "text"
+  | "heading"
+  | "image"
+  | "link"
+  | "music"
+  | "quote";
+
+// 基础块接口
 export interface BaseBlock {
   id: string;
-  type: string;
+  type: BlockType;
   content: string;
+  metadata?: Record<string, any>;
 }
 
+// 具体块类型
 export interface HeadingBlock extends BaseBlock {
   type: "heading";
+  level: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 export interface TextBlock extends BaseBlock {
@@ -32,11 +45,10 @@ export interface LinkBlock extends BaseBlock {
 export interface MusicBlock extends BaseBlock {
   type: "music";
   metadata: {
-    coverUrl: string;
     musicUrl: string;
-    title: string;
+    coverUrl: string;
     artist: string;
-    albumName: string;
+    albumName?: string;
     description?: string;
   };
 }
@@ -49,6 +61,7 @@ export interface QuoteBlock extends BaseBlock {
   };
 }
 
+// 内容块联合类型
 export type ContentBlock =
   | HeadingBlock
   | TextBlock
@@ -56,3 +69,16 @@ export type ContentBlock =
   | LinkBlock
   | MusicBlock
   | QuoteBlock;
+
+export interface Article {
+  id: string | number;
+  title: string;
+  description: string;
+  author: string;
+  createdAt: string;
+  imageSrc: string;
+  tags: string[];
+  articleContent: {
+    blocks: ContentBlock[];
+  };
+}

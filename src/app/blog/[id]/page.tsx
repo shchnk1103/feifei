@@ -3,7 +3,7 @@ import { articles } from "@/data/articles";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
 import styles from "./page.module.css";
-import { ContentBlock } from "@/types/blog";
+import { ContentBlock, BlockType } from "@/types/blog";
 import { HeadingBlock } from "@/components/blocks/HeadingBlock";
 import { TextBlock } from "@/components/blocks/TextBlock";
 import { ImageBlock } from "@/components/blocks/ImageBlock";
@@ -11,23 +11,46 @@ import { LinkBlock } from "@/components/blocks/LinkBlock";
 import { MusicBlock } from "@/components/blocks/MusicBlock";
 import { QuoteBlock } from "@/components/blocks/QuoteBlock";
 
+// 1. 更新类型定义
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  // Remove await as params.id is already available
-  const article = articles.find(
-    (article) => article.id.toString() === params.id
-  );
+// 2. 修改组件以处理异步参数
+export default async function BlogPostPage({
+  params,
+  searchParams,
+}: BlogPostPageProps) {
+  // 等待所有参数解析完成
+  const [resolvedParams, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
+
+  const { id } = resolvedParams;
+
+  const article = articles.find((article) => article.id.toString() === id);
 
   if (!article) {
     notFound();
   }
 
   const renderBlock = (block: ContentBlock) => {
+    // 使用类型守卫确保类型安全
+    const isValidBlockType = (type: string): type is BlockType => {
+      return ["heading", "text", "image", "link", "music", "quote"].includes(
+        type
+      );
+    };
+
+    if (!isValidBlockType(block.type)) {
+      console.warn(`Unknown block type: ${block.type}`);
+      return null;
+    }
+
     switch (block.type) {
       case "heading":
         return <HeadingBlock key={block.id} block={block} />;
@@ -58,7 +81,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             </time>
           </div>
           <div className={styles.tags}>
-            {article.tags.map((tag) => (
+            {(article.tags || []).map((tag) => (
               <span key={tag} className={styles.tag}>
                 {tag}
               </span>
