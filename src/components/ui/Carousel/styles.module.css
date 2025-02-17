@@ -102,8 +102,8 @@
 }
 
 /* Navigation Buttons */
-:global(.swiper-button-prev),
-:global(.swiper-button-next) {
+.carouselContainer :global(.swiper-button-prev),
+.carouselContainer :global(.swiper-button-next) {
   @apply flex items-center justify-center;
   width: 44px;
   height: 44px;
@@ -113,31 +113,32 @@
   color: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0;
 }
 
-:global(.swiper-button-prev) {
+.carouselContainer :global(.swiper-button-prev) {
   @apply left-6;
 }
 
-:global(.swiper-button-next) {
+.carouselContainer :global(.swiper-button-next) {
   @apply right-6;
 }
 
-:global(.swiper-button-prev:hover),
-:global(.swiper-button-next:hover) {
+.carouselContainer :global(.swiper-button-prev:hover),
+.carouselContainer :global(.swiper-button-next:hover) {
   background: rgba(255, 255, 255, 0.25);
   transform: scale(1.05);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-:global(.swiper-button-prev:active),
-:global(.swiper-button-next:active) {
+.carouselContainer :global(.swiper-button-prev:active),
+.carouselContainer :global(.swiper-button-next:active) {
   transform: translateY(-50%) scale(0.95);
 }
 
-:global(.swiper-button-prev::after),
-:global(.swiper-button-next::after) {
+.carouselContainer :global(.swiper-button-prev::after),
+.carouselContainer :global(.swiper-button-next::after) {
   @apply text-base font-bold;
   font-size: 1.25rem !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -155,34 +156,34 @@
   transform: scale(1.2);
 }
 
-:global(.swiper-pagination-bullet) {
+.carouselContainer :global(.swiper-pagination-bullet) {
   @apply w-2 h-2 bg-white/50 transition-all duration-300;
   backdrop-filter: blur(4px);
 }
 
-:global(.swiper-pagination-bullet-active) {
+.carouselContainer :global(.swiper-pagination-bullet-active) {
   @apply w-6 bg-white;
   border-radius: 4px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  :global(.swiper-button-prev),
-  :global(.swiper-button-next) {
+  .carouselContainer :global(.swiper-button-prev),
+  .carouselContainer :global(.swiper-button-next) {
     width: 36px;
     height: 36px;
   }
 
-  :global(.swiper-button-prev::after),
-  :global(.swiper-button-next::after) {
+  .carouselContainer :global(.swiper-button-prev::after),
+  .carouselContainer :global(.swiper-button-next::after) {
     font-size: 1rem !important;
   }
 
-  :global(.swiper-button-prev) {
+  .carouselContainer :global(.swiper-button-prev) {
     @apply left-3;
   }
 
-  :global(.swiper-button-next) {
+  .carouselContainer :global(.swiper-button-next) {
     @apply right-3;
   }
 
@@ -202,8 +203,46 @@
   opacity: 1;
 }
 
-:global(.swiper-button-prev),
-:global(.swiper-button-next) {
+/* Navigation */
+.navigationButton {
+  @apply flex items-center justify-center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navigationButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.navigationButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.navigationButtonPrev {
+  composes: navigationButton;
+  @apply left-6;
+}
+
+.navigationButtonNext {
+  composes: navigationButton;
+  @apply right-6;
+}
+
+/* 在 Carousel 组件中添加这些类名 */
+.carouselContainer :global(.swiper-button-prev) {
+  @apply left-6;
+}
+
+.carouselContainer :global(.swiper-button-next) {
+  @apply right-6;
 }

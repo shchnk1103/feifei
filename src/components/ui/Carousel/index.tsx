@@ -63,7 +63,10 @@ export function Carousel({
               }
             : false
         }
-        navigation={showNavigation}
+        navigation={{
+          prevEl: `.${styles.navigationButtonPrev}`,
+          nextEl: `.${styles.navigationButtonNext}`,
+        }}
         pagination={
           showPagination
             ? {
@@ -108,6 +111,8 @@ export function Carousel({
           ))}
         </AnimatePresence>
       </Swiper>
+      <button className={styles.navigationButtonPrev} />
+      <button className={styles.navigationButtonNext} />
     </div>
   );
 }
