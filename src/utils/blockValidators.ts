@@ -1,4 +1,5 @@
 import { Block, BlockMetadata } from "@/types/blocks";
+import { BaseBlock } from "@/types/blog";
 
 export function isValidBlock(block: any): block is Block {
   return (
@@ -12,14 +13,41 @@ export function isValidBlock(block: any): block is Block {
   );
 }
 
-export function validateBlockMetadata<T extends Block>(
+export function validateBlockMetadata<T extends BaseBlock>(
   block: T,
-  requiredFields: (keyof BlockMetadata<T>)[]
+  requiredFields: string[]
 ): boolean {
+  // Early return if metadata is undefined
   if (!block.metadata) return false;
 
-  return requiredFields.every(
-    (field) => field in block.metadata && block.metadata[field] !== undefined
+  // Type assertion to ensure metadata is treated as non-null
+  const metadata = block.metadata as Record<string, unknown>;
+
+  return requiredFields.every((field) => {
+    return field in metadata && metadata[field] !== undefined;
+  });
+}
+
+// Example usage for specific block types
+export function validateImageBlock(block: BaseBlock): boolean {
+  if (!block.metadata) return false;
+
+  return (
+    block.type === "image" &&
+    validateBlockMetadata(block, ["imageUrl"]) &&
+    typeof block.metadata.imageUrl === "string" &&
+    validateImageUrl(block.metadata.imageUrl)
+  );
+}
+
+export function validateMusicBlock(block: BaseBlock): boolean {
+  if (!block.metadata) return false;
+
+  return (
+    block.type === "music" &&
+    validateBlockMetadata(block, ["musicUrl", "coverUrl", "artist"]) &&
+    typeof block.metadata.musicUrl === "string" &&
+    validateMusicUrl(block.metadata.musicUrl)
   );
 }
 

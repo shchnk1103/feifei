@@ -1,17 +1,21 @@
+// 基础块类型
 export type BlockType =
-  | "heading"
   | "text"
+  | "heading"
   | "image"
   | "link"
   | "music"
   | "quote";
 
+// 基础块接口
 export interface BaseBlock {
   id: string;
   type: BlockType;
   content: string;
+  metadata?: Record<string, any>;
 }
 
+// 具体块类型
 export interface HeadingBlock extends BaseBlock {
   type: "heading";
   level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -57,6 +61,7 @@ export interface QuoteBlock extends BaseBlock {
   };
 }
 
+// 内容块联合类型
 export type ContentBlock =
   | HeadingBlock
   | TextBlock

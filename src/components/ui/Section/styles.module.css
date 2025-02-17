@@ -1,11 +1,13 @@
 .section {
   padding: var(--space-xl) 0;
   width: 100%;
+  @apply py-16;
 }
 
 .header {
   text-align: center;
   margin-bottom: var(--space-xl);
+  @apply mb-8 text-center;
 }
 
 .title {
@@ -13,6 +15,7 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   margin-bottom: var(--space-sm);
+  @apply text-3xl font-bold mb-2;
 }
 
 .subtitle {
@@ -20,6 +23,7 @@
   color: var(--color-text-secondary);
   max-width: 600px;
   margin: 0 auto;
+  @apply text-lg text-gray-600 dark:text-gray-400;
 }
 
 .content {
@@ -27,6 +31,7 @@
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 var(--space-md);
+  @apply w-full;
 }
 
 .fullWidth .content {
@@ -34,15 +39,21 @@
   padding: 0;
 }
 
+.fullWidth {
+  @apply w-full;
+}
+
 /* Variants */
 .alternate {
   background-color: var(--card-bg);
+  @apply bg-gray-50 dark:bg-gray-900;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .section {
     padding: var(--space-lg) 0;
+    @apply py-8;
   }
 
   .header {
@@ -51,6 +62,11 @@
 
   .title {
     font-size: calc(var(--font-size-xl) * 0.9);
+    @apply text-2xl;
+  }
+
+  .subtitle {
+    @apply text-base;
   }
 
   .content {
