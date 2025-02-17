@@ -65,10 +65,6 @@ export type ContentBlock =
   | MusicBlock
   | QuoteBlock;
 
-export interface ArticleContent {
-  blocks: ContentBlock[];
-}
-
 export interface Article {
   id: string | number;
   title: string;
@@ -77,5 +73,7 @@ export interface Article {
   createdAt: string;
   imageSrc: string;
   tags: string[];
-  articleContent: ArticleContent;
+  articleContent: {
+    blocks: ContentBlock[];
+  };
 }

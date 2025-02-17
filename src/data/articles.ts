@@ -1,7 +1,6 @@
-import { Article as ArticleType } from "@/types/blog";
+import { Article } from "@/types/blog";
 
-// Remove the local Article type definition since we're importing it
-export const articles: ArticleType[] = [
+export const articles: Article[] = [
   {
     id: 1,
     imageSrc: "/images/list_img_0.jpeg",
@@ -85,3 +84,5 @@ export const articles: ArticleType[] = [
     tags: ["滑雪", "旅行", "浪漫"],
   },
 ];
+
+export type { Article };
