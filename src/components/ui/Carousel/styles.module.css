@@ -145,15 +145,14 @@
 }
 
 /* Pagination */
-.bullet {
-  background: var(--color-primary) !important;
-  opacity: 0.5;
-  transition: all var(--transition-fast);
+.pagination {
+  @apply flex gap-2 mt-4;
 }
 
-:global(.swiper-pagination-bullet-active) {
-  opacity: 1 !important;
-  transform: scale(1.2);
+.bullet {
+  @apply w-2 h-2 rounded-full transition-all duration-300;
+  background: var(--color-primary);
+  opacity: 0.5;
 }
 
 .carouselContainer :global(.swiper-pagination-bullet) {
@@ -163,8 +162,16 @@
 
 .carouselContainer :global(.swiper-pagination-bullet-active) {
   @apply w-6 bg-white;
+  opacity: 1;
+  transform: scale(1.2);
   border-radius: 4px;
 }
+
+/* Remove or comment out the unprefixed global selector */
+/* :global(.swiper-pagination-bullet-active) {
+  opacity: 1 !important;
+  transform: scale(1.2);
+} */
 
 /* Responsive */
 @media (max-width: 768px) {
