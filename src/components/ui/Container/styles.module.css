@@ -1,0 +1,32 @@
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.small {
+  max-width: 640px;
+}
+
+.medium {
+  max-width: 768px;
+}
+
+.large {
+  max-width: 1024px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+}

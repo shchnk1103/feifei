@@ -1,0 +1,41 @@
+.figure {
+  margin: var(--space-lg) 0;
+  width: 100%;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-normal);
+}
+
+.imageWrapper:hover {
+  transform: scale(1.02);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.caption {
+  margin-top: var(--space-sm);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .figure {
+    margin: var(--space-md) 0;
+  }
+
+  .caption {
+    font-size: var(--font-size-xs);
+  }
+}

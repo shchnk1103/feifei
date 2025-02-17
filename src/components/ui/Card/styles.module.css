@@ -1,0 +1,134 @@
+.card {
+  @apply block h-full overflow-hidden rounded-xl transition-all duration-300;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px var(--card-shadow);
+}
+
+/* Variants */
+.default {
+  box-shadow: var(--card-shadow);
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+  background-color: var(--card-hover-bg);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.elevated {
+  box-shadow: var(--card-shadow-lg);
+}
+
+/* Padding variants */
+.padding-none {
+  padding: 0;
+}
+
+.padding-small {
+  padding: var(--space-sm);
+}
+
+.padding-medium {
+  padding: var(--space-md);
+}
+
+.padding-large {
+  padding: var(--space-lg);
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}
+
+.imageWrapper {
+  @apply relative overflow-hidden;
+  aspect-ratio: 16/9;
+}
+
+.image {
+  @apply object-cover transition-transform duration-500;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.content {
+  @apply p-6 flex flex-col gap-4;
+}
+
+.title {
+  @apply text-xl font-bold leading-tight line-clamp-2;
+  color: var(--card-title);
+}
+
+.description {
+  @apply text-sm leading-relaxed line-clamp-2;
+  color: var(--card-description);
+}
+
+.meta {
+  @apply flex items-center justify-between mt-auto pt-4 border-t;
+  border-color: var(--card-border);
+}
+
+.info {
+  @apply flex items-center gap-3 text-sm;
+}
+
+.author {
+  @apply font-medium;
+  color: var(--card-author);
+}
+
+.datetime {
+  color: var(--card-time);
+}
+
+.tags {
+  @apply flex flex-wrap gap-2;
+}
+
+.tag {
+  @apply px-2 py-1 text-xs rounded-full transition-colors;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
+
+.tag:hover {
+  background: var(--tag-bg-hover);
+}
+
+@media (max-width: 768px) {
+  .content {
+    @apply p-4;
+  }
+
+  .title {
+    @apply text-lg;
+  }
+
+  .meta {
+    @apply flex-col items-start gap-3;
+  }
+
+  .info {
+    @apply w-full justify-between;
+  }
+
+  .tags {
+    @apply w-full;
+  }
+}

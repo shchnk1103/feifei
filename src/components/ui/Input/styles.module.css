@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* Variants */
+.outlined {
+  background: transparent;
+}
+
+.filled {
+  background: var(--card-bg);
+}
+
+/* Icons */
+.hasStartIcon {
+  padding-left: calc(var(--space-md) * 2.5);
+}
+
+.hasEndIcon {
+  padding-right: calc(var(--space-md) * 2.5);
+}
+
+.startIcon,
+.endIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.startIcon {
+  left: var(--space-md);
+}
+
+.endIcon {
+  right: var(--space-md);
+}
+
+/* Error state */
+.error {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.message.error {
+  color: var(--color-error);
+}
+
+/* Disabled state */
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

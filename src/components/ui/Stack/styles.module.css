@@ -1,0 +1,116 @@
+.stack {
+  display: flex;
+}
+
+/* Direction variants */
+.horizontal {
+  flex-direction: row;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+/* Spacing variants */
+.spacing-none > * + * {
+  margin: 0;
+}
+
+.horizontal.spacing-xs > * + * {
+  margin-left: var(--space-xs);
+}
+
+.horizontal.spacing-sm > * + * {
+  margin-left: var(--space-sm);
+}
+
+.horizontal.spacing-md > * + * {
+  margin-left: var(--space-md);
+}
+
+.horizontal.spacing-lg > * + * {
+  margin-left: var(--space-lg);
+}
+
+.horizontal.spacing-xl > * + * {
+  margin-left: var(--space-xl);
+}
+
+.vertical.spacing-xs > * + * {
+  margin-top: var(--space-xs);
+}
+
+.vertical.spacing-sm > * + * {
+  margin-top: var(--space-sm);
+}
+
+.vertical.spacing-md > * + * {
+  margin-top: var(--space-md);
+}
+
+.vertical.spacing-lg > * + * {
+  margin-top: var(--space-lg);
+}
+
+.vertical.spacing-xl > * + * {
+  margin-top: var(--space-xl);
+}
+
+/* Alignment variants */
+.align-start {
+  align-items: flex-start;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.align-stretch {
+  align-items: stretch;
+}
+
+/* Justify variants */
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+/* Wrap variant */
+.wrap {
+  flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .horizontal {
+    flex-direction: column;
+  }
+
+  .horizontal.spacing-xs > * + *,
+  .horizontal.spacing-sm > * + *,
+  .horizontal.spacing-md > * + *,
+  .horizontal.spacing-lg > * + *,
+  .horizontal.spacing-xl > * + * {
+    margin-left: 0;
+    margin-top: var(--space-md);
+  }
+}

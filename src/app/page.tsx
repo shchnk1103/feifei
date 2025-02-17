@@ -1,77 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import CarouselComponent from "../components/CarouselComponent";
-import ListSection from "../components/ListSection";
+import { Carousel } from "@/components/ui/Carousel";
+import { ListSection } from "@/components/content/ListSection";
 import styles from "./page.module.css";
+import { articles } from "@/data/articles";
+import type { ImageAsset } from "@/types/image";
+
+const images: ImageAsset[] = [
+  {
+    src: "/images/Home-0.jpeg",
+    alt: "图片1",
+    width: 1920,
+    height: 1080,
+    blurDataURL: "data:image/jpeg;base64,/9j...", // 可以使用工具生成
+  },
+  {
+    src: "/images/Home-1.jpeg",
+    alt: "图片2",
+    width: 1920,
+    height: 1080,
+    blurDataURL: "data:image/jpeg;base64,/9j...",
+  },
+  {
+    src: "/images/Home-2.jpeg",
+    alt: "图片3",
+    width: 1920,
+    height: 1080,
+    blurDataURL: "data:image/jpeg;base64,/9j...",
+  },
+];
 
 export default function Home() {
-  const [isHeaderShrunk, setIsHeaderShrunk] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // 检测系统主题
-    const darkModeMediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-
-    const updateTheme = (isDark: boolean) => {
-      document.documentElement.setAttribute(
-        "data-theme",
-        isDark ? "dark" : "light"
-      );
-      setIsDarkMode(isDark);
-    };
-
-    // 初始化主题
-    updateTheme(darkModeMediaQuery.matches);
-
-    // 监听系统主题变化
-    const handleThemeChange = (e: MediaQueryListEvent) => {
-      updateTheme(e.matches);
-    };
-
-    darkModeMediaQuery.addEventListener("change", handleThemeChange);
-    return () =>
-      darkModeMediaQuery.removeEventListener("change", handleThemeChange);
-  }, []);
-
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    const handleScroll = () => {
-      setIsHeaderShrunk(scrollContainer.scrollTop >= 200);
-    };
-
-    scrollContainer.addEventListener("scroll", handleScroll);
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div
-      className={`${styles.pageContainer} ${isDarkMode ? styles.darkMode : ""}`}
-    >
-      <header
-        className={`${styles.header} ${
-          isHeaderShrunk ? styles.headerShrunk : ""
-        }`}
-      >
-        Feifei&apos;s World
-      </header>
+    <div className={styles.pageContainer}>
+      <section className={styles.hero}>
+        <Carousel
+          images={images}
+          autoplay={true}
+          interval={5000}
+          showNavigation={true}
+          showPagination={true}
+          effect="fade"
+          height="100vh"
+        />
+      </section>
 
-      <div ref={scrollContainerRef} className={styles.scrollContainer}>
-        <div className={styles.snapContainer}>
-          <CarouselComponent />
-          <ListSection />
-        </div>
-
-        <footer className={styles.footer}>
-          <p>© 2025 Feifei&apos;s World. All rights reserved.</p>
-          <p>Contact: info@feifeiworld.com</p>
-        </footer>
-      </div>
+      <section className={styles.content}>
+        <ListSection
+          title="最新文章"
+          subtitle="发现更多精彩内容"
+          articles={articles}
+        />
+      </section>
     </div>
   );
 }

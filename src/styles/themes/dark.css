@@ -1,0 +1,25 @@
+[data-theme="dark"] {
+  /* Brand Colors */
+  --color-primary: #60a5fa;
+  --color-primary-light: #93c5fd;
+  --color-primary-dark: #3b82f6;
+
+  /* Text Colors */
+  --color-text: #ffffff;
+  --color-text-secondary: #d1d1d1;
+  --color-text-muted: #999999;
+
+  /* Background Colors */
+  --color-background: #000000;
+  --color-background-secondary: #171717;
+
+  /* Border Colors */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-hover: rgba(255, 255, 255, 0.2);
+
+  /* Component Colors */
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-hover-bg: rgba(255, 255, 255, 0.12);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
