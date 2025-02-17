@@ -1,0 +1,60 @@
+.footer {
+  @apply w-full py-12 mt-auto;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.container {
+  @apply mx-auto px-4 max-w-7xl;
+}
+
+.content {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-8 mb-8;
+}
+
+.section {
+  @apply space-y-4;
+}
+
+.title {
+  @apply text-lg font-semibold;
+  color: var(--color-text);
+}
+
+.description {
+  @apply text-sm;
+  color: var(--color-text-secondary);
+}
+
+.nav {
+  @apply flex flex-col space-y-2;
+}
+
+.nav a {
+  @apply text-sm transition-colors;
+  color: var(--color-text-secondary);
+}
+
+.nav a:hover {
+  color: var(--color-primary);
+}
+
+.bottom {
+  @apply pt-8 text-sm text-center border-t;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .footer {
+    @apply py-8;
+  }
+
+  .content {
+    @apply gap-6;
+  }
+
+  .section {
+    @apply space-y-3;
+  }
+}

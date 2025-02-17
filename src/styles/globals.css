@@ -1,0 +1,153 @@
+@import "./base/variables.css";
+@import "./base/reset.css";
+@import "./themes/light.css";
+@import "./themes/dark.css";
+@import "./utils/animations.css";
+@import "./components/index.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --foreground-secondary: #666666;
+  --foreground-muted: #888; /* Component Colors */
+  --tag-bg: rgba(0, 0, 0, 0.05);
+  --tag-text: #666666;
+  --tag-bg-hover: rgba(0, 0, 0, 0.1);
+  --header-bg: rgba(255, 255, 255, 1);
+  --header-bg-blur: rgba(255, 255, 255, 0.8);
+  --footer-bg: #f1f1f1;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+  --card-bg-hover: #f8f8f8;
+  --card-border: rgba(0, 0, 0, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --card-title: #000000;
+  --card-description: #666666;
+  --card-author: #333333;
+  --card-time: #666666;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-hover-color: rgba(255, 255, 255, 0.2); /* Special Elements */
+  --url-bg: rgba(0, 0, 0, 0.1);
+  --player-bg: rgba(0, 0, 0, 0.2); /* Typography */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem; /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem; /* Transitions */
+  --transition-fast: 0.15s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+  --footer-height: 60px;
+  --header-height: 64px;
+  --max-width: 1200px;
+  --prose-bg: #ffffff;
+  --prose-text: #333333;
+  --prose-headings: #000000;
+  --accent-color: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --foreground-secondary: #999999;
+  --foreground-muted: #bbbbbb;
+  --tag-bg: rgba(255, 255, 255, 0.1);
+  --tag-text: #ffffff;
+  --tag-bg-hover: rgba(255, 255, 255, 0.15);
+  --header-bg: rgba(0, 0, 0, 1);
+  --header-bg-blur: rgba(0, 0, 0, 0.8);
+  --footer-bg: #262626;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-bg-hover: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-title: #ffffff;
+  --card-description: #999999;
+  --card-author: #ffffff;
+  --card-time: #999999;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover-color: rgba(255, 255, 255, 0.15);
+  --url-bg: rgba(0, 0, 0, 0.2);
+  --player-bg: rgba(0, 0, 0, 0.3);
+  --prose-bg: #000000;
+  --prose-text: #dddddd;
+  --prose-headings: #ffffff;
+  --accent-color: #60a5fa;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply antialiased;
+    color: var(--color-text);
+    background: var(--color-background);
+    font-family: var(--font-geist-sans);
+    @apply min-h-screen flex flex-col;
+    /* 确保页面至少占满视口高度 */
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  main {
+    @apply flex-1;
+    /* 让主要内容区域自动填充剩余空间 */
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding-top: var(--header-height);
+  }
+}
+@layer components {
+  .container {
+    @apply mx-auto px-4;
+    max-width: var(--container-width);
+  }
+
+  .card {
+    @apply rounded-lg transition-all duration-200;
+    background: var(--card-bg);
+    border: 1px solid var(--color-border);
+  }
+
+  .tag {
+    @apply px-3 py-1 rounded-full text-sm inline-flex items-center;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+  }
+}
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+} /* Focus styles */
+:focus-visible {
+  @apply outline-none ring-2;
+  ring-color: var(--color-primary);
+} /* Selection styles */
+::selection {
+  background: var(--color-primary);
+  color: white;
+}

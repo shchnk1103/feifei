@@ -1,0 +1,13 @@
+.text {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  margin: var(--space-md) 0;
+}
+
+@media (max-width: 768px) {
+  .text {
+    font-size: var(--font-size-sm);
+    margin: var(--space-sm) 0;
+  }
+}

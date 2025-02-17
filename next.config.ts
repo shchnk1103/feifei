@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -8,19 +7,21 @@ const nextConfig: NextConfig = {
         hostname: "github.githubassets.com",
         pathname: "/images/**",
       },
-      // 为将来可能需要的其他域名预留配置
       {
         protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        pathname: "/**",
+        hostname: "**.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
       },
       {
         protocol: "https",
         hostname: "upload.wikimedia.org",
-        pathname: "/**",
       },
+      // Add other domains as needed
     ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

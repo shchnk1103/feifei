@@ -1,3 +1,5 @@
+import { ContentBlock } from "./blog";
+
 export type ContentBlockType =
   | "text"
   | "heading"
@@ -31,13 +33,14 @@ export interface ArticleContent {
 }
 
 export interface Article {
-  id: number;
-  imageSrc: string;
+  id: number | string;
   title: string;
   description: string;
-  articleContent: ArticleContent; // 确保这里是 ArticleContent 类型而不是 string
-  author?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  tags?: string[];
+  author: string;
+  createdAt: string;
+  tags: string[];
+  imageSrc: string;
+  articleContent: {
+    blocks: ContentBlock[];
+  };
 }

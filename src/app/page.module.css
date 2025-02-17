@@ -1,10 +1,6 @@
 .pageContainer {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
+  @apply flex flex-col relative;
+  min-height: calc(100vh - var(--header-height));
 }
 
 /* 整体容器样式，设置足够的高度确保页面可滚动 */
@@ -81,21 +77,13 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 整个页面容器 */
-.pageContainer {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
 /* 滚动容器，启用垂直滚动捕捉 */
 .scrollContainer {
   height: 100%;
   overflow-y: scroll;
   scroll-behavior: smooth;
+  @apply h-screen overflow-y-auto overflow-x-hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 整个可滚动区域 */
@@ -115,4 +103,21 @@
   margin-top: 2rem;
   transition: opacity 0.3s ease;
   opacity: 1;
+}
+
+.hero {
+  @apply relative w-full h-screen;
+}
+
+.content {
+  @apply relative w-full;
+  background: var(--background);
+  min-height: 100vh;
+  padding: 4rem 0;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 2rem 0;
+  }
 }

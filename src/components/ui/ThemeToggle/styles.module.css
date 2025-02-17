@@ -1,0 +1,27 @@
+.themeToggle {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  font-size: var(--font-size-xl);
+  transition: transform var(--transition-fast),
+    background-color var(--transition-fast);
+  z-index: var(--z-header);
+  @apply p-2 rounded-lg transition-colors duration-200;
+  color: var(--color-text);
+}
+
+.themeToggle:hover {
+  transform: scale(1.1);
+  background: var(--card-hover-bg);
+}
+
+.themeToggle:focus-visible {
+  @apply outline-none ring-2;
+  ring-color: var(--color-primary);
+}

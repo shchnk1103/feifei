@@ -1,0 +1,63 @@
+.article {
+  @apply max-w-4xl mx-auto px-4 py-12;
+}
+
+.header {
+  @apply mb-8;
+}
+
+.meta {
+  @apply mb-6;
+}
+
+.title {
+  @apply text-4xl font-bold mb-4;
+  color: var(--foreground);
+}
+
+.info {
+  @apply flex items-center gap-4 text-sm mb-4;
+  color: var(--foreground-secondary);
+}
+
+.author {
+  @apply font-medium;
+  color: var(--foreground);
+}
+
+.tags {
+  @apply flex flex-wrap gap-2;
+}
+
+.tag {
+  @apply px-3 py-1 rounded-full text-sm;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
+
+.cover {
+  @apply relative mb-12 rounded-xl overflow-hidden;
+  aspect-ratio: 16/9;
+}
+
+.image {
+  @apply object-cover;
+}
+
+.content {
+  @apply prose prose-lg max-w-none;
+}
+
+@media (max-width: 768px) {
+  .article {
+    @apply py-6;
+  }
+
+  .title {
+    @apply text-2xl;
+  }
+
+  .content {
+    @apply prose-base;
+  }
+}

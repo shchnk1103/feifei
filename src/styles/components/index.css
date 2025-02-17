@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .container {
+    @apply mx-auto px-4;
+    max-width: var(--container-width);
+  }
+  .card {
+    @apply rounded-lg transition-all duration-200;
+    background: var(--card-bg);
+    border: 1px solid var(--color-border);
+  }
+  .tag {
+    @apply px-3 py-1 rounded-full text-sm inline-flex items-center;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+  }
+  .btn {
+    @apply px-4 py-2 rounded-md transition-colors duration-200;
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn:hover {
+    background: var(--color-primary-dark);
+  }
+
+  .input {
+    @apply px-3 py-2 rounded-md border transition-all duration-200;
+    background: var(--color-background);
+    border-color: var(--color-border);
+  }
+
+  .input:focus {
+    @apply outline-none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+  }
+}

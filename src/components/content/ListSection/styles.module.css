@@ -1,0 +1,39 @@
+.listContainer {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .listContainer {
+    padding: 0 var(--space-sm);
+  }
+}
+
+.section {
+  @apply w-full max-w-7xl mx-auto px-4;
+}
+
+.header {
+  @apply text-center mb-12;
+}
+
+.title {
+  @apply text-3xl font-bold mb-4;
+  color: var(--foreground);
+}
+
+.subtitle {
+  @apply text-lg;
+  color: var(--foreground-secondary);
+}
+
+.grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+@media (max-width: 768px) {
+  .grid {
+    gap: 1.5rem;
+  }
+}

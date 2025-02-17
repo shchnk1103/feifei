@@ -1,0 +1,112 @@
+.header {
+  @apply fixed top-0 left-0 right-0 z-50;
+  background: var(--header-bg);
+  height: var(--header-height);
+  transition: all 0.3s ease;
+}
+
+.headerInner {
+  @apply flex items-center justify-between h-full px-6;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.shrunk {
+  --header-height: 3.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  @apply mx-auto px-4 h-full flex items-center justify-between;
+  max-width: var(--container-width);
+}
+
+.logo {
+  @apply text-xl font-bold;
+  color: var(--foreground);
+}
+
+.desktopNav {
+  @apply hidden md:flex items-center gap-6;
+}
+
+.desktopNav a {
+  @apply transition-colors hover:text-blue-500;
+}
+
+.menuButton {
+  @apply md:hidden p-2 relative z-50;
+}
+
+.menuIcon {
+  @apply block w-6 h-0.5 bg-current transition-all;
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  content: "";
+  @apply absolute w-6 h-0.5 bg-current transition-all;
+}
+
+.menuIcon::before {
+  top: -8px;
+}
+
+.menuIcon::after {
+  bottom: -8px;
+}
+
+.menuIcon.open {
+  @apply bg-transparent;
+}
+
+.menuIcon.open::before {
+  @apply top-0 rotate-45;
+}
+
+.menuIcon.open::after {
+  @apply bottom-0 -rotate-45;
+}
+
+.mobileNav {
+  @apply md:hidden fixed inset-0 pt-20 px-4 pb-6 flex flex-col items-center gap-6;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+}
+
+.mobileNav a {
+  @apply transition-colors hover:text-blue-500;
+}
+
+.nav {
+  @apply flex items-center gap-6;
+}
+
+.link {
+  @apply relative text-sm font-medium transition-colors duration-200;
+  color: var(--foreground-secondary);
+}
+
+.link:hover {
+  color: var(--foreground);
+}
+
+.link.active {
+  color: var(--foreground);
+}
+
+/* Glass effect when scrolling */
+.headerScrolled {
+  background: var(--header-bg-blur);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 4px var(--shadow-color);
+}
+
+@media (max-width: 768px) {
+  .logo {
+    @apply text-lg;
+  }
+  .headerInner {
+    @apply px-4;
+  }
+}
