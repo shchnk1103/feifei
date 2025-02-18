@@ -13,17 +13,26 @@
 }
 
 .header {
-  @apply text-center mb-12;
+  @apply mb-8 flex justify-between items-start;
+}
+
+.headerText {
+  @apply flex-1;
 }
 
 .title {
-  @apply text-3xl font-bold mb-4;
+  @apply text-2xl font-bold mb-2;
   color: var(--foreground);
 }
 
 .subtitle {
-  @apply text-lg;
-  color: var(--foreground-secondary);
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.createButton {
+  @apply px-4 py-2 bg-primary text-white rounded-lg
+    transition-colors hover:bg-primary-dark
+    flex items-center gap-2 shadow-sm;
 }
 
 .grid {

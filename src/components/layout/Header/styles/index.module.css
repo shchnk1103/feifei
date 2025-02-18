@@ -1,0 +1,27 @@
+/* Theme toggle in mobile nav */
+.mobileNavItems :global(.theme-toggle) {
+  @apply mt-4;
+}
+
+/* Overlay */
+.overlay {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+  z-index: 49;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Dialog */
+.dialogWrapper :global(.radix-dialog-overlay) {
+  z-index: 100 !important;
+}
+
+.dialogWrapper :global(.radix-dialog-content) {
+  z-index: 101 !important;
+}

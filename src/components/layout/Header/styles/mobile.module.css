@@ -1,0 +1,87 @@
+.menuButton {
+  @apply md:hidden relative p-2;
+  z-index: 52;
+}
+
+.menuIcon {
+  @apply block w-6 h-0.5 bg-current relative transition-all;
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  content: "";
+  @apply absolute w-6 h-0.5 bg-current left-0 transition-all;
+}
+
+.menuIcon::before {
+  top: -8px;
+}
+
+.menuIcon::after {
+  bottom: -8px;
+}
+
+.menuIcon.open {
+  @apply bg-transparent;
+}
+
+.menuIcon.open::before {
+  @apply top-0 rotate-45;
+}
+
+.menuIcon.open::after {
+  @apply bottom-0 -rotate-45;
+}
+
+/* Mobile Navigation */
+.mobileNav {
+  @apply fixed inset-0 md:hidden;
+  z-index: 51;
+  visibility: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileContent {
+  @apply flex flex-col w-full h-full;
+  padding-top: var(--header-height);
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  visibility: visible;
+  z-index: 51;
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.mobileContent.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.mobileNavItems {
+  @apply flex flex-col items-center justify-start gap-8;
+  padding: calc(var(--header-height) + 2rem) 1.5rem 2rem; /* 调整内边距 */
+  min-height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.mobileNavItem {
+  @apply w-full max-w-sm;
+  visibility: visible;
+  opacity: 1;
+}
+
+.mobileNavItem a {
+  @apply block w-full text-center py-4 text-lg font-medium /* 增加按钮高度 */
+    transition-colors hover:text-primary relative rounded-lg
+    hover:bg-gray-100 dark:hover:bg-gray-800;
+}
+
+/* 添加分隔线样式但保持现有的层级结构 */
+.mobileNavItems > *:not(:last-child) {
+  @apply pb-4 mb-4 border-b border-gray-100 dark:border-gray-800;
+}

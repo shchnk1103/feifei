@@ -1,0 +1,62 @@
+.dialog {
+  @apply max-w-md w-full;
+}
+
+.container {
+  @apply p-6 overflow-hidden;
+}
+
+.tabs {
+  @apply flex gap-4 mb-8;
+}
+
+.tab {
+  @apply flex-1 py-2 px-4 rounded-lg transition-all duration-300
+    text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100;
+}
+
+.tab.active {
+  @apply bg-blue-500 text-white hover:text-white
+    transform scale-105 shadow-md;
+}
+
+.form {
+  @apply space-y-6;
+}
+
+.input {
+  @apply w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700
+    bg-white dark:bg-gray-800 transition-colors
+    focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.button {
+  @apply w-full py-3 px-4 rounded-lg bg-blue-500 text-white font-medium
+    transition-all duration-300 hover:bg-blue-600
+    transform hover:scale-105 active:scale-95
+    disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.error {
+  @apply text-red-500 text-sm mt-2;
+}
+
+.overlay {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+}
+
+.content {
+  @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+    max-w-md w-full bg-white dark:bg-gray-900 rounded-lg shadow-xl z-50
+    p-6;
+}
+
+.title {
+  @apply text-xl font-semibold mb-4 text-center;
+}
+
+.closeButton {
+  @apply absolute right-4 top-4 p-2 rounded-full 
+    hover:bg-gray-100 dark:hover:bg-gray-800
+    transition-colors;
+}
