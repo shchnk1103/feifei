@@ -1,0 +1,16 @@
+.header {
+  @apply fixed top-0 left-0 right-0;
+  background: var(--header-bg);
+  z-index: 50;
+  height: var(--header-height);
+  transition: all 0.3s ease;
+}
+
+.container {
+  @apply relative max-w-7xl mx-auto px-4 flex items-center justify-between;
+  height: var(--header-height);
+}
+
+.logo {
+  @apply text-xl font-bold hover:text-primary transition-colors;
+}

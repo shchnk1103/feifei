@@ -1,0 +1,26 @@
+.userSection {
+  @apply flex items-center gap-4;
+}
+
+.username {
+  @apply text-sm font-medium hidden sm:block;
+}
+
+.authButton {
+  @apply px-4 py-2 rounded-lg bg-primary text-white font-medium
+    transition-all hover:bg-primary-dark active:scale-95
+    disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.mobileUserSection {
+  @apply w-full max-w-sm mt-auto;
+}
+
+.mobileUsername {
+  @apply text-center block mb-4 text-lg font-medium;
+}
+
+.mobileAuthButton {
+  @apply w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
+    transition-all hover:bg-primary-dark active:scale-95;
+}

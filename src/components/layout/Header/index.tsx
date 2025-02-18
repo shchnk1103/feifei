@@ -1,17 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import styles from "./styles.module.css";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useScrollLock } from "@/hooks/useScrollLock";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { AuthDialog } from "@/components/auth/AuthDialog";
+import { NavItems } from "./components/NavItems";
+import { UserSection } from "./components/UserSection";
+import { menuVariants } from "./animations";
+import { mergeStyles } from "@/utils/styles";
+import baseStyles from "./styles/base.module.css";
+import desktopStyles from "./styles/desktop.module.css";
+import mobileStyles from "./styles/mobile.module.css";
+import userStyles from "./styles/user.module.css";
+import indexStyles from "./styles/index.module.css";
+
+const styles = mergeStyles(
+  baseStyles,
+  desktopStyles,
+  mobileStyles,
+  userStyles,
+  indexStyles
+);
 
 interface HeaderProps {
   shrunk?: boolean;
 }
 
 export function Header({ shrunk = false }: HeaderProps) {
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+
+  useScrollLock(isMenuOpen);
 
   return (
     <header className={`${styles.header} ${shrunk ? styles.shrunk : ""}`}>
@@ -22,8 +45,12 @@ export function Header({ shrunk = false }: HeaderProps) {
 
         {/* Desktop Navigation */}
         <nav className={styles.desktopNav}>
-          <Link href="/blog">博客</Link>
-          <Link href="/about">关于</Link>
+          <NavItems />
+          <UserSection
+            user={user}
+            onLogin={() => setIsAuthDialogOpen(true)}
+            onLogout={logout}
+          />
           <ThemeToggle />
         </nav>
 
@@ -41,23 +68,49 @@ export function Header({ shrunk = false }: HeaderProps) {
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.nav
-              className={styles.mobileNav}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link href="/blog" onClick={() => setIsMenuOpen(false)}>
-                博客
-              </Link>
-              <Link href="/about" onClick={() => setIsMenuOpen(false)}>
-                关于
-              </Link>
-              <ThemeToggle />
-            </motion.nav>
+            <>
+              <motion.div
+                className={styles.mobileNav}
+                initial="closed"
+                animate="open"
+                exit="closed"
+                variants={menuVariants}
+              >
+                <motion.div
+                  className={styles.mobileContent}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <nav className={styles.mobileNavItems}>
+                    <NavItems mobile onClose={() => setIsMenuOpen(false)} />
+                    <UserSection
+                      user={user}
+                      mobile
+                      onLogin={() => setIsAuthDialogOpen(true)}
+                      onLogout={logout}
+                      onClose={() => setIsMenuOpen(false)}
+                    />
+                    <ThemeToggle />
+                  </nav>
+                </motion.div>
+              </motion.div>
+              <motion.div
+                className={`${styles.overlay} ${isMenuOpen ? styles.open : ""}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMenuOpen(false)}
+              />
+            </>
           )}
         </AnimatePresence>
+
+        <AuthDialog
+          isOpen={isAuthDialogOpen}
+          onClose={() => setIsAuthDialogOpen(false)}
+        />
       </div>
     </header>
   );

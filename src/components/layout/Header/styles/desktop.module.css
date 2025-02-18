@@ -1,0 +1,11 @@
+.desktopNav {
+  @apply hidden md:flex items-center gap-6;
+}
+
+.navItem {
+  @apply flex items-center gap-6;
+}
+
+.navItem a {
+  @apply transition-colors hover:text-primary relative text-sm font-medium;
+}
