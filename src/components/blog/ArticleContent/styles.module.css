@@ -1,0 +1,35 @@
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.blockWrapper {
+  margin: 1rem 0;
+}
+
+.block-heading {
+  margin: 2rem 0 1rem;
+}
+
+.block-image {
+  margin: 2rem 0;
+}
+
+.block-quote {
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+}

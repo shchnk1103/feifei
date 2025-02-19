@@ -1,0 +1,46 @@
+/* 基础块样式 */
+.blockBase {
+  margin: 1.5rem 0;
+  transition: all 0.3s ease;
+}
+
+/* 图片容器基础样式 */
+.imageContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* 加载状态样式 */
+.loading {
+  opacity: 0.5;
+}
+
+/* 错误状态样式 */
+.error {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+}
+
+/* 基础卡片样式 */
+.cardBase {
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 响应式媒体查询 */
+@media (max-width: 768px) {
+  .blockBase {
+    margin: 1rem 0;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .cardBase {
+    background-color: #1f2937;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+  }
+}
