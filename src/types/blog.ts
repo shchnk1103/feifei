@@ -1,84 +1,29 @@
-// 基础块类型
-export type BlockType =
-  | "text"
-  | "heading"
-  | "image"
-  | "link"
-  | "music"
-  | "quote";
+import {
+  Block,
+  TextBlock,
+  HeadingBlock,
+  ImageBlock,
+  LinkBlock,
+  QuoteBlock,
+} from "./blocks";
 
-// 基础块接口
-export interface BaseBlock {
-  id: string;
-  type: BlockType;
-  content: string;
-  metadata?: Record<string, any>;
-}
-
-// 具体块类型
-export interface HeadingBlock extends BaseBlock {
-  type: "heading";
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-}
-
-export interface TextBlock extends BaseBlock {
-  type: "text";
-}
-
-export interface ImageBlock extends BaseBlock {
-  type: "image";
-  metadata: {
-    imageUrl: string;
-    description?: string;
-  };
-}
-
-export interface LinkBlock extends BaseBlock {
-  type: "link";
-  metadata: {
-    url: string;
-    imageUrl?: string;
-    description?: string;
-  };
-}
-
-export interface MusicBlock extends BaseBlock {
-  type: "music";
-  metadata: {
-    musicUrl: string;
-    coverUrl: string;
-    artist: string;
-    albumName?: string;
-    description?: string;
-  };
-}
-
-export interface QuoteBlock extends BaseBlock {
-  type: "quote";
-  metadata?: {
-    author?: string;
-    source?: string;
-  };
-}
-
-// 内容块联合类型
+// 只导出用于博客的块类型
 export type ContentBlock =
-  | HeadingBlock
   | TextBlock
+  | HeadingBlock
   | ImageBlock
   | LinkBlock
-  | MusicBlock
   | QuoteBlock;
 
 export interface Article {
-  id: string | number;
+  id: number;
+  imageSrc: string;
   title: string;
   description: string;
-  author: string;
-  createdAt: string;
-  imageSrc: string;
-  tags: string[];
   articleContent: {
     blocks: ContentBlock[];
   };
+  author: string;
+  createdAt: string;
+  tags: string[];
 }

@@ -1,13 +1,80 @@
 .text {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-text);
-  margin: var(--space-md) 0;
+  position: relative;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text:first-child {
+  margin-top: 0;
+}
+
+.text:last-child {
+  margin-bottom: 0;
+}
+
+.indent {
+  text-indent: 2em;
+}
+
+.highlight {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 236, 153, 0.3),
+    rgba(255, 236, 153, 0.7) 40%,
+    rgba(255, 236, 153, 0.3)
+  );
+  padding: 0.2em 0;
+  border-radius: 0.2em;
+}
+
+/* 响应式设计 */
 @media (max-width: 768px) {
   .text {
-    font-size: var(--font-size-sm);
-    margin: var(--space-sm) 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0.8rem 0;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .text {
+    color: #e0e0e0;
+  }
+
+  .highlight {
+    background: linear-gradient(
+      120deg,
+      rgba(255, 236, 153, 0.1),
+      rgba(255, 236, 153, 0.2) 40%,
+      rgba(255, 236, 153, 0.1)
+    );
+  }
+}
+
+/* 打印样式优化 */
+@media print {
+  .text {
+    color: #000;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .highlight {
+    background: none;
+    text-decoration: underline;
   }
 }

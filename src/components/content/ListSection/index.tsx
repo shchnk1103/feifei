@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { ListItem } from "./components/ListItem";
 import styles from "./styles.module.css";
-import { Article } from "@/types/article";
+import { Article } from "@/types/blog";
 import { useRouter } from "next/navigation";
 
 interface ListSectionProps {

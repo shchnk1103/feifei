@@ -1,29 +1,83 @@
+"use client";
+
+import { memo } from "react";
 import Image from "next/image";
 import { ImageBlock as ImageBlockType } from "@/types/blocks";
+import { useImage } from "@/hooks/useImage";
+import { LoadingPlaceholder } from "../shared/LoadingPlaceholder";
+import { validateImageSize, getImageAlt } from "../shared/utils";
 import styles from "./styles.module.css";
+import sharedStyles from "../shared/styles.module.css";
+import clsx from "clsx";
 
 interface ImageBlockProps {
   block: ImageBlockType;
+  className?: string;
+  onLoadingComplete?: () => void;
+  onError?: () => void;
 }
 
-export function ImageBlock({ block }: ImageBlockProps) {
+export const ImageBlock = memo(function ImageBlock({
+  block,
+  className,
+  onLoadingComplete,
+  onError,
+}: ImageBlockProps) {
+  const { isLoading, error, handleLoadComplete, handleError } = useImage({
+    onLoadingComplete,
+    onError,
+  });
+
+  const {
+    metadata: {
+      imageUrl,
+      description,
+      width: customWidth,
+      height: customHeight,
+      alt: customAlt,
+    },
+    content,
+  } = block;
+
+  const { width, height } = validateImageSize({
+    width: customWidth,
+    height: customHeight,
+  });
+
+  const alt = getImageAlt(customAlt || content || "", description || "");
+
   return (
-    <figure className={styles.figure}>
-      <div className={styles.imageWrapper}>
-        <Image
-          src={block.metadata?.imageUrl || ""}
-          alt={block.content || ""}
-          width={800}
-          height={500}
-          className={styles.image}
-          priority={false}
-        />
+    <figure className={clsx(sharedStyles.blockBase, styles.figure, className)}>
+      <div
+        className={clsx(
+          styles.imageWrapper,
+          sharedStyles.imageContainer,
+          isLoading && sharedStyles.loading,
+          error && sharedStyles.error
+        )}
+      >
+        {!error ? (
+          <Image
+            src={imageUrl}
+            alt={alt}
+            width={width}
+            height={height}
+            className={clsx(styles.image, isLoading && sharedStyles.loading)}
+            priority={false}
+            loading="lazy"
+            onLoadingComplete={handleLoadComplete}
+            onError={handleError}
+          />
+        ) : (
+          <div className={styles.errorPlaceholder}>
+            <span role="alert">图片加载失败</span>
+          </div>
+        )}
+        {isLoading && <LoadingPlaceholder />}
       </div>
-      {block.metadata?.description && (
-        <figcaption className={styles.caption}>
-          {block.metadata.description}
-        </figcaption>
+      {description && (
+        <figcaption className={styles.caption}>{description}</figcaption>
       )}
     </figure>
   );
-}
+});

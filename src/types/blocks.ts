@@ -3,14 +3,13 @@ export type ContentBlockType =
   | "heading"
   | "image"
   | "link"
-  | "music"
   | "quote"
   | "code"
   | "table"
   | "divider";
 
 // 基础块接口
-interface BaseBlock {
+export interface BaseBlock {
   id: string;
   type: ContentBlockType;
   content: string;
@@ -51,27 +50,12 @@ export interface LinkBlock extends BaseBlock {
   };
 }
 
-// 音乐块接口
-export interface MusicBlock extends BaseBlock {
-  type: "music";
-  metadata: {
-    musicUrl: string;
-    artist: string;
-    albumName?: string;
-    coverUrl?: string;
-    duration?: string;
-    description?: string;
-    lyrics?: string;
-  };
-}
-
 // 引用块接口
 export interface QuoteBlock extends BaseBlock {
   type: "quote";
   metadata: {
     author?: string;
     source?: string;
-    date?: string;
   };
 }
 
@@ -111,7 +95,6 @@ export type Block =
   | HeadingBlock
   | ImageBlock
   | LinkBlock
-  | MusicBlock
   | QuoteBlock
   | CodeBlock
   | TableBlock
