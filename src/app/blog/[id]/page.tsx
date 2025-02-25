@@ -18,7 +18,8 @@ export default async function BlogPostPage({
   const [resolvedParams] = await Promise.all([params, searchParams]);
   const { id } = resolvedParams;
 
-  const article = articles.find((article) => article.id.toString() === id);
+  // 在查找文章时也需要确保类型匹配
+  const article = articles.find((article) => String(article.id) === id);
   if (!article) {
     notFound();
   }
@@ -32,14 +33,17 @@ export default async function BlogPostPage({
         tags={article.tags}
         coverImage={article.imageSrc}
       />
-
-      <ArticleContent blocks={article.articleContent.blocks} />
+      <ArticleContent
+        blocks={article.articleContent.blocks}
+        version={article.articleContent.version}
+        schema={article.articleContent.schema}
+      />
     </article>
   );
 }
 
 export async function generateStaticParams() {
   return articles.map((article) => ({
-    id: article.id.toString(),
+    id: String(article.id), // 确保 id 是字符串类型
   }));
 }

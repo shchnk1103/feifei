@@ -3,6 +3,13 @@ import Link from "next/link";
 import { cn } from "@/utils/cn";
 import styles from "./styles.module.css";
 
+interface CardMetaProps {
+  author: string;
+  authorAvatar?: string; // 新增：支持作者头像
+  date: string;
+  tags: string[];
+}
+
 interface CardProps {
   href: string;
   image: {
@@ -11,11 +18,7 @@ interface CardProps {
   };
   title: string;
   description: string;
-  meta: {
-    author: string;
-    date: string;
-    tags?: string[];
-  };
+  meta: CardMetaProps;
   className?: string;
 }
 

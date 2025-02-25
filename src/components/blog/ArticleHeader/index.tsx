@@ -4,8 +4,12 @@ import styles from "./styles.module.css";
 
 interface ArticleHeaderProps {
   title: string;
-  author: string;
-  createdAt: string;
+  author: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  createdAt: Date;
   tags: string[];
   coverImage: string;
 }
@@ -33,8 +37,19 @@ export const ArticleHeader = ({
       <h1 className={styles.title}>{title}</h1>
 
       <div className={styles.info}>
-        <span className={styles.author}>{author}</span>
-        <time dateTime={createdAt}>{formatDate(createdAt)}</time>
+        <div className={styles.author}>
+          {author.avatar && (
+            <Image
+              src={author.avatar}
+              alt={author.name}
+              width={40}
+              height={40}
+              className={styles.avatar}
+            />
+          )}
+          <span>{author.name}</span>
+        </div>
+        <time dateTime={createdAt.toISOString()}>{formatDate(createdAt)}</time>
       </div>
 
       <div className={styles.tags}>

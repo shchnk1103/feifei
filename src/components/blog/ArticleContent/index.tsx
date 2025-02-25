@@ -26,6 +26,8 @@ const DividerBlockPlaceholder = memo(function DividerBlockPlaceholder() {
 
 interface ArticleContentProps {
   blocks: Block[];
+  version: number;
+  schema?: string;
   className?: string;
 }
 
@@ -42,6 +44,8 @@ const createBlockComponent = (
 
 export const ArticleContent = memo(function ArticleContent({
   blocks,
+  version,
+  schema,
   className,
 }: ArticleContentProps) {
   const { ref, inView } = useInView({
