@@ -1,10 +1,15 @@
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date
-    .toLocaleDateString("zh-CN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    .replace(/\//g, "-");
-}
+export const formatDate = (date: Date | string): string => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  // 判断日期是否有效
+  if (isNaN(dateObj.getTime())) {
+    console.warn("Invalid date:", date);
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(dateObj);
+};
