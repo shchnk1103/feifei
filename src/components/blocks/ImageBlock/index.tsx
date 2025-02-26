@@ -9,6 +9,7 @@ import { validateImageSize, getImageAlt } from "../shared/utils";
 import styles from "./styles.module.css";
 import sharedStyles from "../shared/styles.module.css";
 import clsx from "clsx";
+import { useInView } from "react-intersection-observer";
 
 interface ImageBlockProps {
   block: ImageBlockType;
@@ -26,6 +27,11 @@ export const ImageBlock = memo(function ImageBlock({
   const { isLoading, error, handleLoadComplete, handleError } = useImage({
     onLoadingComplete,
     onError,
+  });
+
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
   });
 
   const {
@@ -47,7 +53,15 @@ export const ImageBlock = memo(function ImageBlock({
   const alt = getImageAlt(customAlt || content || "", description || "");
 
   return (
-    <figure className={clsx(sharedStyles.blockBase, styles.figure, className)}>
+    <figure
+      ref={ref}
+      className={clsx(
+        sharedStyles.blockBase,
+        styles.figure,
+        inView && styles.visible,
+        className
+      )}
+    >
       <div
         className={clsx(
           styles.imageWrapper,

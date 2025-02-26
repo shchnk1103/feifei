@@ -1,19 +1,18 @@
 @import "./base/variables.css";
 @import "./base/reset.css";
-@import "./themes/light.css";
-@import "./themes/dark.css";
+@import "./themes/theme.css";
 @import "./utils/animations.css";
-@import "./components/index.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+[data-theme="light"] {
   --background: #ffffff;
-  --foreground: #000000;
-  --foreground-secondary: #666666;
-  --foreground-muted: #888; /* Component Colors */
+  --foreground: #1a1a1a;
+  --foreground-secondary: #4a4a4a;
+  --foreground-muted: #888;
   --tag-bg: rgba(0, 0, 0, 0.05);
   --tag-text: #666666;
   --tag-bg-hover: rgba(0, 0, 0, 0.1);
@@ -30,20 +29,20 @@
   --card-author: #333333;
   --card-time: #666666;
   --border-color: rgba(255, 255, 255, 0.1);
-  --border-hover-color: rgba(255, 255, 255, 0.2); /* Special Elements */
+  --border-hover-color: rgba(255, 255, 255, 0.2);
   --url-bg: rgba(0, 0, 0, 0.1);
-  --player-bg: rgba(0, 0, 0, 0.2); /* Typography */
+  --player-bg: rgba(0, 0, 0, 0.2);
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem; /* Spacing */
+  --font-size-2xl: 1.5rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
-  --space-xl: 2rem; /* Transitions */
+  --space-xl: 2rem;
   --transition-fast: 0.15s;
   --transition-normal: 0.3s;
   --transition-slow: 0.5s;
@@ -57,10 +56,10 @@
 }
 
 [data-theme="dark"] {
-  --background: #000000;
+  --background: #1a1a1a;
   --foreground: #ffffff;
-  --foreground-secondary: #999999;
-  --foreground-muted: #bbbbbb;
+  --foreground-secondary: #e0e0e0;
+  --foreground-muted: #a0a0a0;
   --tag-bg: rgba(255, 255, 255, 0.1);
   --tag-text: #ffffff;
   --tag-bg-hover: rgba(255, 255, 255, 0.15);
@@ -92,6 +91,13 @@
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* 隐藏滚动条 */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari and Opera */
+    }
   }
 
   body {
@@ -100,18 +106,17 @@
     background: var(--color-background);
     font-family: var(--font-geist-sans);
     @apply min-h-screen flex flex-col;
-    /* 确保页面至少占满视口高度 */
     background: var(--background);
     color: var(--foreground);
   }
 
   main {
     @apply flex-1;
-    /* 让主要内容区域自动填充剩余空间 */
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
     padding-top: var(--header-height);
   }
 }
+
 @layer components {
   .container {
     @apply mx-auto px-4;
@@ -130,6 +135,7 @@
     color: var(--tag-text);
   }
 }
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -142,12 +148,14 @@
       display: none;
     }
   }
-} /* Focus styles */
+}
+
 :focus-visible {
   @apply outline-none ring-2;
   ring-color: var(--color-primary);
-} /* Selection styles */
+}
+
 ::selection {
-  background: var(--color-primary);
-  color: white;
+  background: var(--foreground);
+  color: var(--background);
 }

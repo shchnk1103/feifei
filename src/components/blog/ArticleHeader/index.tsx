@@ -47,7 +47,7 @@ export const ArticleHeader = ({
               className={styles.avatar}
             />
           )}
-          <span>{author.name}</span>
+          <span className={styles.authorName}>{author.name}</span>
         </div>
         <time dateTime={createdAt.toISOString()}>{formatDate(createdAt)}</time>
       </div>

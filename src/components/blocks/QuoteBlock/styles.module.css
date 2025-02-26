@@ -2,8 +2,8 @@
   position: relative;
   margin: 2rem 0;
   padding: 1.5rem 2rem;
-  background-color: #f8f9fa;
-  border-left: 4px solid #343a40;
+  background-color: var(--tag-bg);
+  border-left: 4px solid var(--foreground-secondary);
   border-radius: 0 8px 8px 0;
   opacity: 0;
   transform: translateX(-20px);
@@ -16,7 +16,7 @@
 }
 
 .quote:hover {
-  background-color: #f1f3f5;
+  background-color: var(--tag-bg-hover);
   transform: translateX(4px);
 }
 
@@ -24,7 +24,7 @@
   margin: 0;
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #495057;
+  color: var(--foreground);
   font-style: italic;
   quotes: "" " " "";
 }
@@ -35,7 +35,7 @@
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.3em;
-  color: #868e96;
+  color: var(--foreground-muted);
 }
 
 .footer {
@@ -48,21 +48,21 @@
 
 .author {
   font-weight: 500;
-  color: #495057;
+  color: var(--foreground);
 }
 
 .author::before {
   content: "—";
   margin-right: 0.5rem;
-  color: #868e96;
+  color: var(--foreground-muted);
 }
 
 .source {
-  color: #868e96;
+  color: var(--foreground-muted);
 }
 
 .date {
-  color: #868e96;
+  color: var(--foreground-muted);
   font-style: italic;
 }
 
@@ -78,28 +78,11 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .quote {
-    background-color: #1f2937;
-    border-left-color: #9ca3af;
-  }
+[data-theme="dark"] .quote {
+  background-color: var(--tag-bg);
+  border-left-color: var(--foreground-secondary);
+}
 
-  .quote:hover {
-    background-color: #343a40;
-  }
-
-  .content {
-    color: #e5e7eb;
-  }
-
-  .author {
-    color: #d1d5db;
-  }
-
-  .source,
-  .date,
-  .content::before,
-  .author::before {
-    color: #9ca3af;
-  }
+[data-theme="dark"] .quote:hover {
+  background-color: var(--tag-bg-hover);
 }
