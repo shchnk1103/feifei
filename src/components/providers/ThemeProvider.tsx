@@ -27,16 +27,17 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const isDark =
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      root.setAttribute("data-theme", systemTheme);
-    } else {
-      root.setAttribute("data-theme", theme);
-    }
+    // 移除之前的主题类
+    root.classList.remove("light", "dark");
+    // 添加新的主题类
+    root.classList.add(isDark ? "dark" : "light");
+    // 设置 data-theme 属性
+    root.setAttribute("data-theme", isDark ? "dark" : "light");
 
     localStorage.setItem("theme", theme);
   }, [theme]);

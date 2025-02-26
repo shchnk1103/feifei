@@ -1,7 +1,10 @@
+/* 文章容器 */
 .article {
   @apply max-w-4xl mx-auto px-4 py-12;
+  background-color: var(--background);
 }
 
+/* 文章头部 */
 .header {
   @apply mb-8;
 }
@@ -12,42 +15,86 @@
 
 .title {
   @apply text-4xl font-bold mb-4;
-  color: var(--foreground);
+  color: var(--card-title);
 }
 
+/* 文章信息 */
 .info {
   @apply flex items-center gap-4 text-sm mb-4;
-  color: var(--foreground-secondary);
+  color: var(--card-time);
 }
 
 .author {
   @apply font-medium;
-  color: var(--foreground);
+  color: var(--card-author);
 }
 
+/* 标签样式 */
 .tags {
   @apply flex flex-wrap gap-2;
 }
 
 .tag {
-  @apply px-3 py-1 rounded-full text-sm;
+  @apply px-3 py-1 rounded-full text-sm transition-colors duration-200;
   background: var(--tag-bg);
   color: var(--tag-text);
 }
 
+.tag:hover {
+  background: var(--tag-bg-hover);
+}
+
+/* 封面图片 */
 .cover {
-  @apply relative mb-12 rounded-xl overflow-hidden;
+  @apply relative mb-12 rounded-xl overflow-hidden shadow-lg;
   aspect-ratio: 16/9;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
 }
 
 .image {
-  @apply object-cover;
+  @apply object-cover w-full h-full;
 }
 
+/* 文章内容 */
 .content {
   @apply prose prose-lg max-w-none;
+  color: var(--foreground); /* 使用最深的文字颜色 */
 }
 
+/* 文章内容样式定制 */
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+  color: var(--foreground); /* 使用最深的文字颜色，而不是 card-title */
+}
+
+.content p {
+  color: var(--foreground); /* 使用最深的文字颜色，替换之前的 foreground */
+  line-height: 1.8;
+}
+
+/* 其他文本元素的颜色调整 */
+.content ul,
+.content ol {
+  color: var(--foreground);
+}
+
+.content strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.content blockquote {
+  border-left-color: var(--card-border);
+  color: var(--foreground-secondary); /* 引用可以保持稍浅的颜色 */
+  background-color: var(--tag-bg); /* 添加背景色增加区分度 */
+}
+
+/* 移动端适配 */
 @media (max-width: 768px) {
   .article {
     @apply py-6;
@@ -56,8 +103,27 @@
   .title {
     @apply text-2xl;
   }
+}
 
-  .content {
-    @apply prose-base;
-  }
+/* 替换为基于 data-theme 的样式 */
+[data-theme="dark"] .content {
+  @apply prose-invert;
+}
+
+[data-theme="dark"] .content h1,
+[data-theme="dark"] .content h2,
+[data-theme="dark"] .content h3,
+[data-theme="dark"] .content h4,
+[data-theme="dark"] .content h5,
+[data-theme="dark"] .content h6 {
+  color: var(--foreground);
+}
+
+[data-theme="dark"] .content p {
+  color: var(--foreground-secondary);
+}
+
+[data-theme="dark"] .content blockquote {
+  border-left-color: var(--card-border);
+  color: var(--foreground-muted);
 }

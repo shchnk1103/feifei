@@ -1,0 +1,43 @@
+[data-theme="light"] {
+  /* Colors */
+  --background: #ffffff;
+  --foreground: #171717;
+  --foreground-secondary: #666666;
+  --foreground-muted: #888888;
+
+  /* Component Colors */
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Tag Colors */
+  --tag-bg: rgba(0, 0, 0, 0.05);
+  --tag-text: #666666;
+  --tag-bg-hover: rgba(0, 0, 0, 0.1);
+
+  /* Header Colors */
+  --header-bg: rgba(255, 255, 255, 1);
+  --header-bg-blur: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] {
+  /* Colors */
+  --background: #171717;
+  --foreground: #ffffff;
+  --foreground-secondary: #a0a0a0;
+  --foreground-muted: #666666;
+
+  /* Component Colors */
+  --card-bg: #1f1f1f;
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.3);
+
+  /* Tag Colors */
+  --tag-bg: rgba(255, 255, 255, 0.1);
+  --tag-text: #a0a0a0;
+  --tag-bg-hover: rgba(255, 255, 255, 0.15);
+
+  /* Header Colors */
+  --header-bg: rgba(23, 23, 23, 1);
+  --header-bg-blur: rgba(23, 23, 23, 0.8);
+}
