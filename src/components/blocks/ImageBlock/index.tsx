@@ -37,7 +37,7 @@ export const ImageBlock = memo(function ImageBlock({
   const {
     metadata: {
       imageUrl,
-      description,
+      caption,
       width: customWidth,
       height: customHeight,
       alt: customAlt,
@@ -50,7 +50,7 @@ export const ImageBlock = memo(function ImageBlock({
     height: customHeight,
   });
 
-  const alt = getImageAlt(customAlt || content || "", description || "");
+  const alt = getImageAlt(customAlt || content || "", caption || "");
 
   return (
     <figure
@@ -89,9 +89,7 @@ export const ImageBlock = memo(function ImageBlock({
         )}
         {isLoading && <LoadingPlaceholder />}
       </div>
-      {description && (
-        <figcaption className={styles.caption}>{description}</figcaption>
-      )}
+      {caption && <figcaption className={styles.caption}>{caption}</figcaption>}
     </figure>
   );
 });

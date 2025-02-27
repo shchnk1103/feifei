@@ -1,0 +1,212 @@
+.editorWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.blocksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.blockWrapper {
+  position: relative;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.activeBlock {
+  background-color: var(--tag-bg);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--foreground-muted);
+}
+
+.emptyState p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.blockEditor {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.coverImageArea {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.addCoverButton {
+  width: 100%;
+  padding: 3rem 0;
+  border: 2px dashed var(--card-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--foreground-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addCoverButton:hover {
+  background: var(--tag-bg);
+  color: var(--foreground);
+}
+
+.coverImageWrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.changeCoverButton {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.coverImageWrapper:hover .changeCoverButton {
+  opacity: 1;
+}
+
+.blockItem {
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.blockItem:hover {
+  background-color: var(--tag-bg);
+}
+
+.headingBlock {
+  font-weight: bold;
+  color: var(--foreground);
+}
+
+.h1 {
+  font-size: 2.5rem;
+  margin: 1.5rem 0;
+}
+
+.h2 {
+  font-size: 2rem;
+  margin: 1.25rem 0;
+}
+
+.h3 {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+.textBlock {
+  line-height: 1.8;
+  color: var(--foreground);
+}
+
+.imageBlock {
+  margin: 1.5rem 0;
+}
+
+.blockImage {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.imageCaption {
+  text-align: center;
+  color: var(--foreground-muted);
+  font-size: 0.875rem;
+}
+
+.quoteBlock {
+  padding-left: 1rem;
+  border-left: 3px solid var(--foreground-muted);
+  font-style: italic;
+  color: var(--foreground-secondary);
+}
+
+.quoteAuthor {
+  margin-top: 0.5rem;
+  font-style: normal;
+  text-align: right;
+  color: var(--foreground-muted);
+}
+
+.blockEditorContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* 块控制按钮 */
+.blockControls {
+  position: absolute;
+  top: 0.5rem;
+  right: -40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 10;
+}
+
+.blockControlButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--foreground-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blockControlButton:hover {
+  background: var(--tag-bg-hover);
+  color: var(--foreground);
+}
+
+.dragHandle {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--foreground-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+/* 保留其他样式 */
+
+.addBlockButtonContainer {
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,114 @@
+/* 封面图片占位符 */
+.coverImagePlaceholder {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  border: 2px dashed var(--card-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 2rem;
+}
+
+.coverImagePlaceholder:hover {
+  background-color: var(--tag-bg);
+  color: var(--foreground);
+  border-color: var(--foreground-muted);
+}
+
+.uploadIcon {
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+
+/* 封面图片容器 */
+.coverImageContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.coverImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 21/9;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.coverImageOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.coverImageContainer:hover .coverImageOverlay {
+  opacity: 1;
+}
+
+.changeImageButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.changeImageButton:hover {
+  transform: scale(1.05);
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--background);
+  color: var(--foreground);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.coverImageContainer:hover .removeImageButton {
+  opacity: 1;
+}
+
+.removeImageButton:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .coverImagePlaceholder {
+    height: 150px;
+  }
+
+  .coverImage {
+    aspect-ratio: 16/9;
+  }
+}

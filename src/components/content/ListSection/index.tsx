@@ -21,26 +21,9 @@ export function ListSection({
   const router = useRouter();
   const { user } = useAuth();
 
-  const handleCreateArticle = async () => {
-    if (!user) return;
-
-    try {
-      const response = await fetch("/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ authorId: user.uid }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create article");
-
-      const { articleId } = await response.json();
-      router.push(`/editor/${articleId}`);
-    } catch (error) {
-      console.error("Error creating article:", error);
-      // TODO: 添加错误提示
-    }
+  const handleCreateArticle = () => {
+    // 在测试阶段，简单地跳转到新文章创建页面
+    router.push("/editor/new");
   };
 
   return (
