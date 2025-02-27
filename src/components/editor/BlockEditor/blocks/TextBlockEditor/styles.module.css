@@ -1,0 +1,53 @@
+.textBlockWrapper {
+  width: 100%;
+  position: relative;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.activeTextBlock {
+  background-color: var(--tag-bg);
+}
+
+.textBlockEditor {
+  width: 100%;
+  min-height: 24px;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.8;
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.textBlockEditor::placeholder {
+  color: var(--foreground-muted);
+  opacity: 0.6;
+}
+
+/* 确保文本输入区高度计算正确 */
+.textBlockEditor::-webkit-scrollbar {
+  display: none;
+}
+
+.textBlockEditor {
+  scrollbar-width: none;
+}
+
+/* 为较长文本提供更多空间 */
+.textBlockWrapper.activeTextBlock .textBlockEditor {
+  min-height: 2rem;
+}
+
+@media (max-width: 640px) {
+  .textBlockEditor {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}

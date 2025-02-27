@@ -1,0 +1,121 @@
+.editorContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px var(--shadow-color);
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.backButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background: var(--tag-bg);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.backButton:hover {
+  background: var(--tag-bg-hover);
+}
+
+.titleInput {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.saveStatus {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+.publishButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.publishButton:hover {
+  opacity: 0.9;
+}
+
+.editorContent {
+  flex: 1;
+  padding: 2rem;
+}
+
+.mainEditor {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 400px;
+  border: 1px dashed var(--card-border);
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: var(--foreground-muted);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: var(--foreground-muted);
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #e74c3c;
+  padding: 1rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .mainEditor {
+    padding: 1rem;
+  }
+}
