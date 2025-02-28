@@ -1,51 +1,47 @@
+import { Article, ArticleStatus, ArticleVisibility } from "@/types/blog";
 import { v4 as uuidv4 } from "uuid";
 
-// 文章类型定义
-export interface Article {
-  id: string;
-  title: string;
-  coverImage?: string;
-  blocks: Block[];
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
-  status: "draft" | "published";
-  userId: string;
-}
-
-export interface Block {
-  id: string;
-  type: "text" | "heading" | "image" | "quote" | "code" | "divider";
-  content: string;
-  level?: number; // 用于 heading 块
-  metadata?: {
-    [key: string]: any;
-  };
-}
-
-// 模拟数据存储
+// 模拟数据存储 - 使用从 @/types/blog 导入的 Article 类型
 const articles: Article[] = [
   {
     id: "1",
+    slug: "example-article",
     title: "示例文章",
-    coverImage: "",
-    blocks: [
-      {
-        id: "block-1",
-        type: "heading",
-        content: "这是一篇示例文章",
-        level: 1,
-      },
-      {
-        id: "block-2",
-        type: "text",
-        content: "这是示例内容，你可以编辑它来测试编辑器功能。",
-      },
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    description: "这是一篇示例文章的描述。",
+    author: {
+      id: "user-1",
+      name: "示例作者",
+    },
+    imageSrc: "",
+    articleContent: {
+      blocks: [
+        {
+          id: "block-1",
+          type: "heading",
+          content: "这是一篇示例文章",
+          level: 1,
+        },
+        {
+          id: "block-2",
+          type: "text",
+          content: "这是示例内容，你可以编辑它来测试编辑器功能。",
+        },
+      ],
+      version: 1,
+      schema: "1.0.0",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
     status: "draft",
-    userId: "user-1",
+    visibility: "public",
+    allowComments: true,
+    tags: ["示例", "测试"],
+    metadata: {
+      wordCount: 20,
+      readingTime: 1,
+      views: 0,
+      likes: 0,
+    },
   },
 ];
 
@@ -66,27 +62,45 @@ export async function getAllArticles(): Promise<Article[]> {
   return [...articles];
 }
 
-// 确认 createArticle 正确实现
+// 创建新文章
 export async function createArticle(userId: string): Promise<Article> {
   // 模拟API请求延迟
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   // 创建新文章对象
   const newArticle: Article = {
-    id: uuidv4(), // 使用uuid生成唯一ID
+    id: uuidv4(),
+    slug: `article-${Date.now()}`,
     title: "未命名文章",
-    coverImage: "",
-    blocks: [
-      {
-        id: uuidv4(),
-        type: "text",
-        content: "",
-      },
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    status: "draft",
-    userId: userId,
+    description: "",
+    author: {
+      id: userId,
+      name: "用户",
+    },
+    imageSrc: "",
+    articleContent: {
+      blocks: [
+        {
+          id: uuidv4(),
+          type: "text",
+          content: "",
+        },
+      ],
+      version: 1,
+      schema: "1.0.0",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "draft" as ArticleStatus,
+    visibility: "private" as ArticleVisibility,
+    allowComments: true,
+    tags: [],
+    metadata: {
+      wordCount: 0,
+      readingTime: 0,
+      views: 0,
+      likes: 0,
+    },
   };
 
   // 添加到文章列表
@@ -98,7 +112,7 @@ export async function createArticle(userId: string): Promise<Article> {
 // 更新文章
 export async function updateArticle(
   id: string,
-  data: Partial<Omit<Article, "id" | "createdAt" | "userId">>
+  data: Partial<Omit<Article, "id" | "createdAt" | "author">>
 ): Promise<Article | null> {
   const index = articles.findIndex((a) => a.id === id);
 
@@ -107,7 +121,7 @@ export async function updateArticle(
   const updatedArticle = {
     ...articles[index],
     ...data,
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   };
 
   articles[index] = updatedArticle;
@@ -131,7 +145,7 @@ export async function publishArticle(id: string): Promise<Article | null> {
   if (!article) return null;
 
   return updateArticle(id, {
-    status: "published",
-    publishedAt: new Date().toISOString(),
+    status: "published" as ArticleStatus,
+    updatedAt: new Date(),
   });
 }
