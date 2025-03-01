@@ -3,11 +3,19 @@ import { menuItemVariants } from "../animations";
 import { mergeStyles } from "@/utils/styles";
 import mobileStyles from "../styles/mobile.module.css";
 import userStyles from "../styles/user.module.css";
+import Image from "next/image";
+import {
+  UserInfo,
+  getUserDisplayName,
+  getUserAvatar,
+  isAdmin,
+  isUserLoggedIn,
+} from "@/types/user";
 
 const styles = mergeStyles(mobileStyles, userStyles);
 
 interface UserSectionProps {
-  user: any;
+  user: UserInfo;
   mobile?: boolean;
   onLogin: () => void;
   onLogout: () => void;
@@ -27,11 +35,22 @@ export function UserSection({
   const buttonClassName = mobile ? styles.mobileAuthButton : styles.authButton;
   const usernameClassName = mobile ? styles.mobileUsername : styles.username;
 
+  // 检查用户是否登录
+  const isLoggedIn = isUserLoggedIn(user);
+
   return (
-    <Component {...props} className={className}>
-      {user ? (
+    <Component {...props} className={className} data-testid="user-section">
+      {isLoggedIn ? (
         <>
-          <span className={usernameClassName}>{user.email?.split("@")[0]}</span>
+          <Image
+            src={getUserAvatar(user)}
+            alt="用户头像"
+            className={styles.userAvatar}
+            width={32}
+            height={32}
+          />
+          <span className={usernameClassName}>{getUserDisplayName(user)}</span>
+          {isAdmin(user) && <span className={styles.adminBadge}>管理员</span>}
           <button
             onClick={() => {
               onLogout();
@@ -49,6 +68,7 @@ export function UserSection({
             onClose?.();
           }}
           className={buttonClassName}
+          aria-label="登录"
         >
           登录
         </button>

@@ -1,22 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { User, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase/config";
+import { User } from "firebase/auth";
 import { authService } from "@/lib/firebase/services/authService";
-
-interface UserData {
-  uid: string;
-  email: string;
-  displayName?: string;
-  photoURL?: string;
-  role: "user" | "admin";
-  createdAt: Date;
-  updatedAt?: Date;
-  lastLogin?: Date;
-  isEmailVerified?: boolean;
-}
+// 添加 UserInfo 到导入列表中
+import { UserData, UserRegistrationData } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
@@ -24,8 +12,13 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   error: Error | null;
-  login: (email: string, password: string) => Promise<any>;
-  register: (email: string, password: string, data?: any) => Promise<void>;
+  login: (email: string, password: string) => Promise<User | null>;
+  // 使用从 user.ts 导入的类型
+  register: (
+    email: string,
+    password: string,
+    data?: UserRegistrationData
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -38,36 +31,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // 监听认证状态变化
+  // 监听认证状态变化并获取用户数据
   useEffect(() => {
     const unsubscribe = authService.onAuthStateChange(async (currentUser) => {
       setLoading(true);
       try {
         if (currentUser) {
-          // 获取用户数据，包括角色信息
-          const userRef = doc(db, "users", currentUser.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const userData = userSnap.data() as UserData;
-            setUserData(userData);
-            // 明确检查并设置 isAdmin 状态
-            setIsAdmin(userData.role === "admin");
-            console.log(
-              "用户角色:",
-              userData.role,
-              "isAdmin:",
-              userData.role === "admin"
-            );
-          } else {
-            setUserData(null);
-            setIsAdmin(false);
-            console.log("用户文档不存在");
-          }
+          // 使用 authService 获取完整用户数据
+          const fullUserData = await authService.getUserData(currentUser.uid);
+          setUserData(fullUserData);
+          setIsAdmin(Boolean(fullUserData?.role === "admin"));
         } else {
           setUserData(null);
           setIsAdmin(false);
-          console.log("用户未登录");
         }
         setUser(currentUser);
       } catch (err) {
@@ -82,38 +58,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  // 登录函数
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<User | null> => {
     try {
       setError(null);
       setLoading(true);
 
-      // 登录用户
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      // 使用 authService 进行登录
+      const userCredential = await authService.login(email, password);
       const user = userCredential.user;
 
-      // 获取用户数据
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        const userData = userSnap.data() as UserData;
-        setUserData(userData);
-        // 明确设置 isAdmin 状态
-        setIsAdmin(userData.role === "admin");
-        console.log(
-          "登录用户角色:",
-          userData.role,
-          "isAdmin:",
-          userData.role === "admin"
-        );
-      } else {
-        setUserData(null);
-        setIsAdmin(false);
-      }
+      // 获取用户完整数据
+      const fullUserData = await authService.getUserData(user.uid);
+      setUserData(fullUserData);
+      setIsAdmin(Boolean(fullUserData?.role === "admin"));
 
       return user;
     } catch (error) {
@@ -125,25 +86,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string, data?: any) => {
+  // 注册函数 - 使用具体类型
+  const register = async (
+    email: string,
+    password: string,
+    data?: UserRegistrationData
+  ): Promise<void> => {
     try {
+      setLoading(true);
+      setError(null);
       await authService.register(email, password, data);
     } catch (error) {
+      setError(error instanceof Error ? error : new Error("注册失败"));
       console.error("Register error:", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
-  const logout = async () => {
+  // 登出函数
+  const logout = async (): Promise<void> => {
     try {
+      setLoading(true);
+      setError(null);
       await authService.logout();
-      // 添加清除用户状态的代码
+      // 清除用户状态
       setUser(null);
       setUserData(null);
       setIsAdmin(false);
     } catch (error) {
+      setError(error instanceof Error ? error : new Error("登出失败"));
       console.error("Logout error:", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,5 +145,5 @@ export function useAuth() {
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context;
+  return context; // 不再返回 userInfo
 }

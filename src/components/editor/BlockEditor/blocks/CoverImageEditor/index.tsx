@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { BiUpload, BiX, BiPencil } from "react-icons/bi";
 import styles from "./styles.module.css";
+import Image from "next/image";
 
 interface CoverImageEditorProps {
   imageUrl: string;
@@ -74,7 +75,7 @@ export function CoverImageEditor({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <img src={imageUrl} alt="封面图片" className={styles.coverImage} />
+      <Image src={imageUrl} alt="封面图片" className={styles.coverImage} />
 
       {isHovering && (
         <>

@@ -1,13 +1,66 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Article, ArticleStatus, DEFAULT_ARTICLE } from "@/types/blog";
+import { Article, DEFAULT_ARTICLE } from "@/types/blog";
 
-export function useArticle(articleId: string) {
-  const [article, setArticle] = useState<Article | null>(null);
+/**
+ * useArticle - 用于获取和更新文章内容的自定义Hook
+ *
+ * @description
+ * 这个Hook负责文章的加载、状态管理和更新操作。它支持从API或本地缓存获取文章，
+ * 并提供更新文章的功能。在加载过程中会显示加载状态，发生错误时会显示错误信息。
+ *
+ * @template T - 文章类型，默认为Article，必须是Article的子类型
+ * @template U - 可更新的文章字段类型，默认包含id字段和T的可选字段
+ *
+ * @param {string} articleId - 要获取的文章ID
+ *
+ * @returns {Object} 返回包含以下属性的对象:
+ *   - article: T | null - 加载的文章数据，可能为null（如加载中或出错时）
+ *   - loading: boolean - 指示文章是否正在加载
+ *   - error: string | null - 如果发生错误，包含错误信息
+ *   - updateArticle: (updatedArticle: U & { id: string }) => Promise<U & { id: string }> -
+ *     用于更新文章的函数，接收包含id的部分文章数据，返回更新后的数据
+ *
+ * @example
+ * // 基本用法
+ * const { article, loading, error, updateArticle } = useArticle("article-123");
+ *
+ * // 使用自定义类型
+ * interface ExtendedArticle extends Article {
+ *   customField: string;
+ * }
+ *
+ * type UpdateFields = {
+ *   id: string;
+ *   title?: string;
+ *   content?: string;
+ * }
+ *
+ * const { article, updateArticle } = useArticle<ExtendedArticle, UpdateFields>("article-123");
+ *
+ * // 更新文章
+ * const handleUpdate = async () => {
+ *   try {
+ *     await updateArticle({
+ *       id: "article-123",
+ *       title: "新标题"
+ *     });
+ *     console.log("更新成功");
+ *   } catch (err) {
+ *     console.error("更新失败", err);
+ *   }
+ * }
+ */
+export function useArticle<
+  T extends Article = Article,
+  U = { id: string } & Partial<Omit<T, "id">>
+>(articleId: string) {
+  const [article, setArticle] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 文章加载逻辑
   useEffect(() => {
     async function fetchArticle() {
       setLoading(true);
@@ -22,7 +75,8 @@ export function useArticle(articleId: string) {
 
         if (isDraft) {
           // 创建一个新的草稿文章
-          const mockArticle: Article = {
+          // 首先创建符合 Article 接口的对象
+          const mockArticleBase: Article = {
             ...DEFAULT_ARTICLE,
             id: articleId,
             slug: `draft-${Date.now()}`,
@@ -64,6 +118,10 @@ export function useArticle(articleId: string) {
             },
           };
 
+          // 然后通过 unknown 中间类型安全地转换为 T
+          // 这表明我们知道这是一个类型断言，并且接受相关风险
+          const mockArticle = mockArticleBase as unknown as T;
+
           // 模拟异步加载
           setTimeout(() => {
             setArticle(mockArticle);
@@ -76,7 +134,7 @@ export function useArticle(articleId: string) {
           // setArticle(data);
 
           // 暂时用模拟数据
-          const mockArticle: Article = {
+          const mockArticleBase: Article = {
             ...DEFAULT_ARTICLE,
             id: articleId,
             slug: `article-${articleId}`,
@@ -121,6 +179,9 @@ export function useArticle(articleId: string) {
             },
           };
 
+          // 安全地转换为 T
+          const mockArticle = mockArticleBase as unknown as T;
+
           setTimeout(() => {
             setArticle(mockArticle);
             setLoading(false);
@@ -136,8 +197,14 @@ export function useArticle(articleId: string) {
     fetchArticle();
   }, [articleId]);
 
-  // 更新文章的函数
-  const updateArticle = async (updatedArticle: Article) => {
+  /**
+   * 更新文章的函数
+   *
+   * @param {U & { id: string }} updatedArticle - 包含要更新的文章字段和ID
+   * @returns {Promise<U & { id: string }>} 返回更新后的文章数据
+   * @throws {Error} 如果更新失败，会抛出错误
+   */
+  const updateArticle = async (updatedArticle: U & { id: string }) => {
     try {
       // 实际应用中，这里应该调用API
       // const response = await fetch(`/api/articles/${articleId}`, {
@@ -147,10 +214,13 @@ export function useArticle(articleId: string) {
       // });
 
       // 更新本地状态
-      setArticle({
-        ...updatedArticle,
-        updatedAt: new Date(), // 更新修改时间
-      });
+      if (article) {
+        setArticle({
+          ...article,
+          ...updatedArticle,
+          updatedAt: new Date(), // 更新修改时间
+        } as unknown as T);
+      }
 
       // 返回更新后的文章
       return updatedArticle;

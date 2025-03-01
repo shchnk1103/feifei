@@ -16,7 +16,6 @@ export function BlockControls({
   onMoveUp,
   onMoveDown,
   onDuplicate,
-  blockType,
 }: BlockControlsProps) {
   return (
     <motion.div

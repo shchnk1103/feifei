@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Block, BlockType } from "@/types/blocks";
 import { BlockControls } from "./blocks/BlockControls";
 import { TextBlockEditor } from "./blocks/TextBlockEditor";
@@ -25,37 +25,59 @@ export function BlockEditor({
 }: BlockEditorProps) {
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
 
+  function createBlock(type: BlockType): Block {
+    const baseId = `block-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+    switch (type) {
+      case "heading":
+        return {
+          id: baseId,
+          type: "heading",
+          content: "",
+          level: 2,
+        };
+
+      case "image":
+        return {
+          id: baseId,
+          type: "image",
+          content: "",
+          metadata: {
+            imageUrl: "",
+            alt: "",
+            caption: "",
+          },
+        };
+
+      case "quote":
+        return {
+          id: baseId,
+          type: "quote",
+          content: "",
+          metadata: {
+            author: "",
+            source: "",
+          },
+        };
+
+      // 添加其他块类型...
+
+      default:
+        return {
+          id: baseId,
+          type,
+          content: "",
+        };
+    }
+  }
+
   // 添加新块
   const addBlock = (type: BlockType, index: number) => {
-    const newBlock: Block = {
-      id: `block-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      type,
-      content: "",
-    };
-
-    // 添加特定类型块的默认属性
-    if (type === "heading") {
-      (newBlock as any).level = 2;
-    } else if (type === "image") {
-      (newBlock as any).metadata = {
-        imageUrl: "",
-        alt: "",
-        description: "",
-      };
-    }
-
+    const newBlock = createBlock(type);
     const newBlocks = [...blocks];
     newBlocks.splice(index, 0, newBlock);
     onBlocksChange(newBlocks);
     setActiveBlockId(newBlock.id);
-  };
-
-  // 添加块在指定位置后
-  const addBlockAfter = (blockId: string, type: BlockType) => {
-    const index = blocks.findIndex((block) => block.id === blockId);
-    if (index !== -1) {
-      addBlock(type, index + 1);
-    }
   };
 
   // 更新块内容

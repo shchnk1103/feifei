@@ -1,49 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Block } from "@/types/blocks";
+import { Article, ArticleStatus, ArticleVisibility } from "@/types/blog";
 import { useArticle } from "@/hooks/useArticle";
 import { BlockEditor } from "../BlockEditor";
 import { EditorSidebar } from "../EditorSidebar";
 import styles from "./styles.module.css";
 
-interface Article {
+// 用于更新文章的类型，包含部分可选字段
+type UpdateableArticle = Partial<Omit<Article, "id">> & {
   id: string;
-  title: string;
-  slug: string;
-  description: string;
-  author: { name: string; id: string };
-  createdAt: string;
-  updatedAt: string;
-  status: "draft" | "published";
-  visibility: "public" | "private";
-
-  // 可选字段
-  blocks?: Array<{
-    id: string;
-    type: string;
-    content: string;
-    [key: string]: any;
-  }>;
-  articleContent?: {
-    blocks: Block[];
-  };
-  imageSrc?: string;
-  tags?: string[];
-  [key: string]: any; // 允许其他额外字段
-}
+  // 处理 Date 与 string 的兼容性
+  updatedAt?: Date | string;
+  publishedAt?: Date | string;
+  createdAt?: Date | string;
+};
 
 interface ArticleEditorProps {
   initialArticle: Article;
 }
 
 export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
-  const router = useRouter();
-  const { article, loading, error, updateArticle } = useArticle(
-    initialArticle.id
-  );
+  const { article, loading, error, updateArticle } = useArticle<
+    Article,
+    UpdateableArticle
+  >(initialArticle.id);
 
   const [title, setTitle] = useState<string>(
     initialArticle.title || "未命名文章"
@@ -85,16 +68,18 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
         const articleId = initialArticle.id;
 
         // 合并当前数据创建完整的文章对象，保留原始文章的所有字段
-        const updatedArticle = {
-          ...article, // 首先复制原始文章的所有字段
+        const updatedArticle: UpdateableArticle = {
+          ...(article as Article), // 首先复制原始文章的所有字段
           ...initialArticle, // 然后复制初始文章的所有字段
+          id: initialArticle.id, // 确保 ID 存在
           title, // 更新修改的字段
           imageSrc: coverImage,
           articleContent: {
             blocks,
+            version: article?.articleContent?.version || 1,
           },
           tags,
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date(),
         };
 
         // 保存到本地存储
@@ -107,7 +92,8 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
 
         // 如果 updateArticle 函数存在，也调用它
         if (article && updateArticle) {
-          updateArticle(updatedArticle as any).catch(() => {
+          updateArticle(updatedArticle).catch((err: Error) => {
+            console.error("更新文章失败:", err);
             setSaveStatus("error");
           });
         }
@@ -119,15 +105,7 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
 
     // 清理函数
     return () => clearTimeout(saveTimeout);
-  }, [
-    initialArticle?.id,
-    title,
-    blocks,
-    coverImage,
-    tags,
-    article,
-    updateArticle,
-  ]);
+  }, [initialArticle, title, blocks, coverImage, tags, article, updateArticle]);
 
   // 处理标题变更
   const handleTitleChange = (newTitle: string) => {
@@ -142,8 +120,8 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
     // 在实际应用中，这里应该使用防抖来减少保存频率
     const timer = setTimeout(() => {
       if (article) {
-        updateArticle({
-          ...article,
+        const updatedArticle: UpdateableArticle = {
+          id: article.id,
           title: title,
           imageSrc: coverImage,
           articleContent: {
@@ -152,9 +130,14 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
           },
           tags: tags,
           updatedAt: new Date(),
-        })
+        };
+
+        updateArticle(updatedArticle)
           .then(() => setSaveStatus("saved"))
-          .catch(() => setSaveStatus("error"));
+          .catch((err: Error) => {
+            console.error("更新文章失败:", err);
+            setSaveStatus("error");
+          });
       }
     }, 1000);
 
@@ -174,8 +157,8 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
     try {
       setSaveStatus("saving");
 
-      await updateArticle({
-        ...article,
+      const publishArticle: UpdateableArticle = {
+        id: article.id,
         title,
         description:
           blocks.find((b) => b.type === "text")?.content.slice(0, 150) || "",
@@ -185,10 +168,12 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
           blocks,
         },
         tags,
-        status: "published",
+        status: "published" as ArticleStatus,
         publishedAt: new Date(),
-        visibility: "public",
-      });
+        visibility: "public" as ArticleVisibility,
+      };
+
+      await updateArticle(publishArticle);
 
       setSaveStatus("saved");
       alert("文章发布成功！");
@@ -201,6 +186,9 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
 
   if (loading) return <div className={styles.loading}>加载编辑器中...</div>;
   if (error) return <div className={styles.error}>加载文章失败: {error}</div>;
+
+  // 准备传递给侧边栏的安全类型的文章对象
+  const sidebarArticle: Article = article || initialArticle;
 
   return (
     <div className={styles.editorContainer}>
@@ -250,7 +238,7 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
             onClose={() => setSidebarOpen(false)}
             tags={tags}
             onTagsChange={setTags}
-            article={(article || initialArticle) as any}
+            article={sidebarArticle}
           />
         )}
       </div>

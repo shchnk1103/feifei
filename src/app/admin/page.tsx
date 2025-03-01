@@ -6,15 +6,49 @@ import { db } from "@/lib/firebase/config";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/contexts/AuthContext";
 
+// 为 Firebase 错误定义接口
+interface FirebaseError extends Error {
+  code: string;
+  customData?: {
+    message?: string;
+    status?: string;
+    [key: string]: unknown;
+  };
+}
+
+// 定义结果状态的接口
+interface ResultState {
+  success?: boolean;
+  message?: string;
+  error?: string;
+}
+
+// 定义用户文档的接口
+interface UserDocument {
+  uid: string;
+  role: "user" | "admin";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 检查对象是否为 Firebase 错误的类型守卫
+function isFirebaseError(error: unknown): error is FirebaseError {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  // 先将 error 转为 unknown，再转为 Record 类型
+  const record = error as unknown as Record<string, unknown>;
+
+  // 检查 code 属性是否存在且为字符串
+  return "code" in record && typeof record.code === "string";
+}
+
 export default function AdminSetupPage() {
   const [userId, setUserId] = useState("");
   const [secret, setSecret] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{
-    success?: boolean;
-    message?: string;
-    error?: string;
-  } | null>(null);
+  const [result, setResult] = useState<ResultState | null>(null);
 
   const router = useRouter();
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -59,12 +93,14 @@ export default function AdminSetupPage() {
           console.log(`在 Firestore 中创建用户文档: ${userId}`);
 
           // 创建基本用户文档
-          await setDoc(userRef, {
+          const newUserDoc: UserDocument = {
             uid: userId,
             role: "user", // 默认角色
             createdAt: new Date(),
             updatedAt: new Date(),
-          });
+          };
+
+          await setDoc(userRef, newUserDoc);
 
           console.log("用户文档创建成功");
         }
@@ -93,15 +129,15 @@ export default function AdminSetupPage() {
 
       // 提取错误信息
       let errorMessage = "设置管理员失败";
+
       if (error instanceof Error) {
         errorMessage = error.message;
 
         // 处理 Firebase 特定错误
-        if ("code" in error) {
-          const fbError = error as { code: string; customData?: any };
-          errorMessage = `${errorMessage} (代码: ${fbError.code})`;
+        if (isFirebaseError(error)) {
+          errorMessage = `${errorMessage} (代码: ${error.code})`;
 
-          if (fbError.code === "permission-denied") {
+          if (error.code === "permission-denied") {
             errorMessage += " - 请检查 Firestore 安全规则是否允许更新用户文档";
           }
         }

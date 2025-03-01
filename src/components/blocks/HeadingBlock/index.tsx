@@ -16,6 +16,7 @@ interface HeadingBlockProps {
 export const HeadingBlock = memo(function HeadingBlock({
   block,
   className,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAnchorClick,
 }: HeadingBlockProps) {
   const { level = 2, content } = block;

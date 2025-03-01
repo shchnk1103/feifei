@@ -1,7 +1,8 @@
 // src/hooks/useAuth.tsx
 import { useState, useEffect, createContext, useContext } from "react";
 import { User } from "firebase/auth";
-import { authService, UserData } from "@/lib/firebase/services/authService";
+import { authService } from "@/lib/firebase/services/authService";
+import { UserData, UserRegistrationData } from "@/types/user"; // 从类型定义文件导入
 
 interface AuthContextProps {
   user: User | null;
@@ -9,10 +10,20 @@ interface AuthContextProps {
   isAdmin: boolean;
   loading: boolean;
   error: Error | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<UserData>;
   logout: () => Promise<void>;
-  register: (email: string, password: string, data?: any) => Promise<void>;
-  updateUserProfile: (data: any) => Promise<void>;
+  // 使用导入的类型替换 any
+  register: (
+    email: string,
+    password: string,
+    data?: UserRegistrationData
+  ) => Promise<void>;
+  // 使用更明确的类型替换 any
+  updateUserProfile: (data: {
+    displayName?: string;
+    photoURL?: string;
+    bio?: string;
+  }) => Promise<void>;
   setUserAsAdmin: (uid: string) => Promise<void>;
   removeUserAdmin: (uid: string) => Promise<void>;
 }
@@ -85,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (
     email: string,
     password: string,
-    additionalData = {}
+    additionalData: UserRegistrationData = {}
   ) => {
     try {
       setLoading(true);

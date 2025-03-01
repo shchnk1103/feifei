@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Block } from "@/types/blocks";
-import { BiHeading } from "react-icons/bi";
 import styles from "./styles.module.css";
 
 interface HeadingBlockEditorProps {
@@ -21,7 +20,6 @@ export function HeadingBlockEditor({
   onEnterKey,
 }: HeadingBlockEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showLevelSelector, setShowLevelSelector] = useState(false);
 
   // 获得焦点时自动聚焦到文本末尾
   useEffect(() => {

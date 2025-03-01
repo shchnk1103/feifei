@@ -13,7 +13,6 @@ interface ShortcutOptions {
 export function useEditorShortcuts({
   blocks,
   activeBlockId,
-  onBlocksChange,
   onAddBlock,
   onDeleteBlock,
   onMoveBlock,
@@ -68,14 +67,7 @@ export function useEditorShortcuts({
         }
       }
     },
-    [
-      blocks,
-      activeBlockId,
-      onBlocksChange,
-      onAddBlock,
-      onDeleteBlock,
-      onMoveBlock,
-    ]
+    [blocks, activeBlockId, onAddBlock, onDeleteBlock, onMoveBlock]
   );
 
   useEffect(() => {

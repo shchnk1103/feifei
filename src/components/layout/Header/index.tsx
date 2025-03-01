@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AuthDialog } from "@/components/auth/AuthDialog";
@@ -30,7 +31,8 @@ interface HeaderProps {
 }
 
 export function Header({ shrunk = false }: HeaderProps) {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth(); // 只从 useAuth 获取 logout 方法
+  const { userInfo } = useUserInfo(); // 使用 useUserInfo 获取用户信息
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
 
@@ -47,7 +49,7 @@ export function Header({ shrunk = false }: HeaderProps) {
         <nav className={styles.desktopNav}>
           <NavItems />
           <UserSection
-            user={user}
+            user={userInfo}
             onLogin={() => setIsAuthDialogOpen(true)}
             onLogout={logout}
           />
@@ -86,7 +88,7 @@ export function Header({ shrunk = false }: HeaderProps) {
                   <nav className={styles.mobileNavItems}>
                     <NavItems mobile onClose={() => setIsMenuOpen(false)} />
                     <UserSection
-                      user={user}
+                      user={userInfo}
                       mobile
                       onLogin={() => setIsAuthDialogOpen(true)}
                       onLogout={logout}

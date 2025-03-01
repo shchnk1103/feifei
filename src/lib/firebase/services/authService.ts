@@ -13,35 +13,18 @@ import {
   updateDoc,
   getDoc,
   collection,
-  query,
-  where,
   getDocs,
 } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
-export interface UserData {
-  uid: string;
-  email: string;
-  displayName?: string | null;
-  photoURL?: string | null;
-  createdAt: Date;
-  role: "user" | "admin"; // 添加角色字段
-  isEmailVerified?: boolean;
-  lastLogin?: Date;
-  bio?: string;
-  customClaims?: Record<string, any>; // 存储自定义声明
-}
+// 从统一位置导入类型
+import { UserData, UserRegistrationData } from "@/types/user";
 
 export const authService = {
   // 注册新用户，默认为普通用户，可选择设置为管理员
   async register(
     email: string,
     password: string,
-    additionalData: {
-      displayName?: string;
-      isAdmin?: boolean;
-      photoURL?: string;
-    } = {}
+    additionalData: UserRegistrationData = {}
   ): Promise<UserData> {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -66,6 +49,7 @@ export const authService = {
             photoURL: additionalData.photoURL || user.photoURL,
           }
         : {}),
+      ...(additionalData.bio ? { bio: additionalData.bio } : {}),
     };
 
     // 存储用户数据到 Firestore
@@ -73,8 +57,6 @@ export const authService = {
 
     // 如果是管理员，在 Auth 中设置自定义声明
     if (additionalData.isAdmin) {
-      // 此部分需要在云函数中实现，前端无法直接设置自定义声明
-      // 这里只是示例，实际实现需要调用云函数
       await this.setAdminClaim(user.uid);
     }
 
@@ -202,6 +184,8 @@ export const authService = {
 
   // 获取用户完整资料
   async getUserData(uid: string): Promise<UserData | null> {
+    if (!uid) return null;
+
     const userRef = doc(db, "users", uid);
     const userSnap = await getDoc(userRef);
 

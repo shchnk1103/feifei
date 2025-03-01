@@ -6,6 +6,11 @@ interface RegisterFormProps {
   onClose: () => void;
 }
 
+// 定义 Firebase Auth 错误类型
+interface AuthError extends Error {
+  code?: string;
+}
+
 export function RegisterForm({ onClose }: RegisterFormProps) {
   const { register } = useAuth();
   const [email, setEmail] = useState("");
@@ -33,12 +38,39 @@ export function RegisterForm({ onClose }: RegisterFormProps) {
     try {
       await register(email, password);
       onClose();
-    } catch (err: any) {
-      if (err.code === "auth/email-already-in-use") {
-        setError("该邮箱已被注册");
-      } else {
-        setError("注册失败，请稍后重试");
+    } catch (err: unknown) {
+      // 提供默认错误信息
+      let errorMessage = "注册失败，请稍后重试";
+
+      if (err instanceof Error) {
+        const authError = err as AuthError;
+
+        // 根据错误代码提供更具体的错误信息
+        if (authError.code) {
+          switch (authError.code) {
+            case "auth/email-already-in-use":
+              errorMessage = "该邮箱已被注册";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "无效的邮箱格式";
+              break;
+            case "auth/weak-password":
+              errorMessage = "密码强度太弱，请使用更复杂的密码";
+              break;
+            case "auth/operation-not-allowed":
+              errorMessage = "邮箱/密码注册未启用，请联系管理员";
+              break;
+            case "auth/network-request-failed":
+              errorMessage = "网络连接失败，请检查您的网络";
+              break;
+          }
+        }
+
+        // 记录错误到控制台，便于调试
+        console.error("注册错误:", authError);
       }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

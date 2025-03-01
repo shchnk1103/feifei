@@ -15,7 +15,6 @@ export function Grid({
   gap = "md",
   autoFit = false,
   minWidth = "250px",
-  className,
   ...props
 }: GridProps) {
   return (

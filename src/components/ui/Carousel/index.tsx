@@ -28,7 +28,6 @@ export function Carousel({
   images,
   autoplay = true,
   interval = 5000,
-  showNavigation = true,
   showPagination = true,
   effect = "slide",
   height = "600px",
