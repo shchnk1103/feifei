@@ -1,4 +1,3 @@
-/* filepath: /Users/doubleshy0n/Downloads/Dev/feifei/src/hooks/useTheme.ts */
 import { useState, useEffect } from "react";
 
 type Theme = "light" | "dark";

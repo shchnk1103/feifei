@@ -7,7 +7,7 @@ import {
 } from "@/types/user";
 
 export function useUserInfo() {
-  const { user, userData } = useAuth();
+  const { user, userData } = useAuth() || { user: null, userData: null };
 
   const userInfo: UserInfo = {
     firebaseUser: user,
