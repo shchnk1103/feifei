@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/modules/theme";
+import { Header, Footer } from "@/shared";
+import { AuthProvider } from "@/modules/auth";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@/styles/globals.css";
 

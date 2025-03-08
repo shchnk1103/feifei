@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase/config";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 // 为 Firebase 错误定义接口
 interface FirebaseError extends Error {

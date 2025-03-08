@@ -1,10 +1,10 @@
 "use client";
 
-import { Carousel } from "@/components/ui/Carousel";
-import { ListSection } from "@/components/content/ListSection";
+import { Carousel } from "@/shared";
+import { ListSection } from "@/modules/blog/components/ListSection";
 import styles from "./page.module.css";
 import { articles } from "@/data/articles";
-import type { ImageAsset } from "@/types/image";
+import type { ImageAsset } from "@/shared";
 
 const images: ImageAsset[] = [
   {

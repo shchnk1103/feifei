@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
-import { authService } from "@/lib/firebase/services/authService";
+import { authService } from "@/modules/auth/services/authService";
 
 export default function MigrateUsersPage() {
   const [loading, setLoading] = useState(false);

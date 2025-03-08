@@ -49,3 +49,6 @@ yarn-error.log*
 next-env.d.ts
 
 .copilot
+.cursor-instructions.json
+.cursor
+.swc

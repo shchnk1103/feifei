@@ -1,7 +1,7 @@
 "use client";
 
 import React, { use } from "react"; // 导入 use
-import { ArticleEditor } from "@/components/editor/ArticleEditor";
+import { ArticleEditor } from "@/modules/editor/components/ArticleEditor";
 
 export default function EditorPage({
   params,

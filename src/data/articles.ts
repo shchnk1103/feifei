@@ -1,4 +1,4 @@
-import { Article, ArticleStatus, ArticleVisibility } from "@/types/blog";
+import { Article, ArticleStatus, ArticleVisibility } from "@/modules/blog/types/blog";
 
 export const articles: Article[] = [
   {

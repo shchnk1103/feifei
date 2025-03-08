@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FeiとFei - 生活记录与技术分享
 
-## Getting Started
+这是一个基于Next.js 14的博客平台，包含用户认证、主题切换、文章编辑等功能。
 
-First, run the development server:
+## 项目结构
+
+本项目采用功能模块化结构，按照功能模块组织代码，每个模块包含与该功能相关的所有代码。详细的项目结构说明请参考[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)。
+
+如果您正在从旧版本迁移，请参考[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)。
+
+## 技术栈
+
+- **前端框架**: Next.js 14
+- **UI库**: React
+- **样式**: Tailwind CSS
+- **状态管理**: React Context
+- **认证**: Firebase Authentication
+- **数据库**: Firebase Firestore
+- **测试**: Jest, React Testing Library
+
+## 功能特点
+
+- 用户认证和权限管理
+- 响应式设计
+- 深色/浅色主题切换
+- 文章编辑和发布
+- 评论系统
+
+## 开始使用
+
+首先，安装依赖：
+
+```bash
+npm install
+# 或
+yarn
+# 或
+pnpm install
+```
+
+然后，运行开发服务器：
 
 ```bash
 npm run dev
-# or
+# 或
 yarn dev
-# or
+# 或
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+在浏览器中打开 [http://localhost:3000](http://localhost:3000) 查看结果。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 测试
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+运行测试：
 
-## Learn More
+```bash
+npm test
+# 或
+yarn test
+# 或
+pnpm test
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 部署
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+本项目可以部署在Vercel平台上：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+# 或
+yarn build
+# 或
+pnpm build
+```
 
-## Deploy on Vercel
+## 贡献
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+欢迎提交Pull Request或Issue。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 许可证
+
+MIT

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { articles } from "@/data/articles";
 import styles from "./page.module.css";
-import { ArticleHeader } from "@/components/blog/ArticleHeader";
-import { ArticleContent } from "@/components/blog/ArticleContent";
+import { ArticleHeader } from "@/modules/blog/components/ArticleHeader";
+import { ArticleContent } from "@/modules/blog/components/ArticleContent";
 
 interface BlogPostPageProps {
   params: Promise<{
