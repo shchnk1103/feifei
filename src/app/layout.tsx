@@ -9,17 +9,17 @@ import "@/styles/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "FeiとFei - 生活记录与技术分享",
-  description: "记录生活点滴，分享技术心得",
+  title: "Feifei",
+  description: "A blog platform for sharing thoughts and ideas.",
   keywords: ["博客", "技术", "生活", "前端开发"],
   authors: [{ name: "FeiとFei" }],
   openGraph: {
@@ -33,26 +33,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="zh" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
         <AuthProvider>
           <ThemeProvider>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>
+            <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
         </AuthProvider>
-
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
