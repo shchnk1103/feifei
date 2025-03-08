@@ -5,7 +5,7 @@ import {
   ImageBlock,
   LinkBlock,
   QuoteBlock,
-} from "./blocks";
+} from "@/modules/editor/types/blocks";
 
 // 文章状态
 export type ArticleStatus = "draft" | "published" | "archived";
