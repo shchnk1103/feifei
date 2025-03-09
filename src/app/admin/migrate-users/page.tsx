@@ -1,29 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getAuth } from "firebase/auth";
+import { useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { authService } from "@/modules/auth/services/authService";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 export default function MigrateUsersPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
-
-      if (currentUser) {
-        const admin = await authService.isAdmin(currentUser.uid);
-        setIsAdmin(admin);
-      }
-    };
-
-    checkAdmin();
-  }, []);
+  const { isAdmin } = useAuth();
 
   const handleMigration = async () => {
     if (!isAdmin) {

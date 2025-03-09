@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { useState, useEffect, createContext, useContext } from "react";
 import { User } from "firebase/auth";
 import { authService } from "../services/authService";
@@ -39,10 +37,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
   // 监听身份验证状态变化
   useEffect(() => {
-    setLoading(true);
+    // 只在首次加载时设置 loading 为 true
+    if (!initialized) {
+      setLoading(true);
+    }
 
     const unsubscribe = authService.onAuthStateChange(async (user) => {
       if (user) {
@@ -63,10 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser(user);
       setLoading(false);
+      setInitialized(true);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [initialized]);
 
   // 登录
   const login = async (email: string, password: string) => {

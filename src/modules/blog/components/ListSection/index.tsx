@@ -1,14 +1,9 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { ListItem } from "./components/ListItem";
 import styles from "./styles.module.css";
 import { Article } from "@/modules/blog/types/blog";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase/config";
 
 interface ListSectionProps {
   title: string;
@@ -22,41 +17,7 @@ export function ListSection({
   articles = [],
 }: ListSectionProps) {
   const router = useRouter();
-  const { user, isAdmin: contextIsAdmin } = useAuth(); // 重命名以避免冲突
-  const [isAdminUser, setIsAdminUser] = useState(false);
-
-  // 添加备份检查机制，以防 context 中的 isAdmin 不正确
-  useEffect(() => {
-    if (user) {
-      const checkAdminStatus = async () => {
-        try {
-          const userRef = doc(db, "users", user.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const userData = userSnap.data();
-            setIsAdminUser(userData.role === "admin");
-            console.log("直接检查结果 - 用户角色:", userData.role);
-          }
-        } catch (error) {
-          console.error("检查管理员状态失败:", error);
-        }
-      };
-
-      checkAdminStatus();
-    } else {
-      setIsAdminUser(false);
-    }
-  }, [user]);
-
-  // 使用 context 中的值或直接检查的结果
-  const isAdmin = contextIsAdmin || isAdminUser;
-
-  // 添加调试输出
-  console.log("ListSection - user:", user?.uid);
-  console.log("ListSection - contextIsAdmin:", contextIsAdmin);
-  console.log("ListSection - isAdminUser:", isAdminUser);
-  console.log("ListSection - isAdmin (combined):", isAdmin);
+  const { user, isAdmin } = useAuth();
 
   const handleCreateArticle = () => {
     router.push("/editor/new");

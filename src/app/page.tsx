@@ -41,7 +41,7 @@ export default function Home() {
           showNavigation={true}
           showPagination={true}
           effect="fade"
-          height="100vh"
+          height="calc(100vh - var(--header-height))"
         />
       </section>
 

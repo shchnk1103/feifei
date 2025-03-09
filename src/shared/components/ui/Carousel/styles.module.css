@@ -1,7 +1,7 @@
 .carouselContainer {
   @apply relative w-full overflow-hidden;
   background: rgba(0, 0, 0, 0.05);
-  min-height: 400px; /* 添加最小高度 */
+  min-height: 400px; max-height: calc(100vh - var(--header-height)); /* 添加最小高度 */
 }
 
 .thumbs-bottom {
@@ -91,7 +91,7 @@
 .slideWrapper {
   @apply relative w-full h-full;
   aspect-ratio: 16/9;
-  min-height: 400px;
+  min-height: 400px; max-height: calc(100vh - var(--header-height));
   background: rgba(0, 0, 0, 0.1); /* 添加背景色便于调试 */
 }
 

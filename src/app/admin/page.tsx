@@ -2,46 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/lib/firebase/config";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-
-// 为 Firebase 错误定义接口
-interface FirebaseError extends Error {
-  code: string;
-  customData?: {
-    message?: string;
-    status?: string;
-    [key: string]: unknown;
-  };
-}
+import { updateUserRole } from "../actions/admin";
 
 // 定义结果状态的接口
 interface ResultState {
   success?: boolean;
-  message?: string;
   error?: string;
-}
-
-// 定义用户文档的接口
-interface UserDocument {
-  uid: string;
-  role: "user" | "admin";
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// 检查对象是否为 Firebase 错误的类型守卫
-function isFirebaseError(error: unknown): error is FirebaseError {
-  if (!(error instanceof Error)) {
-    return false;
-  }
-
-  // 先将 error 转为 unknown，再转为 Record 类型
-  const record = error as unknown as Record<string, unknown>;
-
-  // 检查 code 属性是否存在且为字符串
-  return "code" in record && typeof record.code === "string";
+  message?: string;
 }
 
 export default function AdminSetupPage() {
@@ -82,69 +50,21 @@ export default function AdminSetupPage() {
         throw new Error("请输入用户ID");
       }
 
-      // 检查/创建用户文档并更新为管理员
-      try {
-        // 尝试从 Firestore 获取用户文档
-        const userRef = doc(db, "users", userId);
-        const userDoc = await getDoc(userRef);
+      // 使用 Server Action 更新用户角色
+      const result = await updateUserRole(userId, "admin");
 
-        // 如果用户文档不存在，则创建一个
-        if (!userDoc.exists()) {
-          console.log(`在 Firestore 中创建用户文档: ${userId}`);
-
-          // 创建基本用户文档
-          const newUserDoc: UserDocument = {
-            uid: userId,
-            role: "user", // 默认角色
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-
-          await setDoc(userRef, newUserDoc);
-
-          console.log("用户文档创建成功");
-        }
-
-        // 更新用户角色为管理员
-        console.log("更新用户角色为管理员");
-        await updateDoc(userRef, {
-          role: "admin",
-          updatedAt: new Date(),
-        });
-
-        setResult({
-          success: true,
-          message: `用户 ${userId} 已被设置为管理员`,
-        });
-      } catch (authError) {
-        console.error("验证或创建用户文档失败:", authError);
-        throw new Error(
-          `用户操作失败: ${
-            authError instanceof Error ? authError.message : String(authError)
-          }`
-        );
-      }
-    } catch (error) {
-      console.error("设置管理员失败:", error);
-
-      // 提取错误信息
-      let errorMessage = "设置管理员失败";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-
-        // 处理 Firebase 特定错误
-        if (isFirebaseError(error)) {
-          errorMessage = `${errorMessage} (代码: ${error.code})`;
-
-          if (error.code === "permission-denied") {
-            errorMessage += " - 请检查 Firestore 安全规则是否允许更新用户文档";
-          }
-        }
+      if (result.error) {
+        throw new Error(result.error);
       }
 
       setResult({
-        error: errorMessage,
+        success: true,
+        message: `用户 ${userId} 已被设置为管理员`,
+      });
+    } catch (error) {
+      console.error("设置管理员失败:", error);
+      setResult({
+        error: error instanceof Error ? error.message : "设置管理员失败",
       });
     } finally {
       setLoading(false);
@@ -171,59 +91,54 @@ export default function AdminSetupPage() {
   // 管理员页面内容
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">管理员设置页面</h1>
-
-      <div className="p-4 mb-4 bg-blue-100 text-blue-800 rounded">
-        <p className="font-bold">当前管理员: {user?.email || user?.uid}</p>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">设置管理员</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            用户ID
+          </label>
+          <input
+            type="text"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="输入用户ID"
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            安全密钥
+          </label>
+          <input
+            type="password"
+            value={secret}
+            onChange={(e) => setSecret(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="输入安全密钥"
+          />
+        </div>
+        <div className="flex items-center justify-between">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+          >
+            {loading ? "处理中..." : "设置管理员"}
+          </button>
+        </div>
+      </form>
 
       {result && (
         <div
-          className={`p-4 mb-4 rounded ${
+          className={`mt-4 p-4 rounded ${
             result.success
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
-          {result.message || result.error}
+          {result.success ? result.message : result.error}
         </div>
       )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-2 text-sm font-medium">
-            用户ID:
-            <input
-              type="text"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium">
-            安全密钥:
-            <input
-              type="password"
-              value={secret}
-              onChange={(e) => setSecret(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </label>
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-2 px-4 rounded-md ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700 text-white"
-          }`}
-        >
-          {loading ? "处理中..." : "设置为管理员"}
-        </button>
-      </form>
 
       <div className="mt-4 text-sm text-gray-500">
         <p>注意: 此方法直接在客户端执行，仅适用于开发环境</p>

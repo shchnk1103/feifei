@@ -3,89 +3,50 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { LoginForm } from "./LoginForm";
-import { RegisterForm } from "./RegisterForm";
+import { overlayVariants } from "./animations";
 import styles from "./styles.module.css";
+import { AuthContent } from "./components/AuthContent";
 
 type AuthMode = "login" | "register";
 
 interface AuthDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  className?: string; // Make className optional
+  className?: string;
 }
 
 export function AuthDialog({ isOpen, onClose, className }: AuthDialogProps) {
   const [mode, setMode] = useState<AuthMode>("login");
 
   return (
-    <RadixDialog.Root open={isOpen} onOpenChange={onClose}>
-      <RadixDialog.Portal>
-        <RadixDialog.Overlay className={className}>
-          <RadixDialog.Content className={styles.content}>
-            <RadixDialog.Title className={styles.title}>
-              {mode === "login" ? "登录" : "注册"}
-            </RadixDialog.Title>
-
-            <div className={styles.tabs}>
-              <button
-                className={`${styles.tab} ${
-                  mode === "login" ? styles.active : ""
-                }`}
-                onClick={() => setMode("login")}
-              >
-                登录
-              </button>
-              <button
-                className={`${styles.tab} ${
-                  mode === "register" ? styles.active : ""
-                }`}
-                onClick={() => setMode("register")}
-              >
-                注册
-              </button>
-            </div>
-
-            <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <RadixDialog.Root open={true} onOpenChange={onClose}>
+          <RadixDialog.Portal forceMount>
+            <RadixDialog.Overlay asChild>
               <motion.div
-                key={mode}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                variants={formVariants}
+                className={styles.overlay}
+                variants={overlayVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  if (e.target === e.currentTarget) {
+                    onClose();
+                  }
+                }}
               >
-                {mode === "login" ? (
-                  <LoginForm onClose={onClose} />
-                ) : (
-                  <RegisterForm onClose={onClose} />
-                )}
+                <AuthContent
+                  mode={mode}
+                  onModeChange={setMode}
+                  onClose={onClose}
+                  className={className}
+                />
               </motion.div>
-            </AnimatePresence>
-
-            <RadixDialog.Close className={styles.closeButton}>
-              <span aria-hidden>×</span>
-            </RadixDialog.Close>
-          </RadixDialog.Content>
-        </RadixDialog.Overlay>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+            </RadixDialog.Overlay>
+          </RadixDialog.Portal>
+        </RadixDialog.Root>
+      )}
+    </AnimatePresence>
   );
 }
-
-const formVariants = {
-  enter: {
-    opacity: 0,
-    x: 20,
-    transition: { duration: 0.3 },
-  },
-  center: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.3 },
-  },
-  exit: {
-    opacity: 0,
-    x: -20,
-    transition: { duration: 0.3 },
-  },
-};

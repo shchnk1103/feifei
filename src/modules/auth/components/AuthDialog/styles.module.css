@@ -1,5 +1,5 @@
 .dialog {
-  @apply max-w-md w-full;
+  @apply w-full;
 }
 
 .container {
@@ -13,11 +13,17 @@
 .tab {
   @apply flex-1 py-2 px-4 rounded-lg transition-all duration-300
     text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100;
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tab.active {
-  @apply bg-blue-500 text-white hover:text-white
+  @apply text-white hover:text-white
     transform scale-105 shadow-md;
+  background: rgba(59, 130, 246, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .form {
@@ -25,16 +31,33 @@
 }
 
 .input {
-  @apply w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700
-    bg-white dark:bg-gray-800 transition-colors
+  @apply w-full p-3 rounded-lg transition-colors
     focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+:global(.dark) .input {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: white;
 }
 
 .button {
-  @apply w-full py-3 px-4 rounded-lg bg-blue-500 text-white font-medium
-    transition-all duration-300 hover:bg-blue-600
+  @apply w-full py-3 px-4 rounded-lg text-white font-medium
+    transition-all duration-300
     transform hover:scale-105 active:scale-95
     disabled:opacity-50 disabled:cursor-not-allowed;
+  background: rgba(59, 130, 246, 0.9);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  background: rgba(37, 99, 235, 0.9);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 .error {
@@ -42,13 +65,36 @@
 }
 
 .overlay {
-  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content {
-  @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-    max-w-md w-full bg-white dark:bg-gray-900 rounded-lg shadow-xl z-50
-    p-6;
+  position: relative;
+  width: 90%;
+  max-width: 420px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 51;
+  margin: 0 auto;
+}
+
+:global(.dark) .content {
+  background: rgba(30, 30, 30, 0.85);
+  border: 1px solid rgba(50, 50, 50, 0.2);
 }
 
 .title {
@@ -56,7 +102,26 @@
 }
 
 .closeButton {
-  @apply absolute right-4 top-4 p-2 rounded-full 
-    hover:bg-gray-100 dark:hover:bg-gray-800
-    transition-colors;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }

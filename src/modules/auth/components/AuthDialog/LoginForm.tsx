@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import styles from "./styles.module.css";
