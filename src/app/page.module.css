@@ -171,7 +171,7 @@
 }
 
 .hero {
-  @apply relative w-full h-screen;
+  @apply relative w-full; height: calc(100vh - var(--header-height));
 }
 
 .content {

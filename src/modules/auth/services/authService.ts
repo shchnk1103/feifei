@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   User,
   updateProfile as firebaseUpdateProfile,
+  getIdToken,
 } from "firebase/auth";
 import {
   doc,
@@ -60,17 +61,55 @@ export const authService = {
       await this.setAdminClaim(user.uid);
     }
 
+    // 获取 ID token 并设置 session cookie
+    const idToken = await getIdToken(user);
+    await this.setSessionCookie(idToken);
+
     return userData;
   },
 
   // 用户登录
   async login(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    // 获取 ID token 并设置 session cookie
+    const idToken = await getIdToken(userCredential.user);
+    await this.setSessionCookie(idToken);
+
+    return userCredential;
   },
 
-  // 用户登出
+  // 设置 session cookie
+  async setSessionCookie(idToken: string) {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("设置 session cookie 失败");
+      }
+    } catch (error) {
+      console.error("设置 session cookie 失败:", error);
+      throw error;
+    }
+  },
+
+  // 退出登录
   async logout() {
-    return signOut(auth);
+    await signOut(auth);
+    // 清除 session cookie
+    await fetch("/api/auth/logout", {
+      method: "POST",
+    });
   },
 
   // 监听用户状态

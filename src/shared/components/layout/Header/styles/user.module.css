@@ -1,26 +1,59 @@
 .userSection {
   @apply flex items-center gap-4;
 }
-
 .username {
   @apply text-sm font-medium hidden sm:block;
+  color: var(--foreground);
+  transition: color 0.3s ease;
 }
-
+.userAvatar {
+  @apply rounded-full object-cover border-2 border-transparent;
+  transition: border-color 0.3s ease;
+}
+.userAvatar:hover {
+  border-color: var(--primary);
+}
+.adminBadge {
+  @apply text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium;
+}
 .authButton {
-  @apply px-4 py-2 rounded-lg bg-primary text-white font-medium
-    transition-all hover:bg-primary-dark active:scale-95
-    disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
 }
-
 .mobileUserSection {
-  @apply w-full max-w-sm mt-auto;
+  @apply w-full max-w-sm flex flex-col items-center justify-center gap-4 py-6;
+  border-top: 1px solid var(--border-color);
+  margin-top: 1rem;
 }
-
+.mobileUserInfo {
+  @apply flex items-center gap-4 w-full justify-center mb-4;
+}
+.mobileUserInfoWithAdmin {
+  @apply flex items-start gap-4 w-full mb-4;
+}
+.mobileUserDetails {
+  @apply flex flex-col justify-center;
+}
 .mobileUsername {
-  @apply text-center block mb-4 text-lg font-medium;
+  @apply text-lg font-medium;
+  color: var(--foreground);
+}
+.mobileAuthButton {
+  @apply w-full py-3 px-4 rounded-lg bg-primary text-white font-medium transition-all hover:bg-primary-dark active:scale-95;
+  max-width: 200px;
+  margin-top: 0.5rem;
 }
 
-.mobileAuthButton {
-  @apply w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
-    transition-all hover:bg-primary-dark active:scale-95;
+/* 添加用户个人资料链接的样式 */
+.userProfileLink {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+  gap: 8px;
+}
+
+.userProfileLink:hover {
+  opacity: 0.8;
 }
