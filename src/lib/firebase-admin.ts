@@ -3,6 +3,21 @@ import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
+// 验证必需的环境变量
+const requiredEnvVars = [
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY",
+] as const;
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(
+      `缺少必需的环境变量: ${envVar}。请确保在 .env.local 文件中设置了所有必需的环境变量。`
+    );
+  }
+}
+
 // 检查是否已经初始化过 Firebase Admin
 const apps = getApps();
 
