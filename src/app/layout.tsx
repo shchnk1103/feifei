@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/modules/theme";
 import { Header, Footer } from "@/shared";
 import { AuthProvider } from "@/modules/auth";
+import { SessionProvider } from "@/shared/components/providers/SessionProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@/styles/globals.css";
 
@@ -45,20 +46,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
-        <AuthProvider>
-          <ThemeProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
+        <SessionProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <div className="flex min-h-screen flex-col">
+                <Header />
 
-              <main className="flex-1">{children}</main>
+                <main className="flex-1">{children}</main>
 
-              <Footer />
-            </div>
+                <Footer />
+              </div>
 
-            <Analytics />
-            <SpeedInsights />
-          </ThemeProvider>
-        </AuthProvider>
+              <Analytics />
+              <SpeedInsights />
+            </ThemeProvider>
+          </AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );

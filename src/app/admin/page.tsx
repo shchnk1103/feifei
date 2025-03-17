@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { updateUserRole } from "../actions/admin";
 
 // 定义结果状态的接口
 interface ResultState {
@@ -50,11 +49,18 @@ export default function AdminSetupPage() {
         throw new Error("请输入用户ID");
       }
 
-      // 使用 Server Action 更新用户角色
-      const result = await updateUserRole(userId, "admin");
+      // 使用 API 路由更新用户角色
+      const response = await fetch(`/api/auth/admin/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (result.error) {
-        throw new Error(result.error);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "设置管理员失败");
       }
 
       setResult({

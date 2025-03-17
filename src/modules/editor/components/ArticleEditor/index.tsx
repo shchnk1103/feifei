@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Block } from "@/modules/editor/types/blocks";
-import { Article, ArticleStatus, ArticleVisibility } from "@/modules/blog/types/blog";
+import {
+  Article,
+  ArticleStatus,
+  ArticleVisibility,
+} from "@/modules/blog/types/blog";
 import { useArticle } from "@/modules/blog/hooks/useArticle";
 import { BlockEditor } from "../BlockEditor";
 import { EditorSidebar } from "../EditorSidebar";
