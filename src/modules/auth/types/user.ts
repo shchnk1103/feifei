@@ -1,4 +1,5 @@
 import { User as FirebaseUser } from "firebase/auth";
+import { UserRole } from "@/types/next-auth";
 
 /**
  * 自定义声明值的类型
@@ -23,11 +24,9 @@ export type CustomClaimValue =
  * @property bio - 用户个人简介
  */
 export interface UserRegistrationData {
-  displayName?: string;
-  isAdmin?: boolean;
-  photoURL?: string;
+  name?: string;
   bio?: string;
-  // 如果需要，可以添加其他注册时可能用到的字段
+  photoURL?: string;
 }
 
 /**
@@ -46,18 +45,18 @@ export interface UserRegistrationData {
  * @property updatedAt - 用户数据最后更新时间，可选
  */
 export interface UserData {
-  uid: string;
+  id: string;
   email: string;
-  displayName?: string | null;
-  photoURL?: string | null;
+  name: string;
+  role: UserRole;
   createdAt: Date;
-  role: "user" | "admin";
-  isEmailVerified?: boolean;
-  lastLogin?: Date;
+  updatedAt: Date;
+  displayName?: string;
   bio?: string;
-  // 使用定义好的类型替代 any
-  customClaims?: Record<string, CustomClaimValue>;
-  updatedAt?: Date;
+  photoURL?: string;
+  lastLogin?: Date;
+  isEmailVerified?: boolean;
+  uid?: string;
 }
 
 /**
@@ -100,7 +99,7 @@ export function getUserDisplayName(userInfo: UserInfo): string {
 
   if (!firebaseUser) return "";
 
-  if (userData?.displayName) return userData.displayName;
+  if (userData?.name) return userData.name;
   if (firebaseUser.displayName) return firebaseUser.displayName;
 
   if (firebaseUser.email) {

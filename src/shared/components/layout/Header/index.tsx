@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
-import { useUserInfo } from "@/modules/auth";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { ThemeToggle } from "@/modules/theme";
 import { AuthDialog } from "@/modules/auth";
@@ -31,8 +30,7 @@ interface HeaderProps {
 }
 
 export function Header({ shrunk = false }: HeaderProps) {
-  const { logout } = useAuth(); // 只从 useAuth 获取 logout 方法
-  const { userInfo } = useUserInfo(); // 使用 useUserInfo 获取用户信息
+  const { logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
 
@@ -48,11 +46,7 @@ export function Header({ shrunk = false }: HeaderProps) {
         {/* Desktop Navigation */}
         <nav className={styles.desktopNav}>
           <NavItems />
-          <UserSection
-            user={userInfo}
-            onLogin={() => setIsAuthDialogOpen(true)}
-            onLogout={logout}
-          />
+          <UserSection />
           <ThemeToggle />
         </nav>
 
@@ -87,13 +81,7 @@ export function Header({ shrunk = false }: HeaderProps) {
                 >
                   <nav className={styles.mobileNavItems}>
                     <NavItems mobile onClose={() => setIsMenuOpen(false)} />
-                    <UserSection
-                      user={userInfo}
-                      mobile
-                      onLogin={() => setIsAuthDialogOpen(true)}
-                      onLogout={logout}
-                      onClose={() => setIsMenuOpen(false)}
-                    />
+                    <UserSection mobile onClose={() => setIsMenuOpen(false)} />
                     <ThemeToggle />
                   </nav>
                 </motion.div>

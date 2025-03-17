@@ -1,9 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase/config";
-import { authService } from "@/modules/auth/services/authService";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 export default function MigrateUsersPage() {
@@ -21,39 +18,17 @@ export default function MigrateUsersPage() {
     setMessage("开始迁移用户数据...");
 
     try {
-      // 获取所有用户 (假设用户数不多)
-      // 注意：这个功能在生产环境需要通过 Firebase Admin SDK 实现
-      // 这里仅用于开发环境
-      const allUsers = await authService.getAllUsers();
+      const response = await fetch("/api/auth/migrate-users", {
+        method: "POST",
+      });
 
-      setMessage(`找到 ${allUsers.length} 个用户`);
-
-      // 检查每个用户是否有 Firestore 文档
-      let migratedCount = 0;
-
-      for (const user of allUsers) {
-        const userRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userRef);
-
-        if (!userDoc.exists()) {
-          // 创建用户文档
-          await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || null,
-            photoURL: user.photoURL || null,
-            role: "user",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            isEmailVerified: user.isEmailVerified || false,
-            lastLogin: user.lastLogin || new Date(),
-          });
-
-          migratedCount++;
-        }
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "迁移失败");
       }
 
-      setMessage(`迁移完成。已创建 ${migratedCount} 个用户文档。`);
+      const result = await response.json();
+      setMessage(result.message);
     } catch (error) {
       console.error("迁移失败:", error);
       setMessage(

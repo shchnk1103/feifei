@@ -7,85 +7,123 @@ import mobileStyles from "../styles/mobile.module.css";
 import userStyles from "../styles/user.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  UserInfo,
-  getUserDisplayName,
-  getUserAvatar,
-  isAdmin,
-  isUserLoggedIn,
-} from "@/modules/auth/types/user";
+import { useSession } from "next-auth/react";
+import { isAdmin } from "@/modules/auth/utils/auth";
+import { AuthDialog } from "@/modules/auth";
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/modules/auth";
 
 const styles = mergeStyles(mobileStyles, userStyles);
 
 interface UserSectionProps {
-  user: UserInfo;
   mobile?: boolean;
-  onLogin: () => void;
-  onLogout: () => void;
   onClose?: () => void;
 }
 
-export function UserSection({
-  user,
-  mobile,
-  onLogin,
-  onLogout,
-  onClose,
-}: UserSectionProps) {
+export function UserSection({ mobile = false, onClose }: UserSectionProps) {
+  const { data: session } = useSession();
+  const { logout } = useAuth();
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const Component = mobile ? motion.div : "div";
   const props = mobile ? { variants: menuItemVariants } : {};
   const className = mobile ? styles.mobileUserSection : styles.userSection;
-  const buttonClassName = mobile ? styles.mobileAuthButton : styles.authButton;
   const usernameClassName = mobile ? styles.mobileUsername : styles.username;
 
-  // 检查用户是否登录
-  const isLoggedIn = isUserLoggedIn(user);
-  const userIsAdmin = isAdmin(user);
-  const displayName = getUserDisplayName(user);
+  // 只在非移动端时添加点击外部关闭下拉菜单的事件
+  useEffect(() => {
+    if (mobile) return;
 
-  console.log("Debug UserSection:", {
-    isLoggedIn,
-    userIsAdmin,
-    displayName,
-    user: {
-      firebaseUser: user.firebaseUser
-        ? {
-            uid: user.firebaseUser.uid,
-            displayName: user.firebaseUser.displayName,
-            email: user.firebaseUser.email,
-          }
-        : null,
-      userData: user.userData,
-    },
-  });
-
-  // 用户个人资料链接
-  const profileLink = isLoggedIn
-    ? `/profile/${
-        user.firebaseUser?.email?.split("@")[0] || user.firebaseUser?.uid
-      }`
-    : "/login";
-
-  // 处理个人资料链接点击事件
-  const handleProfileClick = () => {
-    if (!isLoggedIn) {
-      onLogin();
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
     }
-    if (onClose) {
-      onClose();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [mobile]);
+
+  if (!session?.user) {
+    return (
+      <>
+        <button
+          className={styles.loginLink}
+          onClick={() => {
+            setIsAuthDialogOpen(true);
+            onClose?.();
+          }}
+        >
+          登录
+        </button>
+        <AuthDialog
+          isOpen={isAuthDialogOpen}
+          onClose={() => setIsAuthDialogOpen(false)}
+        />
+      </>
+    );
+  }
+
+  const userIsAdmin = isAdmin(session.user);
+  const displayName =
+    session.user.name || session.user.email?.split("@")[0] || "未命名用户";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsDropdownOpen(false);
+      onClose?.();
+    } catch (error) {
+      console.error("登出失败:", error);
     }
   };
 
   return (
     <Component {...props} className={className} data-testid="user-section">
-      {isLoggedIn ? (
-        mobile ? (
-          <>
-            <Link
-              href={profileLink}
-              className={styles.userProfileLink}
-              onClick={handleProfileClick}
-            >
+      <div className={styles.userDropdown} ref={dropdownRef}>
+        {!mobile && (
+          <button
+            className={styles.userProfileButton}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <div className={styles.userInfo}>
+              <Image
+                src={session.user.image || "/images/default-avatar.png"}
+                alt={displayName}
+                width={32}
+                height={32}
+                className={styles.avatar}
+              />
+              <span className={usernameClassName}>{displayName}</span>
+              <svg
+                className={`${styles.dropdownIcon} ${
+                  isDropdownOpen ? styles.open : ""
+                }`}
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.5 4.5L6 8L9.5 4.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </button>
+        )}
+
+        {(isDropdownOpen || mobile) && (
+          <div className={styles.dropdownMenu}>
+            {mobile && (
               <div
                 className={
                   userIsAdmin
@@ -94,70 +132,46 @@ export function UserSection({
                 }
               >
                 <Image
-                  src={getUserAvatar(user)}
-                  alt="用户头像"
-                  className={styles.userAvatar}
-                  width={48}
-                  height={48}
+                  src={session.user.image || "/images/default-avatar.png"}
+                  alt={displayName}
+                  width={40}
+                  height={40}
+                  className={styles.avatar}
                 />
-                <div className={styles.mobileUserDetails}>
-                  <span className={usernameClassName}>{displayName}</span>
-                  {userIsAdmin && (
-                    <span className={styles.adminBadge}>管理员</span>
-                  )}
-                </div>
+                <span className={usernameClassName}>{displayName}</span>
               </div>
-            </Link>
-            <button
-              onClick={() => {
-                onLogout();
-                onClose?.();
-              }}
-              className={buttonClassName}
-            >
-              登出
-            </button>
-          </>
-        ) : (
-          <>
+            )}
             <Link
-              href={profileLink}
-              className={styles.userProfileLink}
-              onClick={handleProfileClick}
-            >
-              <Image
-                src={getUserAvatar(user)}
-                alt="用户头像"
-                className={styles.userAvatar}
-                width={32}
-                height={32}
-              />
-              <span className={usernameClassName}>{displayName}</span>
-              {userIsAdmin && <span className={styles.adminBadge}>管理员</span>}
-            </Link>
-            <button
+              href={`/profile/${displayName}`}
+              className={styles.dropdownItem}
               onClick={() => {
-                onLogout();
+                setIsDropdownOpen(false);
                 onClose?.();
               }}
-              className={buttonClassName}
             >
-              登出
+              个人资料
+            </Link>
+            {userIsAdmin && (
+              <Link
+                href="/admin"
+                className={styles.dropdownItem}
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  onClose?.();
+                }}
+              >
+                管理后台
+              </Link>
+            )}
+            <button
+              className={`${styles.dropdownItem} ${styles.logoutButton}`}
+              onClick={handleLogout}
+            >
+              退出登录
             </button>
-          </>
-        )
-      ) : (
-        <button
-          onClick={() => {
-            onLogin();
-            onClose?.();
-          }}
-          className={buttonClassName}
-          aria-label="登录"
-        >
-          登录
-        </button>
-      )}
+          </div>
+        )}
+      </div>
     </Component>
   );
 }

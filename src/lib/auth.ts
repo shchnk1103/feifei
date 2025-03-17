@@ -1,15 +1,116 @@
-import { cookies } from "next/headers";
-import { auth } from "./firebase-admin";
-import { redirect } from "next/navigation";
+import { NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { UserRole } from "@/types/next-auth";
+import { db } from "@/lib/firebase/admin";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase/config";
 
-export interface AuthUser {
-  uid: string;
-  email: string;
-  role?: string;
+// 检查必要的环境变量
+const requiredEnvVars = [
+  "NEXTAUTH_SECRET",
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY",
+] as const;
+
+// 确保所有必需的环境变量都存在
+const envVars = {} as Record<(typeof requiredEnvVars)[number], string>;
+
+for (const envVar of requiredEnvVars) {
+  const value = process.env[envVar];
+  if (!value) {
+    throw new Error(`缺少必需的环境变量: ${envVar}`);
+  }
+  envVars[envVar] = value;
 }
 
-// 定义角色类型
-export type UserRole = "user" | "admin";
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "邮箱", type: "email" },
+        password: { label: "密码", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        try {
+          // 使用 Firebase Auth 进行认证
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            credentials.email,
+            credentials.password
+          );
+
+          // 从 Firestore 获取用户数据
+          const userDoc = await db
+            .collection("users")
+            .doc(userCredential.user.uid)
+            .get();
+
+          if (!userDoc.exists) {
+            console.error("用户数据不存在");
+            return null;
+          }
+
+          const userData = userDoc.data();
+
+          return {
+            id: userCredential.user.uid,
+            email: userCredential.user.email || "",
+            name: userData?.name || userCredential.user.displayName || "",
+            role: userData?.role || "user",
+            createdAt: userData?.createdAt?.toDate() || new Date(),
+            updatedAt: userData?.updatedAt?.toDate() || new Date(),
+          };
+        } catch (error) {
+          console.error("认证失败:", error);
+          return null;
+        }
+      },
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 天
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
+        token.createdAt = user.createdAt.getTime();
+        token.updatedAt = user.updatedAt.getTime();
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.role = token.role;
+        session.user.createdAt = new Date(token.createdAt);
+        session.user.updatedAt = new Date(token.updatedAt);
+      }
+      return session;
+    },
+  },
+  pages: {
+    signIn: "/login",
+    error: "/error",
+  },
+  secret: envVars.NEXTAUTH_SECRET,
+};
+
+// 获取服务器端会话
+export const getServerAuthSession = () => getServerSession(authOptions);
 
 // 定义错误类型
 export class AuthorizationError extends Error {
@@ -20,78 +121,51 @@ export class AuthorizationError extends Error {
 }
 
 /**
- * 验证用户会话的包装器函数
- * 用于包装 Server Actions 和 API Routes
+ * 验证用户是否具有特定角色的包装器函数
  */
-export async function withAuth<T>(
-  handler: (user: AuthUser) => Promise<T>
+export async function withRole<T>(
+  role: UserRole,
+  handler: (
+    session: NonNullable<Awaited<ReturnType<typeof getServerSession>>>
+  ) => Promise<T>
 ): Promise<T> {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session")?.value;
+  const session = await getServerAuthSession();
 
-  if (!session) {
-    redirect("/login");
+  if (!session?.user) {
+    throw new AuthorizationError("未登录");
   }
 
-  try {
-    const decodedClaims = await auth.verifySessionCookie(session);
-    const user: AuthUser = {
-      uid: decodedClaims.uid,
-      email: decodedClaims.email || "",
-      role: decodedClaims.role,
-    };
-
-    return await handler(user);
-  } catch (error) {
-    console.error("Session verification failed:", error);
-    redirect("/login");
+  if (session.user.role !== role) {
+    throw new AuthorizationError(`需要 ${role} 权限`);
   }
+
+  return handler(session);
 }
 
 /**
  * 验证用户是否为管理员的包装器函数
  */
 export async function withAdmin<T>(
-  handler: (user: AuthUser) => Promise<T>
+  handler: (
+    session: NonNullable<Awaited<ReturnType<typeof getServerSession>>>
+  ) => Promise<T>
 ): Promise<T> {
-  return withAuth(async (user) => {
-    if (user.role !== "admin") {
-      throw new AuthorizationError("需要管理员权限");
-    }
-    return handler(user);
-  });
-}
-
-/**
- * 验证用户是否具有特定角色的包装器函数
- */
-export async function withRole<T>(
-  role: UserRole,
-  handler: (user: AuthUser) => Promise<T>
-): Promise<T> {
-  return withAuth(async (user) => {
-    if (user.role !== role) {
-      throw new AuthorizationError(`需要 ${role} 权限`);
-    }
-    return handler(user);
-  });
+  return withRole("admin", handler);
 }
 
 /**
  * 检查用户是否有权限访问特定资源
- * 例如：检查用户是否可以编辑特定文档
  */
 export async function checkPermission(
   userId: string,
   resourceId: string,
   action: string
 ): Promise<boolean> {
-  // 根据不同操作类型进行权限检查
   switch (action) {
     case "edit":
       return userId === resourceId;
     case "view":
-      return true; // 假设所有人都可以查看
+      return true;
     case "delete":
       return userId === resourceId;
     default:

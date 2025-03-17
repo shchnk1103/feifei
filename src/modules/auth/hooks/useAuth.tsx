@@ -1,138 +1,181 @@
 "use client";
 
-import { useState, useEffect, createContext, useContext } from "react";
-import { User } from "firebase/auth";
-import { authService } from "../services/authService";
-import { UserData, UserRegistrationData } from "../types/user"; // 从类型定义文件导入
+import { useSession, signIn, signOut } from "next-auth/react";
+import { UserData, UserRegistrationData } from "../types/user";
+import { createContext, useContext, useState } from "react";
 
+/**
+ * 认证上下文接口
+ * 定义了认证相关的状态和方法
+ */
 interface AuthContextProps {
-  user: User | null;
-  userData: UserData | null;
+  /** 当前用户数据 */
+  user: UserData | null;
+  /** 当前用户是否为管理员 */
   isAdmin: boolean;
+  /** 是否正在加载中 */
   loading: boolean;
+  /** 错误信息 */
   error: Error | null;
+  /** 用户是否已认证 */
+  isAuthenticated: boolean;
+  /** 用户登录方法 */
   login: (email: string, password: string) => Promise<UserData>;
+  /** 用户登出方法 */
   logout: () => Promise<void>;
-  // 使用导入的类型替换 any
+  /** 用户注册方法 */
   register: (
     email: string,
     password: string,
     data?: UserRegistrationData
   ) => Promise<void>;
-  // 使用更明确的类型替换 any
+  /** 更新用户资料方法 */
   updateUserProfile: (data: {
     displayName?: string;
     photoURL?: string;
     bio?: string;
   }) => Promise<void>;
+  /** 设置用户为管理员方法 */
   setUserAsAdmin: (uid: string) => Promise<void>;
+  /** 移除用户管理员权限方法 */
   removeUserAdmin: (uid: string) => Promise<void>;
 }
 
+// 创建认证上下文
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
+/**
+ * 认证提供者组件
+ *
+ * 提供认证相关的状态管理和方法，包括：
+ * - 用户认证状态监听
+ * - 用户登录、注册、登出
+ * - 用户资料管理
+ * - 管理员权限管理
+ *
+ * @param children - 子组件
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
   const [error, setError] = useState<Error | null>(null);
-  const [initialized, setInitialized] = useState(false);
 
-  // 监听身份验证状态变化
-  useEffect(() => {
-    // 只在首次加载时设置 loading 为 true
-    if (!initialized) {
-      setLoading(true);
-    }
-
-    const unsubscribe = authService.onAuthStateChange(async (user) => {
-      if (user) {
-        try {
-          // 获取用户数据（包括检查和创建 Firestore 文档）
-          const userData = await authService.getUserWithRole(user);
-          setUserData(userData);
-          setIsAdmin(userData.role === "admin");
-        } catch (error) {
-          console.error("Error getting user data:", error);
-          setUserData(null);
-          setIsAdmin(false);
-        }
-      } else {
-        setUserData(null);
-        setIsAdmin(false);
+  const user = session?.user
+    ? {
+        id: session.user.id || session.user.email?.split("@")[0] || "unknown",
+        email: session.user.email || "",
+        name: session.user.name || "",
+        role: session.user.role || "user",
+        createdAt: session.user.createdAt,
+        updatedAt: session.user.updatedAt,
       }
+    : null;
 
-      setUser(user);
-      setLoading(false);
-      setInitialized(true);
-    });
+  const isAdmin = user?.role === "admin";
+  const loading = status === "loading";
+  const isAuthenticated = !!user;
 
-    return () => unsubscribe();
-  }, [initialized]);
-
-  // 登录
+  /**
+   * 用户登录
+   * @param email - 用户邮箱
+   * @param password - 用户密码
+   * @returns 用户数据
+   */
   const login = async (email: string, password: string) => {
     try {
       setError(null);
-      setLoading(true);
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-      // 登录用户
-      const userCredential = await authService.login(email, password);
-      const user = userCredential.user;
+      if (result?.error) {
+        throw new Error(result.error);
+      }
 
-      // 获取用户资料，包括检查和创建用户文档
-      const userData = await authService.getUserWithRole(user);
+      // 等待 session 更新
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // 设置用户状态
-      setUserData(userData);
-      setIsAdmin(userData.role === "admin");
+      // 重新获取 session
+      const currentSession = await fetch("/api/auth/session").then((res) =>
+        res.json()
+      );
 
-      return userData;
+      if (!currentSession?.user) {
+        throw new Error("登录失败：无法获取用户信息");
+      }
+
+      return {
+        id: currentSession.user.id,
+        email: currentSession.user.email || "",
+        name: currentSession.user.name || "",
+        role: currentSession.user.role || "user",
+        createdAt: currentSession.user.createdAt,
+        updatedAt: currentSession.user.updatedAt,
+      };
     } catch (error) {
       console.error("Login failed:", error);
-      setError(error instanceof Error ? error : new Error("登录失败"));
-      throw error;
-    } finally {
-      setLoading(false);
+      const errorMessage = error instanceof Error ? error.message : "登录失败";
+      setError(new Error(errorMessage));
+      throw new Error(errorMessage);
     }
   };
 
-  // 注册
+  /**
+   * 用户注册
+   * @param email - 用户邮箱
+   * @param password - 用户密码
+   * @param additionalData - 额外的用户数据
+   */
   const register = async (
     email: string,
     password: string,
     additionalData: UserRegistrationData = {}
   ) => {
     try {
-      setLoading(true);
-      await authService.register(email, password, additionalData);
-      // 用户数据会通过 onAuthStateChange 自动设置
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          ...additionalData,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "注册失败");
+      }
+
+      // 注册成功后自动登录
+      await login(email, password);
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
-  // 退出登录
+  /**
+   * 用户登出
+   * 清除所有用户相关的状态
+   */
   const logout = async () => {
     try {
-      setLoading(true);
-      await authService.logout();
-      setUser(null);
-      setUserData(null);
-      setIsAdmin(false);
+      setError(null);
+      await signOut();
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
-  // 更新用户资料
+  /**
+   * 更新用户资料
+   * @param data - 要更新的用户资料
+   */
   const updateUserProfile = async (data: {
     displayName?: string;
     photoURL?: string;
@@ -141,56 +184,77 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) throw new Error("未登录");
 
     try {
-      setLoading(true);
-      await authService.updateProfile(user.uid, data);
+      setError(null);
+      const response = await fetch("/api/auth/profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // 更新本地状态
-      if (userData) {
-        setUserData({
-          ...userData,
-          ...data,
-        });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "更新资料失败");
       }
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
-  // 设置用户为管理员
+  /**
+   * 设置用户为管理员
+   * @param uid - 目标用户ID
+   */
   const setUserAsAdmin = async (uid: string) => {
     try {
-      setLoading(true);
-      await authService.setAdmin(uid);
+      setError(null);
+      const response = await fetch(`/api/auth/admin/${uid}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role: "admin" }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "设置管理员失败");
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
-  // 移除管理员权限
+  /**
+   * 移除用户的管理员权限
+   * @param uid - 目标用户ID
+   */
   const removeUserAdmin = async (uid: string) => {
     try {
-      setLoading(true);
-      await authService.removeAdmin(uid);
+      setError(null);
+      const response = await fetch(`/api/auth/admin/${uid}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "移除管理员失败");
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
   const value = {
     user,
-    userData,
     isAdmin,
     loading,
     error,
+    isAuthenticated,
     login,
     logout,
     register,
@@ -202,6 +266,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * 认证钩子
+ *
+ * 用于在组件中获取和使用认证相关的状态和方法
+ * 必须在 AuthProvider 内部使用
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   const { user, login, logout } = useAuth();
+ *
+ *   return (
+ *     <div>
+ *       {user ? (
+ *         <button onClick={logout}>登出</button>
+ *       ) : (
+ *         <button onClick={() => login('email', 'password')}>登录</button>
+ *       )}
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * @throws {Error} 如果在 AuthProvider 外部使用
+ * @returns {AuthContextProps} 认证上下文
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
