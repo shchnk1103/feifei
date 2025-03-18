@@ -2,7 +2,7 @@
 
 ## 概述
 
-文章 API 提供了文章的创建、读取、更新和删除功能。所有 API 端点都遵循 RESTful 设计原则。
+文章 API 提供了文章的创建、读取、更新和删除功能，以及封面图片管理功能。所有 API 端点都遵循 RESTful 设计原则。
 
 ## 基础 URL
 
@@ -175,6 +175,63 @@ PATCH /api/articles/:id
 ```json
 {
   "success": true
+}
+```
+
+### 获取文章封面图片
+
+```http
+GET /api/articles/:id/cover
+```
+
+**响应成功：**
+```json
+{
+  "success": true,
+  "url": "图片URL"
+}
+```
+
+**响应失败（未找到图片）：**
+```json
+{
+  "success": false,
+  "message": "未找到封面图片"
+}
+```
+
+### 更新文章封面图片
+
+```http
+POST /api/articles/:id/cover
+```
+
+**请求体：**
+```json
+{
+  "url": "图片URL"
+}
+```
+
+**响应：**
+```json
+{
+  "success": true,
+  "message": "封面图片已更新"
+}
+```
+
+### 删除文章封面图片
+
+```http
+DELETE /api/articles/:id/cover
+```
+
+**响应：**
+```json
+{
+  "success": true,
+  "message": "封面图片已删除"
 }
 ```
 

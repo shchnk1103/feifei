@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/modules/theme";
 import { Header, Footer } from "@/shared";
@@ -8,19 +8,19 @@ import { SessionProvider } from "@/shared/components/providers/SessionProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@/styles/globals.css";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   display: "swap",
-//   subsets: ["latin"],
-//   preload: true,
-// });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  display: "swap",
+  subsets: ["latin"],
+  preload: true,
+});
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   display: "swap",
-//   subsets: ["latin"],
-//   preload: true,
-// });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  display: "swap",
+  subsets: ["latin"],
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: "Feifei",
@@ -43,7 +43,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className={`min-h-screen antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+      >
         <SessionProvider>
           <AuthProvider>
             <ThemeProvider>

@@ -25,6 +25,37 @@
   opacity: 0.7;
 }
 
+/* 加载状态容器 */
+.loadingContainer {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  border: 2px dashed var(--card-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  margin-bottom: 2rem;
+  background-color: var(--card-bg);
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 1rem;
+  border: 3px solid var(--card-border);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* 封面图片容器 */
 .coverImageContainer {
   position: relative;
@@ -104,11 +135,51 @@
 }
 
 @media (max-width: 640px) {
-  .coverImagePlaceholder {
+  .coverImagePlaceholder,
+  .loadingContainer {
     height: 150px;
   }
 
   .coverImage {
     aspect-ratio: 16/9;
   }
+}
+
+/* 上传中的样式 */
+.uploadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.uploadProgress {
+  width: 90%;
+  max-width: 400px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.progressBar {
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.uploadProgress span {
+  display: block;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-primary);
 }

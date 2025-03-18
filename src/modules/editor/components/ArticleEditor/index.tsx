@@ -4,7 +4,7 @@ import { Article } from "@/modules/blog/types/blog";
 import { useArticleEditor } from "../../hooks/useArticleEditor";
 import { EditorHeader } from "../EditorHeader";
 import { EditorSidebar } from "../EditorSidebar";
-import { EditorContent } from "../EditorContent";
+import { EditorContent } from "../EditorContent/EditorContent";
 import styles from "./styles.module.css";
 
 interface ArticleEditorProps {
@@ -22,7 +22,6 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
     article,
     title,
     blocks,
-    coverImage,
     tags,
     saveStatus,
     sidebarOpen,
@@ -61,9 +60,10 @@ export function ArticleEditor({ initialArticle }: ArticleEditorProps) {
           <div className={styles.mainEditorContent}>
             <EditorContent
               blocks={blocks}
-              coverImage={coverImage}
+              coverImage={article.imageSrc || ""}
               onBlocksChange={handleBlocksChange}
               onCoverImageChange={handleCoverImageChange}
+              articleId={article.id}
             />
           </div>
         </main>
