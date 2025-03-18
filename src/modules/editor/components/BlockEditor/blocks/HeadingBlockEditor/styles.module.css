@@ -42,17 +42,31 @@
   opacity: 0.6;
 }
 
-.headingControls {
+/* 标题级别选择器 - 新样式 */
+.headingLevelSelector {
   position: absolute;
-  left: -70px;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  left: 0.5rem;
+  top: -2.5rem;
+  opacity: 1; /* 确保在显示时是完全不透明的 */
+  transition: all 0.2s ease-in-out;
+  background-color: var(--background);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  z-index: 20; /* 确保在BlockControls上方 */
+  /* 增加动画入场效果 */
+  animation: fadeIn 0.2s ease-in-out;
 }
 
-.activeHeadingBlock .headingControls {
-  opacity: 1;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .levelSelect {
@@ -68,23 +82,30 @@
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   padding-right: 1.5rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.levelSelect:hover {
+  border-color: var(--foreground-secondary);
+  background-color: var(--tag-bg);
 }
 
 .levelSelect:focus {
   outline: none;
   border-color: var(--foreground-secondary);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
 @media (max-width: 768px) {
-  .headingControls {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    display: flex;
-    justify-content: flex-end;
+  .headingLevelSelector {
+    position: static;
+    box-shadow: none;
+    padding: 0;
     margin-bottom: 0.5rem;
-    opacity: 1;
+    display: flex;
+    justify-content: flex-start;
+    background-color: transparent;
+    animation: none;
   }
 
   .h1 {

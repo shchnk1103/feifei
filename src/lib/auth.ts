@@ -5,6 +5,7 @@ import { UserRole } from "@/types/next-auth";
 import { db } from "@/lib/firebase/admin";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase/config";
+import { logger } from "@/lib/logger";
 
 // 检查必要的环境变量
 const requiredEnvVars = [
@@ -35,16 +36,24 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          logger.warn("认证失败：缺少邮箱或密码");
           return null;
         }
 
         try {
+          logger.info("开始认证流程", { email: credentials.email });
+
           // 使用 Firebase Auth 进行认证
           const userCredential = await signInWithEmailAndPassword(
             auth,
             credentials.email,
             credentials.password
           );
+
+          logger.info("Firebase Auth 认证成功", {
+            uid: userCredential.user.uid,
+            email: userCredential.user.email,
+          });
 
           // 从 Firestore 获取用户数据
           const userDoc = await db
@@ -53,22 +62,59 @@ export const authOptions: NextAuthOptions = {
             .get();
 
           if (!userDoc.exists) {
-            console.error("用户数据不存在");
-            return null;
+            logger.info("用户数据不存在，创建新用户数据", {
+              uid: userCredential.user.uid,
+              email: userCredential.user.email,
+            });
+
+            // 如果用户数据不存在，创建一个新的用户文档
+            const now = Date.now();
+            const newUser = {
+              email: userCredential.user.email,
+              name:
+                userCredential.user.displayName ||
+                credentials.email.split("@")[0],
+              role: "user" as UserRole,
+              createdAt: now,
+              updatedAt: now,
+            };
+
+            await db
+              .collection("users")
+              .doc(userCredential.user.uid)
+              .set(newUser);
+
+            logger.info("新用户数据创建成功", {
+              uid: userCredential.user.uid,
+              ...newUser,
+            });
+
+            return {
+              id: userCredential.user.uid,
+              ...newUser,
+            };
           }
 
           const userData = userDoc.data();
+          logger.debug("获取到的用户数据", {
+            uid: userCredential.user.uid,
+            userData,
+          });
 
-          return {
+          const now = Date.now();
+          const user = {
             id: userCredential.user.uid,
             email: userCredential.user.email || "",
             name: userData?.name || userCredential.user.displayName || "",
-            role: userData?.role || "user",
-            createdAt: userData?.createdAt?.toDate() || new Date(),
-            updatedAt: userData?.updatedAt?.toDate() || new Date(),
+            role: (userData?.role as UserRole) || "user",
+            createdAt: userData?.createdAt?.toMillis() || now,
+            updatedAt: userData?.updatedAt?.toMillis() || now,
           };
+
+          logger.info("用户认证成功", { user });
+          return user;
         } catch (error) {
-          console.error("认证失败:", error);
+          logger.error("认证失败", error);
           return null;
         }
       },
@@ -81,24 +127,45 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        logger.debug("JWT 回调 - 用户数据", { user });
+
+        // 确保所有用户数据都被复制到 token 中
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
         token.role = user.role;
-        token.createdAt = user.createdAt.getTime();
-        token.updatedAt = user.updatedAt.getTime();
+        token.createdAt = user.createdAt;
+        token.updatedAt = user.updatedAt;
+
+        logger.debug("JWT 回调 - 更新后的 token", { token });
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.email = token.email;
-        session.user.name = token.name;
-        session.user.role = token.role;
-        session.user.createdAt = new Date(token.createdAt);
-        session.user.updatedAt = new Date(token.updatedAt);
+      logger.debug("Session 回调 - token", { token });
+
+      // 确保 session.user 存在
+      if (!session.user) {
+        const now = Date.now();
+        session.user = {
+          id: "",
+          name: "",
+          email: "",
+          role: "user" as UserRole,
+          createdAt: now,
+          updatedAt: now,
+        };
       }
+
+      // 从 token 复制所有用户数据到 session
+      session.user.id = token.id;
+      session.user.email = token.email as string;
+      session.user.name = token.name as string;
+      session.user.role = token.role;
+      session.user.createdAt = token.createdAt;
+      session.user.updatedAt = token.updatedAt;
+
+      logger.debug("Session 回调 - 更新后的 session", { session });
       return session;
     },
   },

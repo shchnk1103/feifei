@@ -1,143 +1,172 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Article, DEFAULT_ARTICLE } from "@/modules/blog/types/blog";
-import { articleService } from "@/modules/blog/services/articleService";
+import { useState, useRef } from "react";
+import {
+  BaseArticleOptions,
+  ImportArticleOptions,
+} from "@/modules/blog/types/creator";
+import { DefaultArticleCreator } from "@/modules/blog/services/articleCreator";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { ArticleTypeSelector } from "@/modules/editor/components/ArticleTypeSelector";
+import {
+  BasicInfoForm,
+  BasicInfoFormData,
+} from "@/modules/editor/components/BasicInfoForm";
+import { TemplateSelector } from "@/modules/editor/components/TemplateSelector";
+import {
+  PermissionSettings,
+  Visibility,
+} from "@/modules/editor/components/PermissionSettings";
 import styles from "./styles.module.css";
 
+type ArticleType = "blank" | "template" | "import";
+
+/**
+ * 新建文章页面组件
+ * 提供完整的文章创建流程，包括：
+ * - 选择文章类型（空白/模板/导入）
+ * - 设置基本信息
+ * - 选择模板（如果适用）
+ * - 设置权限
+ */
 export default function NewArticlePage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
+  const articleCreator = new DefaultArticleCreator();
+
+  // 状态管理
   const [error, setError] = useState<string | null>(null);
-  const [article, setArticle] = useState<Article | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [articleType, setArticleType] = useState<ArticleType | null>(null);
+  const [formData, setFormData] = useState<Partial<BaseArticleOptions>>({
+    visibility: "private",
+    allowComments: true,
+  });
+  const [showBasicInfo, setShowBasicInfo] = useState(false);
+  const [showTemplate, setShowTemplate] = useState(false);
+  const [showPermission, setShowPermission] = useState(false);
 
-  useEffect(() => {
-    const createTempArticle = async () => {
-      try {
-        if (!isAuthenticated || !user) {
-          throw new Error("请先登录");
-        }
+  // 引用各个部分的 DOM 元素
+  const basicInfoRef = useRef<HTMLDivElement>(null);
+  const templateRef = useRef<HTMLDivElement>(null);
+  const permissionRef = useRef<HTMLDivElement>(null);
 
-        if (!user.id) {
-          throw new Error("无法获取用户ID，请重新登录");
-        }
+  // 处理文章类型选择
+  const handleArticleTypeChange = (type: ArticleType) => {
+    setArticleType(type);
+    setShowBasicInfo(true);
+    // 滚动到基本信息表单
+    setTimeout(() => {
+      basicInfoRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
 
-        // 生成临时ID
-        const tempId = `draft-${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2, 7)}`;
-
-        // 创建新文章，基于默认模板
-        const tempArticle: Article = {
-          ...DEFAULT_ARTICLE,
-          id: tempId,
-          slug: `draft-${tempId}`,
-          title: "未命名文章",
-          description: "",
-          author: {
-            id: user.id,
-            name: user.name || "未命名用户",
-          },
-          articleContent: {
-            blocks: [
-              {
-                id: `block-${Date.now()}`,
-                type: "heading",
-                content: "开始写作吧",
-                level: 1,
-              },
-              {
-                id: `block-${Date.now() + 1}`,
-                type: "text",
-                content: "这是您新文章的开始。点击任何地方开始编辑...",
-              },
-            ],
-            version: 1,
-            schema: "1.0.0",
-          },
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        // 存储到本地
-        try {
-          localStorage.setItem(
-            `article-${tempId}`,
-            JSON.stringify(tempArticle)
-          );
-          setArticle(tempArticle);
-
-          // 同步到 Firebase
-          console.log("开始同步文章到 Firebase...");
-          console.log("文章数据:", tempArticle);
-          await articleService.createArticle(tempArticle);
-          console.log("文章同步成功");
-        } catch (storageError) {
-          console.error("存储文章失败:", storageError);
-          throw new Error("无法保存文章，请检查网络连接");
-        }
-
-        // 延迟一秒后跳转，让用户有机会看到标题
-        setTimeout(() => {
-          router.push(`/editor/${tempId}`);
-        }, 1000);
-      } catch (err) {
-        console.error("创建文章失败:", err);
-        setError(err instanceof Error ? err.message : "创建文章失败，请重试");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (isAuthenticated && user) {
-      createTempArticle();
+  // 处理基本信息表单提交
+  const handleBasicInfoSubmit = () => {
+    if (articleType === "template") {
+      // 如果是模板类型，显示并滚动到模板选择器
+      setShowTemplate(true);
+      setTimeout(() => {
+        templateRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
     } else {
-      setIsLoading(false);
-      setError("请先登录");
-    }
-  }, [router, user, isAuthenticated]);
-
-  // 处理标题更改
-  const handleTitleChange = async (newTitle: string) => {
-    if (!article) return;
-
-    const updatedArticle = {
-      ...article,
-      title: newTitle,
-      updatedAt: new Date(),
-    };
-
-    setIsSaving(true);
-    try {
-      // 更新本地存储
-      localStorage.setItem(
-        `article-${article.id}`,
-        JSON.stringify(updatedArticle)
-      );
-      setArticle(updatedArticle);
-
-      // 同步到 Firebase
-      await articleService.updateArticle(article.id, { title: newTitle });
-    } catch (err) {
-      console.error("更新标题失败:", err);
-      // 这里我们不设置错误状态，因为这只是一个非关键性的更新
-    } finally {
-      setIsSaving(false);
+      // 否则显示并滚动到权限设置
+      setShowPermission(true);
+      setTimeout(() => {
+        permissionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
     }
   };
 
-  if (error) {
+  // 处理模板选择
+  const handleTemplateSelect = (templateId: string) => {
+    setFormData({ ...formData, templateId });
+    // 显示并滚动到权限设置
+    setShowPermission(true);
+    setTimeout(() => {
+      permissionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+
+  const handleSubmit = async () => {
+    if (!isAuthenticated || !user) {
+      setError("请先登录");
+      return;
+    }
+
+    if (!articleType) {
+      setError("请选择文章类型");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const baseOptions: BaseArticleOptions = {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        visibility: formData.visibility || "private",
+        allowComments: formData.allowComments ?? true,
+        tags: [],
+      };
+
+      let article;
+      switch (articleType) {
+        case "template":
+          if (!formData.templateId) {
+            throw new Error("请选择模板");
+          }
+          article = await articleCreator.createFromTemplate({
+            ...baseOptions,
+            templateId: formData.templateId,
+          });
+          break;
+
+        case "import":
+          const importOptions: ImportArticleOptions = {
+            ...baseOptions,
+            importData: {
+              source: "external",
+              content: null,
+            },
+          };
+          article = await articleCreator.createFromImport(importOptions);
+          break;
+
+        default:
+          article = await articleCreator.createBlankArticle(baseOptions);
+      }
+
+      router.push(`/editor/${article.id}`);
+    } catch (err) {
+      console.error("创建文章失败:", err);
+      setError(err instanceof Error ? err.message : "创建文章失败，请重试");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>
-          <p>{error}</p>
-          <button onClick={() => router.push("/")} className={styles.button}>
-            返回首页
-          </button>
+        <div className={styles.loading}>
+          <div className={styles.spinner} />
+          <p>创建文章中，请稍候...</p>
         </div>
       </div>
     );
@@ -145,27 +174,60 @@ export default function NewArticlePage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.loading}>
-        {isLoading ? (
-          <>
-            <div className={styles.spinner} />
-            <p>创建文章中，请稍候...</p>
-          </>
-        ) : article ? (
-          <div className={styles.titleContainer}>
-            <input
-              type="text"
-              value={article.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              className={styles.titleInput}
-              placeholder="输入文章标题..."
-              autoFocus
+      <div className={styles.createArticleForm}>
+        <section className={styles.formSection}>
+          <ArticleTypeSelector
+            value={articleType}
+            onChange={handleArticleTypeChange}
+          />
+        </section>
+
+        {showBasicInfo && (
+          <section className={styles.formSection} ref={basicInfoRef}>
+            <BasicInfoForm
+              value={formData}
+              onChange={(data: BasicInfoFormData) =>
+                setFormData({ ...formData, ...data })
+              }
+              onSubmit={handleBasicInfoSubmit}
             />
-            <p className={styles.hint}>
-              {isSaving ? "保存中..." : "正在跳转到编辑器..."}
-            </p>
+          </section>
+        )}
+
+        {showTemplate && articleType === "template" && (
+          <section className={styles.formSection} ref={templateRef}>
+            <TemplateSelector onSelect={handleTemplateSelect} />
+          </section>
+        )}
+
+        {showPermission && (
+          <section className={styles.formSection} ref={permissionRef}>
+            <PermissionSettings
+              visibility={formData.visibility || "private"}
+              allowComments={formData.allowComments ?? true}
+              onChange={(settings: {
+                visibility: Visibility;
+                allowComments: boolean;
+              }) => setFormData({ ...formData, ...settings })}
+            />
+          </section>
+        )}
+
+        {error && (
+          <div className={styles.error}>
+            <p>{error}</p>
           </div>
-        ) : null}
+        )}
+
+        {showPermission && (
+          <button
+            className={styles.createButton}
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            创建文章
+          </button>
+        )}
       </div>
     </div>
   );

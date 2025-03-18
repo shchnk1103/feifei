@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { logger } from "@/lib/logger";
 import styles from "./styles.module.css";
 
 interface LoginFormProps {
@@ -25,8 +26,11 @@ export function LoginForm({ onClose }: LoginFormProps) {
     setError("");
     setLoading(true);
 
+    logger.info("开始登录流程", { email });
+
     try {
       await login(email, password);
+      logger.info("登录成功，准备关闭对话框");
       onClose();
     } catch (err: unknown) {
       // 利用错误信息提供更具体的错误提示
@@ -60,8 +64,11 @@ export function LoginForm({ onClose }: LoginFormProps) {
           }
         }
 
-        // 记录错误到控制台，便于调试
-        console.error("登录错误:", err);
+        logger.error("登录失败", {
+          error: err,
+          code: authError.code,
+          message: errorMessage,
+        });
       }
 
       setError(errorMessage);

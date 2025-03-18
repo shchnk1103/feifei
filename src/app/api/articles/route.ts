@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase/admin";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getServerAuthSession } from "@/lib/auth";
 import { NextRequest } from "next/server";
-import { RouteHandlerParams } from "@/types/next-api";
-import { Query, CollectionReference } from "firebase-admin/firestore";
+import { Query } from "firebase-admin/firestore";
 
 /**
  * 文章 API 路由
@@ -42,30 +40,85 @@ import { Query, CollectionReference } from "firebase-admin/firestore";
  * });
  * ```
  */
-export async function POST(request: NextRequest, context: RouteHandlerParams) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerAuthSession();
+    console.log("当前会话信息：", {
+      session,
+      user: session?.user,
+      userId: session?.user?.id,
+    });
+
     if (!session?.user) {
-      return NextResponse.json({ error: "未授权访问" }, { status: 401 });
+      console.error("未授权访问：缺少用户会话");
+      return NextResponse.json(
+        {
+          error: "未授权访问",
+          details: "用户未登录或会话已过期",
+          code: "UNAUTHORIZED",
+        },
+        { status: 401 }
+      );
     }
 
-    const articleData = await request.json();
-
-    // 验证必要字段
-    if (!articleData.title || !articleData.content) {
+    // 验证用户信息完整性
+    if (!session.user.id || !session.user.name) {
+      console.error("用户信息不完整：", session.user);
       return NextResponse.json(
-        { error: "标题和内容为必填项" },
+        {
+          error: "用户信息不完整",
+          details: "用户ID或名称缺失",
+          code: "INVALID_USER",
+        },
         { status: 400 }
       );
     }
 
-    // 准备文章数据
+    const articleData = await request.json();
+    console.log("收到创建文章请求：", {
+      title: articleData.title,
+      description: articleData.description,
+      content: articleData.content,
+      author: articleData.author,
+      status: articleData.status,
+    });
+
+    // 验证必要字段
+    const validationErrors = [];
+    if (!articleData.title) {
+      validationErrors.push("标题不能为空");
+    }
+    if (!articleData.content) {
+      validationErrors.push("内容不能为空");
+    }
+    if (validationErrors.length > 0) {
+      console.error("文章数据验证失败：", {
+        validationErrors,
+        articleData: {
+          title: articleData.title,
+          description: articleData.description,
+          content: articleData.content,
+        },
+      });
+      return NextResponse.json(
+        {
+          error: "数据验证失败",
+          validationErrors,
+          code: "VALIDATION_ERROR",
+        },
+        { status: 400 }
+      );
+    }
+
+    // 准备文章数据，确保所有字段都有有效值
     const article = {
-      ...articleData,
+      title: articleData.title,
+      description: articleData.description || "",
+      content: articleData.content,
       author: {
         id: session.user.id,
         name: session.user.name,
-        email: session.user.email,
+        email: session.user.email || null, // 如果 email 不存在，使用 null
       },
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -73,34 +126,53 @@ export async function POST(request: NextRequest, context: RouteHandlerParams) {
       visibility: articleData.visibility || "private",
       allowComments: articleData.allowComments ?? true,
       tags: articleData.tags || [],
+      category: articleData.category || null,
       metadata: {
         wordCount: articleData.content.length,
         readingTime: Math.ceil(articleData.content.length / 500),
         views: 0,
         likes: 0,
-        ...articleData.metadata,
+        ...(articleData.metadata || {}),
       },
     };
 
+    console.log("准备保存文章数据：", {
+      title: article.title,
+      author: article.author,
+      status: article.status,
+      visibility: article.visibility,
+    });
+
     // 使用 Firebase Admin SDK
     const docRef = await db.collection("articles").add(article);
+    console.log("文章保存成功，ID：", docRef.id);
 
     return NextResponse.json({
       success: true,
-      id: docRef.id,
-      ...article,
+      data: {
+        id: docRef.id,
+        ...article,
+      },
     });
   } catch (error) {
-    console.error("创建文章失败:", error);
+    console.error("创建文章失败，服务器错误：", {
+      error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return NextResponse.json(
-      { error: "创建文章失败", details: error },
+      {
+        error: "创建文章失败",
+        details: error instanceof Error ? error.message : String(error),
+        code: "SERVER_ERROR",
+      },
       { status: 500 }
     );
   }
 }
 
 // 获取文章列表
-export async function GET(request: NextRequest, context: RouteHandlerParams) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");

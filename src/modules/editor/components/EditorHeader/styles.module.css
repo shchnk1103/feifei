@@ -1,146 +1,122 @@
 .header {
   position: sticky;
-  top: 0;
+  top: 64px; /* 主导航栏高度 */
+  left: 0;
+  right: 0;
+  z-index: 40;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   background: var(--header-bg);
-  border-bottom: 1px solid var(--card-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 100;
-  box-shadow: 0 1px 3px var(--shadow-color);
+  transition: all 0.3s ease;
 }
 
 .leftSection {
   display: flex;
   align-items: center;
-  gap: 1rem;
   flex: 1;
 }
 
 .backButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  color: var(--foreground-muted);
-  transition: all var(--transition-normal);
+  margin-right: 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
 }
 
 .backButton:hover {
-  color: var(--foreground);
-  background: var(--tag-bg);
-}
-
-.backText {
-  display: none;
-}
-
-.titleWrapper {
-  flex: 1;
-  position: relative;
-  padding: 0.5rem 0;
-  border-bottom: 2px solid transparent;
-  transition: border-color var(--transition-normal);
-}
-
-.titleWrapper.focused {
-  border-bottom-color: var(--foreground-secondary);
+  color: var(--text-primary);
 }
 
 .titleInput {
-  width: 100%;
-  background: transparent;
+  flex: 1;
   border: none;
-  outline: none;
+  background: transparent;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--foreground);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  outline: none;
+  transition: background-color 0.2s;
 }
 
-.titleInput::placeholder {
-  color: var(--foreground-muted);
+.titleInput:focus {
+  background-color: var(--input-focus-bg);
 }
 
 .rightSection {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .saveStatus {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-  color: var(--foreground-muted);
+  font-size: 0.9rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
-.saveStatus.saving {
-  background: var(--tag-bg);
+.saved {
+  color: var(--success-color);
 }
 
-.saveStatus.saved {
-  color: #10b981;
+.saving {
+  color: var(--warning-color);
 }
 
-.saveStatus.error {
-  color: #ef4444;
-}
-
-.saveIcon {
-  animation: pulse 2s infinite;
+.error {
+  color: var(--error-color);
 }
 
 .settingsButton,
 .publishButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: all var(--transition-normal);
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .settingsButton {
-  background: var(--tag-bg);
-  color: var(--foreground);
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
 }
 
 .settingsButton:hover {
-  background: var(--tag-bg-hover);
+  background-color: var(--button-secondary-hover);
 }
 
 .publishButton {
-  background: var(--foreground);
-  color: var(--background);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
 }
 
 .publishButton:hover {
-  opacity: 0.9;
+  background-color: var(--button-primary-hover);
 }
 
 /* 响应式设计 */
-@media (min-width: 640px) {
-  .backText {
-    display: inline;
+@media (max-width: 768px) {
+  .header {
+    top: 56px; /* 移动端导航栏高度 */
+    padding: 0.75rem 1rem;
   }
-}
 
-@keyframes pulse {
-  0% {
-    opacity: 0.5;
+  .titleInput {
+    font-size: 1rem;
   }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
+
+  .settingsButton,
+  .publishButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }

@@ -1,4 +1,8 @@
-import { Article, ArticleStatus, ArticleVisibility } from "@/modules/blog/types/blog";
+import {
+  Article,
+  ArticleStatus,
+  ArticleVisibility,
+} from "@/modules/blog/types/blog";
 import { v4 as uuidv4 } from "uuid";
 
 // 模拟数据存储 - 使用从 @/modules/blog/types/blog 导入的 Article 类型
@@ -30,6 +34,7 @@ const articles: Article[] = [
       version: 1,
       schema: "1.0.0",
     },
+    content: "这是一篇示例文章\n\n这是示例内容，你可以编辑它来测试编辑器功能。",
     createdAt: new Date(),
     updatedAt: new Date(),
     status: "draft",
@@ -89,6 +94,7 @@ export async function createArticle(userId: string): Promise<Article> {
       version: 1,
       schema: "1.0.0",
     },
+    content: "",
     createdAt: new Date(),
     updatedAt: new Date(),
     status: "draft" as ArticleStatus,

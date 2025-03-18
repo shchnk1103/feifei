@@ -3,6 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserData, UserRegistrationData } from "../types/user";
 import { createContext, useContext, useState } from "react";
+import { logger } from "@/lib/logger";
 
 /**
  * 认证上下文接口
@@ -61,12 +62,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const user = session?.user
     ? {
-        id: session.user.id || session.user.email?.split("@")[0] || "unknown",
+        id: session.user.id,
         email: session.user.email || "",
         name: session.user.name || "",
-        role: session.user.role || "user",
-        createdAt: session.user.createdAt,
-        updatedAt: session.user.updatedAt,
+        role: session.user.role,
+        createdAt: new Date(session.user.createdAt),
+        updatedAt: new Date(session.user.updatedAt),
       }
     : null;
 
@@ -82,39 +83,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    */
   const login = async (email: string, password: string) => {
     try {
+      logger.info("开始登录流程", { email });
       setError(null);
+
+      logger.debug("调用 NextAuth signIn");
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
+      logger.debug("NextAuth signIn 结果", {
+        ok: result?.ok,
+        error: result?.error,
+        url: result?.url,
+      });
+
       if (result?.error) {
         throw new Error(result.error);
       }
 
+      logger.debug("等待 session 更新");
       // 等待 session 更新
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      logger.debug("获取最新 session");
       // 重新获取 session
       const currentSession = await fetch("/api/auth/session").then((res) =>
         res.json()
       );
 
+      logger.debug("获取到的 session", {
+        user: currentSession?.user,
+        expires: currentSession?.expires,
+      });
+
       if (!currentSession?.user) {
         throw new Error("登录失败：无法获取用户信息");
       }
 
-      return {
+      const userData: UserData = {
         id: currentSession.user.id,
         email: currentSession.user.email || "",
         name: currentSession.user.name || "",
-        role: currentSession.user.role || "user",
-        createdAt: currentSession.user.createdAt,
-        updatedAt: currentSession.user.updatedAt,
+        role: currentSession.user.role,
+        createdAt: new Date(currentSession.user.createdAt),
+        updatedAt: new Date(currentSession.user.updatedAt),
       };
+
+      logger.info("登录成功", { userData });
+      return userData;
     } catch (error) {
-      console.error("Login failed:", error);
+      logger.error("登录失败", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+      });
       const errorMessage = error instanceof Error ? error.message : "登录失败";
       setError(new Error(errorMessage));
       throw new Error(errorMessage);

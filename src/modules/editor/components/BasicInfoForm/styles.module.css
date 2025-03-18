@@ -1,0 +1,185 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+  color: var(--foreground);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.icon {
+  color: var(--accent-color);
+}
+
+.required {
+  color: var(--error-color);
+  margin-left: var(--space-xs);
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--foreground);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-normal) ease;
+}
+
+.input:hover,
+.textarea:hover,
+.select:hover {
+  border-color: var(--foreground-muted);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.inputError,
+.selectError {
+  border-color: var(--error-color);
+}
+
+.inputError:hover,
+.selectError:hover {
+  border-color: var(--error-color);
+}
+
+.inputError:focus,
+.selectError:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px var(--error-bg);
+}
+
+.errorText {
+  color: var(--error-color);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-xs);
+  display: inline-block;
+  margin-left: var(--space-md);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--foreground-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  appearance: none;
+  padding-right: calc(var(--space-xl) + var(--space-md));
+  cursor: pointer;
+}
+
+.selectArrow {
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--foreground-muted);
+  pointer-events: none;
+  transition: transform var(--transition-normal) ease;
+}
+
+.select:focus + .selectArrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .title {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.nextButton {
+  width: 100%;
+  padding: var(--space-md);
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--button-text);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-normal) ease;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.nextButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+  filter: brightness(1.1);
+}
+
+.nextButtonDisabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: var(--foreground-muted);
+  transform: none;
+  filter: grayscale(0.5);
+}

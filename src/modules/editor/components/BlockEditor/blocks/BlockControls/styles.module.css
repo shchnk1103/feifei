@@ -1,31 +1,57 @@
 .blockControls {
-  position: absolute;
-  left: -40px;
-  top: 50%;
-  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  z-index: 10;
+  gap: 0.4rem;
+  z-index: 20;
+  background: var(--background);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .blockControlButton {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 4px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: transparent;
+  border: none;
   color: var(--foreground-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.blockControlButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
 }
 
 .blockControlButton:hover {
   background: var(--tag-bg-hover);
   color: var(--foreground);
+  transform: translateY(-1px);
+}
+
+.blockControlButton:active {
+  transform: translateY(0);
+}
+
+.deleteButton {
+  margin-top: 0.25rem;
 }
 
 .deleteButton:hover {
@@ -36,8 +62,14 @@
 /* 响应式调整 */
 @media (max-width: 768px) {
   .blockControls {
-    left: 0;
-    top: -40px;
     flex-direction: row;
+    padding: 0.35rem;
+    background: var(--background);
+    backdrop-filter: blur(8px);
+  }
+
+  .deleteButton {
+    margin-top: 0;
+    margin-left: 0.25rem;
   }
 }

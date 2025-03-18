@@ -17,11 +17,13 @@ import styles from "./styles.module.css";
 interface AddBlockButtonProps {
   onAddBlock: (type: BlockType) => void;
   large?: boolean;
+  compact?: boolean; // 用于指示是否使用紧凑模式
 }
 
 export function AddBlockButton({
   onAddBlock,
   large = false,
+  compact = false, // 当在blockAddButtonContainer中使用时为true
 }: AddBlockButtonProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -56,7 +58,9 @@ export function AddBlockButton({
 
   return (
     <div
-      className={`${styles.addBlockButtonWrapper} ${large ? styles.large : ""}`}
+      className={`${styles.addBlockButtonWrapper} ${
+        large ? styles.large : ""
+      } ${compact ? styles.compact : ""}`}
       ref={menuRef}
     >
       <button
@@ -67,16 +71,18 @@ export function AddBlockButton({
         aria-label="添加内容块"
       >
         <BiPlus className={styles.buttonIcon} />
-        <span className={styles.buttonText}>添加内容</span>
+        <span className={styles.buttonText}>
+          {compact ? "添加" : "添加内容"}
+        </span>
       </button>
 
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             className={styles.blockTypeMenu}
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: compact ? 10 : -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: compact ? 10 : -10 }}
             transition={{ duration: 0.2 }}
           >
             {blockTypes.map((blockType) => (

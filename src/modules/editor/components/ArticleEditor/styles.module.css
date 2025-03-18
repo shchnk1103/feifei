@@ -7,13 +7,17 @@
 }
 
 .header {
+  position: sticky;
+  top: 64px; /* 假设主导航栏高度为 64px */
+  left: 0;
+  right: 0;
+  z-index: 40;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background: var(--header-bg);
-  border-bottom: 1px solid var(--card-border);
-  box-shadow: 0 1px 3px var(--shadow-color);
+  transition: all 0.3s ease;
 }
 
 .leftSection {
@@ -72,50 +76,161 @@
 }
 
 .editorContent {
+  display: flex;
   flex: 1;
-  padding: 2rem;
+  position: relative;
+  min-height: calc(100vh - 64px); /* 减去header高度 */
+  background: var(--editor-bg);
+  transition: background-color 0.3s ease;
 }
 
 .mainEditor {
-  max-width: 800px;
-  margin: 0 auto;
-  min-height: 400px;
-  border: 1px dashed var(--card-border);
-  border-radius: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
+  padding: 3rem 1rem;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: var(--page-gradient);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.placeholder {
-  text-align: center;
-  padding: 2rem;
-  color: var(--foreground-muted);
+/* 美化滚动条 */
+.mainEditor::-webkit-scrollbar {
+  width: 8px;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.2rem;
-  color: var(--foreground-muted);
+.mainEditor::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
 }
 
+.mainEditor::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.mainEditor::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* 加载和错误状态 */
+.loading,
 .error {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-size: 1.2rem;
-  color: #e74c3c;
-  padding: 1rem;
+  width: 100%;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  background: var(--page-bg);
+}
+
+.error {
+  color: var(--error-color);
+  flex-direction: column;
+}
+
+/* 添加视觉引导元素 */
+.addBlockPlaceholder {
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  background: var(--placeholder-bg);
+  border: 2px dashed var(--placeholder-border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBlockPlaceholder:hover {
+  background: var(--placeholder-bg-hover);
+  border-color: var(--placeholder-border-hover);
+  transform: translateY(-2px);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .editorContent {
+    flex-direction: column;
+    min-height: calc(100vh - 56px); /* 移动端的header通常更小 */
+  }
+
+  .mainEditor {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .addBlockPlaceholder {
+    height: 2.5rem;
+    margin: 1rem 0;
+  }
+}
+
+/* 超窄屏幕适配 */
+@media (max-width: 480px) {
+  .mainEditor {
+    padding: 1rem 0.5rem;
+  }
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .header {
+    top: 56px; /* 移动端导航栏高度可能不同 */
+    padding: 0.75rem 1rem;
+  }
+
+  .titleInput {
+    font-size: 1rem;
+  }
+
+  .backButton,
+  .publishButton,
+  .settingsButton {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .saveStatus {
+    font-size: 0.75rem;
+  }
+
   .mainEditor {
     padding: 1rem;
+  }
+
+  .editorContent {
+    padding: 1rem;
+  }
+
+  .headerScrolled {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* 添加一个伪元素作为底部空间，防止内容被固定头部遮挡 */
+.editorContainer::after {
+  content: "";
+  display: block;
+  height: 1rem;
+}
+
+.mainEditorContent {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

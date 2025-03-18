@@ -5,19 +5,68 @@
   --foreground-secondary: #666666;
   --foreground-muted: #888888;
 
+  /* 新增基础颜色变量 */
+  --primary-color: #3f51b5;
+  --primary-hover: #303f9f;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #e53935;
+  --text-primary: var(--foreground);
+  --text-secondary: var(--foreground-secondary);
+  --text-muted: var(--foreground-muted);
+
   /* Component Colors */
   --card-bg: #ffffff;
   --card-border: rgba(0, 0, 0, 0.1);
   --card-shadow: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --card-bg-rgb: 255, 255, 255;
+
+  /* 新增背景和渐变 */
+  --page-bg: #f8f8f8;
+  --editor-bg: #f5f5f7;
+  --page-gradient: linear-gradient(
+    to bottom,
+    rgba(245, 245, 247, 0.8),
+    rgba(245, 245, 247, 0.3)
+  );
 
   /* Tag Colors */
   --tag-bg: rgba(0, 0, 0, 0.05);
   --tag-text: #666666;
   --tag-bg-hover: rgba(0, 0, 0, 0.1);
 
+  /* 新增按钮样式 */
+  --button-primary-bg: #3f51b5;
+  --button-primary-text: #ffffff;
+  --button-primary-hover: #303f9f;
+  --button-secondary-bg: #f0f0f5;
+  --button-secondary-text: #333;
+  --button-secondary-hover: #e5e5ef;
+
+  /* 新增输入框样式 */
+  --input-bg: #ffffff;
+  --input-focus-bg: rgba(63, 81, 181, 0.05);
+
   /* Header Colors */
   --header-bg: rgba(255, 255, 255, 1);
   --header-bg-blur: rgba(255, 255, 255, 0.8);
+  --header-bg-scrolled: rgba(255, 255, 255, 0.95);
+
+  /* 新增占位符样式 */
+  --placeholder-bg: rgba(0, 0, 0, 0.02);
+  --placeholder-border: rgba(0, 0, 0, 0.08);
+  --placeholder-bg-hover: rgba(0, 0, 0, 0.04);
+  --placeholder-border-hover: rgba(0, 0, 0, 0.15);
+
+  /* 新增滚动条样式 */
+  --scrollbar-track: rgba(0, 0, 0, 0.03);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.2);
+
+  /* 过渡效果 */
+  --transition-normal: 0.25s ease;
+  --transition-fast: 0.15s ease;
 }
 
 [data-theme="dark"] {
@@ -27,17 +76,62 @@
   --foreground-secondary: #a0a0a0;
   --foreground-muted: #666666;
 
+  /* 新增基础颜色变量 */
+  --primary-color: #5c6bc0;
+  --primary-hover: #7986cb;
+  --success-color: #4caf50;
+  --warning-color: #ffb74d;
+  --error-color: #f44336;
+  --text-primary: var(--foreground);
+  --text-secondary: var(--foreground-secondary);
+  --text-muted: var(--foreground-muted);
+
   /* Component Colors */
   --card-bg: #1f1f1f;
   --card-border: rgba(255, 255, 255, 0.1);
   --card-shadow: rgba(0, 0, 0, 0.3);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --card-bg-rgb: 31, 31, 31;
+
+  /* 新增背景和渐变 */
+  --page-bg: #121214;
+  --editor-bg: #1a1a1f;
+  --page-gradient: linear-gradient(
+    to bottom,
+    rgba(26, 26, 31, 0.8),
+    rgba(20, 20, 25, 0.3)
+  );
 
   /* Tag Colors */
   --tag-bg: rgba(255, 255, 255, 0.1);
   --tag-text: #a0a0a0;
   --tag-bg-hover: rgba(255, 255, 255, 0.15);
 
+  /* 新增按钮样式 */
+  --button-primary-bg: #5c6bc0;
+  --button-primary-text: #ffffff;
+  --button-primary-hover: #7986cb;
+  --button-secondary-bg: #2d2d35;
+  --button-secondary-text: #e0e0e0;
+  --button-secondary-hover: #3d3d45;
+
+  /* 新增输入框样式 */
+  --input-bg: #2d2d35;
+  --input-focus-bg: rgba(92, 107, 192, 0.1);
+
   /* Header Colors */
   --header-bg: rgba(23, 23, 23, 1);
   --header-bg-blur: rgba(23, 23, 23, 0.8);
+  --header-bg-scrolled: rgba(30, 30, 35, 0.95);
+
+  /* 新增占位符样式 */
+  --placeholder-bg: rgba(255, 255, 255, 0.03);
+  --placeholder-border: rgba(255, 255, 255, 0.08);
+  --placeholder-bg-hover: rgba(255, 255, 255, 0.05);
+  --placeholder-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* 新增滚动条样式 */
+  --scrollbar-track: rgba(255, 255, 255, 0.03);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
 }
