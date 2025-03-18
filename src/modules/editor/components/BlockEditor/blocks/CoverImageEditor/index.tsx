@@ -75,7 +75,13 @@ export function CoverImageEditor({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <Image src={imageUrl} alt="封面图片" className={styles.coverImage} />
+      <Image
+        src={imageUrl}
+        alt="封面图片"
+        className={styles.coverImage}
+        width={1200}
+        height={600}
+      />
 
       {isHovering && (
         <>

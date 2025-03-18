@@ -159,3 +159,35 @@
   background: var(--foreground);
   color: var(--background);
 }
+
+/* 为编辑器页面添加的全局变量 */
+:root {
+  --primary-color: var(--accent-color);
+  --primary-color-alpha: color-mix(
+    in srgb,
+    var(--accent-color) 15%,
+    transparent
+  );
+  --secondary-color: color-mix(in srgb, var(--accent-color) 80%, #ffffff);
+  --secondary-color-alpha: color-mix(
+    in srgb,
+    var(--accent-color) 10%,
+    transparent
+  );
+  --error-bg: color-mix(in srgb, #ef4444 10%, var(--background));
+  --error-border: color-mix(in srgb, #ef4444 20%, transparent);
+  --error-color: #ef4444;
+  --button-text: #ffffff;
+}
+
+/* 暗色模式变量 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color-dark: var(--accent-color);
+    --secondary-color-dark: color-mix(
+      in srgb,
+      var(--accent-color) 60%,
+      #000000
+    );
+  }
+}

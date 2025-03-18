@@ -1,15 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Block } from "@/modules/editor/types/blocks";
 import styles from "./styles.module.css";
-
-interface TextBlockEditorProps {
-  block: Block;
-  isActive: boolean;
-  onChange: (updatedBlock: Partial<Block>) => void;
-  onFocus: () => void;
-  onBlur: () => void;
-  onEnterKey?: () => void;
-}
+import { TextBlockEditorProps } from "./types";
 
 export function TextBlockEditor({
   block,

@@ -1,82 +1,160 @@
 .container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
+  padding: var(--space-xl);
   background-color: var(--background);
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      var(--primary-color-alpha) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      var(--secondary-color-alpha) 0%,
+      transparent 25%
+    );
+  background-attachment: fixed;
+}
+
+.createArticleForm {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: var(--space-xl) auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.formSection {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: var(--space-xl);
+  box-shadow: 0 4px 24px var(--card-shadow);
+  transition: all var(--transition-normal) ease;
+}
+
+.formSection:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--card-shadow);
+  border-color: var(--border-hover-color);
 }
 
 .loading {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: calc(var(--space-xl) * 2) auto;
+  padding: calc(var(--space-xl) * 1.5);
   text-align: center;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px var(--card-shadow);
   color: var(--foreground-muted);
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto 1rem;
-  border: 3px solid var(--card-border);
-  border-top-color: var(--foreground);
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-lg);
+  border: 4px solid var(--primary-color-alpha);
+  border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .error {
-  text-align: center;
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 12px;
   color: var(--error-color);
-  padding: 2rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .error p {
-  margin-bottom: 1.5rem;
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
 
-.button {
-  padding: 0.5rem 1rem;
-  background: var(--foreground);
-  color: var(--background);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.button:hover {
-  opacity: 0.9;
-}
-
-.titleContainer {
-  text-align: center;
-  padding: 2rem;
-  max-width: 600px;
-}
-
-.titleInput {
+.createButton {
   width: 100%;
-  padding: 1rem;
-  font-size: 1.5rem;
-  border: 2px solid var(--card-border);
-  border-radius: 8px;
-  background: var(--background);
-  color: var(--foreground);
-  margin-bottom: 1rem;
-  transition: all 0.2s;
+  padding: var(--space-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--button-text);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-normal) ease;
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
-.titleInput:focus {
-  outline: none;
-  border-color: var(--foreground);
-  box-shadow: 0 0 0 2px var(--foreground-muted);
+.createButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+  filter: brightness(1.1);
 }
 
-.hint {
-  font-size: 0.875rem;
-  color: var(--foreground-muted);
-  margin-top: 0.5rem;
+.createButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.5);
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-md);
+  }
+
+  .createArticleForm {
+    margin: var(--space-md) auto;
+    gap: var(--space-md);
+  }
+
+  .formSection {
+    padding: var(--space-lg);
+  }
+}
+
+/* 暗色模式优化 */
+@media (prefers-color-scheme: dark) {
+  .formSection {
+    background: var(--card-bg-dark);
+    border-color: var(--card-border-dark);
+  }
+
+  .loading {
+    background: var(--card-bg-dark);
+    border-color: var(--card-border-dark);
+  }
+
+  .createButton {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color-dark),
+      var(--secondary-color-dark)
+    );
   }
 }

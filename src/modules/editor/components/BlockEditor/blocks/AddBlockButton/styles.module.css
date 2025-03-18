@@ -6,6 +6,38 @@
   margin: 0.5rem 0;
 }
 
+/* 当使用紧凑模式时的样式 */
+.compact {
+  margin: 0;
+  width: auto;
+}
+
+.compact .addBlockButton {
+  border: none;
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.compact .buttonIcon {
+  color: var(--primary);
+}
+
+.compact .addBlockButton:hover,
+.compact .addBlockButton.active {
+  background-color: transparent;
+  color: var(--primary-dark);
+  border-style: none;
+}
+
+/* 当在blockAddButtonContainer中使用时的特殊样式 - 保留向后兼容性 */
+:global(.blockAddButtonContainer) .addBlockButtonWrapper {
+  margin: 0;
+  width: auto;
+}
+
 .addBlockButton {
   display: flex;
   align-items: center;
@@ -20,11 +52,36 @@
   transition: all 0.2s ease;
 }
 
+/* 当在blockAddButtonContainer中使用时的添加按钮样式 - 保留向后兼容性 */
+:global(.blockAddButtonContainer) .addBlockButton {
+  border: none;
+  padding: 0 0.5rem;
+  background: transparent;
+  color: var(--primary);
+}
+
+:global(.blockAddButtonContainer) .buttonText {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+:global(.blockAddButtonContainer) .buttonIcon {
+  color: var(--primary);
+}
+
 .addBlockButton:hover,
 .addBlockButton.active {
   background-color: var(--tag-bg);
   color: var(--foreground);
   border-style: solid;
+}
+
+/* 当在blockAddButtonContainer中时的悬停样式 - 保留向后兼容性 */
+:global(.blockAddButtonContainer) .addBlockButton:hover,
+:global(.blockAddButtonContainer) .addBlockButton.active {
+  background-color: transparent;
+  color: var(--primary-dark);
+  border-style: none;
 }
 
 .buttonIcon {
@@ -60,6 +117,26 @@
   gap: 0.5rem;
 }
 
+/* 当使用紧凑模式时的菜单样式 */
+.compact .blockTypeMenu {
+  top: 120%;
+  width: 320px;
+  background-color: var(--background);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 当在blockAddButtonContainer中使用时的菜单样式 - 保留向后兼容性 */
+:global(.blockAddButtonContainer) .blockTypeMenu {
+  top: 120%;
+  width: 320px;
+  background-color: var(--background);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
 .blockTypeButton {
   display: flex;
   flex-direction: column;
@@ -93,5 +170,10 @@
 @media (max-width: 640px) {
   .blockTypeMenu {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .compact .blockTypeMenu,
+  :global(.blockAddButtonContainer) .blockTypeMenu {
+    width: 250px;
   }
 }

@@ -1,0 +1,293 @@
+.content {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 12px var(--shadow-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 美化内容区的滚动条 */
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* 内容区块增强 */
+.blockContainer {
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.blockContainer:hover {
+  background-color: var(--card-bg-hover-light, rgba(0, 0, 0, 0.02));
+}
+
+.blockContainer:focus-within {
+  background-color: var(--card-bg-hover-light, rgba(0, 0, 0, 0.03));
+}
+
+/* 当块获得焦点时的样式 */
+.blockContainer.focused {
+  background-color: var(--card-bg-hover-light, rgba(0, 0, 0, 0.05));
+  box-shadow: 0 0 0 2px var(--primary-light, rgba(0, 120, 255, 0.1));
+}
+
+/* 为块控制按钮预留空间 */
+.blockContainer.focused {
+  padding-left: 40px;
+}
+
+/* 确保BlockControls在块中的位置正确 */
+.blockContainer > div[class*="blockControls"] {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.blockWrapper {
+  position: relative;
+  transition: transform 0.2s ease;
+  border-radius: 8px;
+}
+
+.blockWrapper:hover {
+  transform: translateX(2px);
+}
+
+/* 块间添加按钮容器 */
+.blockAddButtonContainer {
+  position: absolute;
+  bottom: -24px;
+  left: 40%;
+  transform: translateX(-50%);
+  z-index: 5;
+  min-width: 120px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  border-radius: 18px;
+  background: rgba(var(--card-bg-rgb), 0.8);
+  backdrop-filter: blur(8px);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 0 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(var(--primary-rgb), 0.08);
+}
+
+.blockAddButtonContainer:hover {
+  background: rgba(var(--card-bg-rgb), 0.95);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: rgba(var(--primary-rgb), 0.15);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.blockAddButtonContainer > * {
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+
+/* 底部添加按钮样式 */
+.addBlockButtonWrapper {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.addBlockButtonWrapper:hover {
+  opacity: 1;
+}
+
+/* 添加块的占位符 - 保留但不再使用 */
+.addBlockPlaceholder {
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  background: var(--placeholder-bg);
+  border: 2px dashed var(--placeholder-border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBlockPlaceholder:hover {
+  background: var(--placeholder-bg-hover);
+  border-color: var(--placeholder-border-hover);
+  transform: translateY(-2px);
+}
+
+/* 平板和移动端适配 */
+@media (max-width: 768px) {
+  .content {
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 8px var(--shadow-color);
+  }
+
+  .blockContainer {
+    margin-bottom: 1rem;
+  }
+
+  .blockAddButtonContainer {
+    min-width: 100px;
+    height: 32px;
+    border-radius: 16px;
+    padding: 0 10px;
+  }
+}
+
+/* 小屏幕手机适配 */
+@media (max-width: 480px) {
+  .content {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .blockAddButtonContainer {
+    bottom: -10px;
+  }
+
+  .blockAddButtonContainer > * {
+    transform: scale(0.7);
+  }
+}
+
+/* 优化动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 底部空白块占位符样式 */
+.emptyBlockPlaceholder {
+  padding: 1.5rem 0;
+  margin: 1rem 0;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--card-bg-hover) 50%,
+    transparent
+  );
+  background-size: 100% 300%;
+  background-position: 0 100%;
+  transition: all 0.3s ease;
+  border: 1px dashed transparent;
+}
+
+.emptyBlockPlaceholder:hover {
+  background-position: 0 0;
+  border-color: var(--card-border);
+}
+
+.emptyBlockHint {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.emptyBlockPlaceholder:hover .emptyBlockHint {
+  color: var(--text-primary);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.emptyBlockButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* 添加焦点效果 */
+.blockContainer:focus-within .blockWrapper {
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* 移除不再需要的BlockSelector相关样式 */
+.blockSelector,
+.blockSelectorOverlay,
+.blockSelectorContent,
+.blockSelectorTitle,
+.blockTypeList,
+.blockTypeItem,
+.blockTypeIcon,
+.blockTypeLabel {
+  display: none;
+}
+
+/* 媒体查询 */
+@media (max-width: 768px) {
+  .blockTypeList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .blockSelectorContent {
+    width: 95%;
+    padding: 16px;
+  }
+}
+
+/* 键盘快捷键提示样式 */
+.keyboardShortcutHint {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.keyboardShortcutHint:hover {
+  opacity: 1;
+}
+
+.keyboardShortcutHint kbd {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  margin: 0 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1;
+  color: var(--text-primary);
+  background-color: var(--card-bg-hover);
+  border: 1px solid var(--card-border);
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}

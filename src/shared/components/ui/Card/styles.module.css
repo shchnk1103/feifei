@@ -53,12 +53,15 @@
 }
 
 .imageWrapper {
-  @apply relative overflow-hidden;
-  aspect-ratio: 16/9;
+  @apply overflow-hidden;
+  width: 100%;
+  height: 200px;
 }
 
 .image {
   @apply object-cover transition-transform duration-500;
+  width: 100%;
+  height: 100%;
 }
 
 .card:hover .image {

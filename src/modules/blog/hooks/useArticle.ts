@@ -86,7 +86,7 @@ export function useArticle<
               id: "current-user", // 应该是当前登录用户的ID
               name: "当前用户",
             },
-            imageSrc: "",
+            imageSrc: "/images/default-article-cover.jpg",
             articleContent: {
               blocks: [
                 {
@@ -145,7 +145,7 @@ export function useArticle<
               name: "示例用户",
               avatar: "https://i.pravatar.cc/300",
             },
-            imageSrc: "https://source.unsplash.com/random/1200x600/?nature",
+            imageSrc: "/images/default-article-cover.jpg",
             articleContent: {
               blocks: [
                 {

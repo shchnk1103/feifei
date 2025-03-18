@@ -52,6 +52,7 @@ export interface Article {
   // 内容
   imageSrc: string; // 封面图片
   articleContent: ArticleContent; // 使用新的 ArticleContent 接口
+  content: string; // 用于 API 请求的纯文本内容
 
   // 时间相关
   createdAt: Date; // 改为 Date 类型
@@ -90,6 +91,7 @@ export const DEFAULT_ARTICLE: Omit<Article, "id"> = {
     version: 1,
     schema: "1.0.0",
   },
+  content: "",
   createdAt: new Date(),
   updatedAt: new Date(),
   status: "draft",

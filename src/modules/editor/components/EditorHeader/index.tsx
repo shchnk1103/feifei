@@ -1,92 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { BiSave, BiCog, BiArrowBack, BiSend } from "react-icons/bi";
-// 使用 BiSend 替代 BiPublish，因为 BiPublish 不存在
 import Link from "next/link";
 import styles from "./styles.module.css";
 
+type SaveStatus = "saved" | "saving" | "error";
+
 interface EditorHeaderProps {
   title: string;
+  saveStatus: SaveStatus;
   onTitleChange: (title: string) => void;
-  saveStatus: "saved" | "saving" | "error";
+  onOpenSettings: () => void;
   onPublish: () => void;
-  onToggleSidebar: () => void;
 }
 
+/**
+ * 编辑器顶部组件
+ *
+ * 显示标题输入框、保存状态和操作按钮
+ */
 export function EditorHeader({
   title,
-  onTitleChange,
   saveStatus,
+  onTitleChange,
+  onOpenSettings,
   onPublish,
-  onToggleSidebar,
 }: EditorHeaderProps) {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const getSaveStatusText = () => {
-    switch (saveStatus) {
-      case "saved":
-        return "已保存";
-      case "saving":
-        return "正在保存...";
-      case "error":
-        return "保存失败!";
-      default:
-        return "";
-    }
+  // 保存状态显示文本
+  const saveStatusText = {
+    saved: "已保存",
+    saving: "保存中...",
+    error: "保存失败!",
   };
 
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
         <Link href="/" className={styles.backButton}>
-          <BiArrowBack />
-          <span className={styles.backText}>返回首页</span>
+          返回首页
         </Link>
-
-        <div
-          className={`${styles.titleWrapper} ${
-            isFocused ? styles.focused : ""
-          }`}
-        >
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
-            placeholder="输入文章标题..."
-            className={styles.titleInput}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-        </div>
+        <input
+          className={styles.titleInput}
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          placeholder="输入文章标题..."
+        />
       </div>
-
       <div className={styles.rightSection}>
         <div className={`${styles.saveStatus} ${styles[saveStatus]}`}>
-          {saveStatus === "saved" && <BiSave className={styles.saveIcon} />}
-          <span>{getSaveStatusText()}</span>
+          {saveStatusText[saveStatus]}
         </div>
-
-        <motion.button
-          className={styles.settingsButton}
-          onClick={onToggleSidebar}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <BiCog />
-          <span>设置</span>
-        </motion.button>
-
-        <motion.button
-          className={styles.publishButton}
-          onClick={onPublish}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <BiSend />
-          <span>发布</span>
-        </motion.button>
+        <button className={styles.settingsButton} onClick={onOpenSettings}>
+          设置
+        </button>
+        <button className={styles.publishButton} onClick={onPublish}>
+          发布
+        </button>
       </div>
     </header>
   );

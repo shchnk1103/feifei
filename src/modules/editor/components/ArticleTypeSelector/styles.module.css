@@ -1,0 +1,112 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.optionCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.optionCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--foreground-secondary);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.optionCard.selected {
+  border-color: var(--primary-color);
+  background: var(--primary-bg);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--tag-bg);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.selected .iconWrapper {
+  background: var(--primary-color);
+  color: var(--background);
+}
+
+.content {
+  text-align: center;
+}
+
+.optionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  line-height: 1.5;
+}
+
+.selectedIndicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.selected .selectedIndicator {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .optionCard {
+    padding: 1.5rem;
+  }
+}

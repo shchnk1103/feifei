@@ -1,4 +1,10 @@
-import { Article } from "../types/blog";
+import { Article, ArticleStatus, ArticleVisibility } from "../types/blog";
+import { CreateArticleOptions } from "../types/editor";
+import { ArticleError } from "../errors/ArticleError";
+import { DefaultArticleCreator } from "./articleCreator";
+import { ArticleStorage } from "../storage/articleStorage";
+import { ArticleApi } from "../api/articleApi";
+import { ArticleValidator } from "../validators/articleValidator";
 
 /**
  * 文章服务
@@ -8,14 +14,27 @@ import { Article } from "../types/blog";
  * - 更新文章
  * - 获取文章
  * - 同步文章
+ * - 文章模板管理
  *
  * @module blog/services/articleService
  */
 
 /**
- * 文章服务接口
+ * 文章服务类
  */
-export const articleService = {
+class ArticleService {
+  private readonly creator: DefaultArticleCreator;
+  private readonly storage: ArticleStorage;
+  private readonly api: ArticleApi;
+  private readonly validator: ArticleValidator;
+
+  constructor() {
+    this.creator = new DefaultArticleCreator();
+    this.storage = new ArticleStorage();
+    this.api = new ArticleApi();
+    this.validator = new ArticleValidator();
+  }
+
   /**
    * 获取认证令牌
    *
@@ -28,173 +47,131 @@ export const articleService = {
       return session?.token || "";
     } catch (error) {
       console.error("获取认证令牌失败:", error);
-      return "";
+      throw new ArticleError("获取认证失败", "AUTH_ERROR");
     }
-  },
+  }
 
   /**
    * 创建新文章
-   *
-   * @param {Article} article - 要创建的文章数据
-   * @returns {Promise<Article>} 创建成功的文章数据
-   *
-   * @throws {Error} 创建文章失败时抛出错误
-   *
-   * @example
-   * ```typescript
-   * const article = {
-   *   title: "文章标题",
-   *   content: "文章内容",
-   *   // ... 其他文章字段
-   * };
-   * const createdArticle = await articleService.createArticle(article);
-   * ```
    */
-  async createArticle(article: Article): Promise<Article> {
+  async createArticle(options: CreateArticleOptions): Promise<Article> {
     try {
-      // 确保文章数据结构正确
-      const articleData = {
-        ...article,
-        articleContent: article.articleContent || {
-          blocks: [],
-          version: 1,
-          schema: "1.0.0",
-        },
-      };
-
-      const response = await fetch("/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(articleData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || result.error || "创建文章失败");
+      switch (options.type) {
+        case "blank":
+          return await this.creator.createBlankArticle(options);
+        case "template":
+          return await this.creator.createFromTemplate({
+            ...options,
+            templateId: options.templateId!,
+          });
+        case "import":
+          return await this.creator.createFromImport({
+            ...options,
+            importData: {},
+          });
+        default:
+          throw new ArticleError("无效的文章类型", "INVALID_TYPE");
       }
-
-      return result.data;
     } catch (error) {
-      console.error("创建文章失败:", error);
-      throw error instanceof Error ? error : new Error("创建文章失败");
+      this.handleError(error, "创建文章失败");
     }
-  },
+  }
 
   /**
    * 更新文章
-   *
-   * @param {string} articleId - 文章ID
-   * @param {Partial<Article>} data - 要更新的文章数据
-   * @returns {Promise<void>}
-   *
-   * @throws {Error} 更新文章失败时抛出错误
-   *
-   * @example
-   * ```typescript
-   * await articleService.updateArticle("article-id", {
-   *   title: "新标题",
-   *   content: "新内容"
-   * });
-   * ```
    */
   async updateArticle(
     articleId: string,
     data: Partial<Article>
   ): Promise<void> {
     try {
-      const response = await fetch(`/api/articles/${articleId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || result.error || "更新文章失败");
+      if (data.title || data.status === "published") {
+        const article = await this.getArticle(articleId);
+        this.validator.validate({ ...article, ...data });
       }
+      await this.api.update(articleId, data);
     } catch (error) {
-      console.error("更新文章失败:", error);
-      throw error instanceof Error ? error : new Error("更新文章失败");
+      this.handleError(error, "更新文章失败");
     }
-  },
+  }
 
   /**
    * 获取文章
-   *
-   * @param {string} articleId - 文章ID
-   * @returns {Promise<Article | null>} 文章数据，如果不存在则返回 null
-   *
-   * @throws {Error} 获取文章失败时抛出错误
-   *
-   * @example
-   * ```typescript
-   * const article = await articleService.getArticle("article-id");
-   * if (article) {
-   *   console.log(article.title);
-   * }
-   * ```
    */
   async getArticle(articleId: string): Promise<Article | null> {
     try {
-      const response = await fetch(`/api/articles/${articleId}`);
-      const result = await response.json();
+      const localArticle = this.storage.getFromLocal(articleId);
+      if (localArticle) return localArticle;
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        throw new Error(result.message || result.error || "获取文章失败");
+      const article = await this.api.get(articleId);
+      if (article) {
+        this.storage.saveToLocal(articleId, article);
       }
-
-      return result.data;
+      return article;
     } catch (error) {
-      console.error("获取文章失败:", error);
-      throw error instanceof Error ? error : new Error("获取文章失败");
+      this.handleError(error, "获取文章失败");
     }
-  },
+  }
 
   /**
-   * 同步本地文章到数据库
-   *
-   * 如果文章已存在则更新，不存在则创建
-   *
-   * @param {Article} article - 要同步的文章数据
-   * @returns {Promise<Article>} 同步后的文章数据
-   *
-   * @throws {Error} 同步文章失败时抛出错误
-   *
-   * @example
-   * ```typescript
-   * const article = {
-   *   id: "article-id",
-   *   title: "文章标题",
-   *   content: "文章内容"
-   * };
-   * const syncedArticle = await articleService.syncArticle(article);
-   * ```
+   * 同步文章
    */
   async syncArticle(article: Article): Promise<Article> {
     try {
       const existingArticle = await this.getArticle(article.id);
-
       if (existingArticle) {
-        // 如果文章已存在，则更新
         await this.updateArticle(article.id, article);
         return article;
-      } else {
-        // 如果文章不存在，则创建
-        return await this.createArticle(article);
       }
+
+      const newArticle = await this.creator.createBlankArticle({
+        title: article.title,
+        description: article.description,
+        visibility: article.visibility,
+        allowComments: article.allowComments,
+        tags: article.tags,
+        category: article.category,
+      });
+      await this.updateArticle(newArticle.id, article);
+      return article;
     } catch (error) {
-      console.error("同步文章失败:", error);
-      throw error instanceof Error ? error : new Error("同步文章失败");
+      this.handleError(error, "同步文章失败");
     }
-  },
-};
+  }
+
+  /**
+   * 发布文章
+   */
+  async publishArticle(articleId: string): Promise<Article> {
+    try {
+      const article = await this.getArticle(articleId);
+      if (!article) {
+        throw new ArticleError("文章不存在", "NOT_FOUND");
+      }
+
+      const publishData = {
+        status: "published" as ArticleStatus,
+        publishedAt: new Date(),
+        visibility: "public" as ArticleVisibility,
+      };
+
+      await this.updateArticle(articleId, publishData);
+      return { ...article, ...publishData };
+    } catch (error) {
+      this.handleError(error, "发布文章失败");
+    }
+  }
+
+  /**
+   * 统一错误处理
+   */
+  private handleError(error: unknown, message: string): never {
+    console.error(`${message}:`, error);
+    throw error instanceof ArticleError
+      ? error
+      : new ArticleError(message, "UNKNOWN_ERROR");
+  }
+}
+
+// 导出文章服务实例
+export const articleService = new ArticleService();

@@ -33,7 +33,13 @@ export function Card({
   return (
     <Link href={href} className={cn(styles.card, className)}>
       <div className={styles.imageWrapper}>
-        <Image src={image.src} alt={image.alt} fill className={styles.image} />
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={1200}
+          height={600}
+          className={styles.image}
+        />
       </div>
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>

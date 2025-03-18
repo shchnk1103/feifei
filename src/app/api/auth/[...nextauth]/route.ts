@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/lib/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
+import { UserRole } from "@/types/next-auth";
 
 const handler = NextAuth({
   providers: [
@@ -39,6 +40,10 @@ const handler = NextAuth({
             throw new Error("用户数据不存在");
           }
 
+          const now = Date.now();
+          const createdAt = userData.createdAt?.toMillis() || now;
+          const updatedAt = userData.updatedAt?.toMillis() || now;
+
           return {
             id: userCredential.user.uid,
             email: userCredential.user.email,
@@ -46,28 +51,32 @@ const handler = NextAuth({
               userData.displayName ||
               userCredential.user.displayName ||
               userCredential.user.email.split("@")[0],
-            role: userData.role || "user",
-            createdAt: userData.createdAt || new Date().toISOString(),
-            updatedAt: userData.updatedAt || new Date().toISOString(),
+            role: (userData.role as UserRole) || "user",
+            createdAt,
+            updatedAt,
           };
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error("认证错误:", error);
 
           // 处理 Firebase 认证错误
-          switch (error.code) {
-            case "auth/user-not-found":
-              throw new Error("用户不存在");
-            case "auth/wrong-password":
-              throw new Error("密码错误");
-            case "auth/invalid-email":
-              throw new Error("邮箱格式不正确");
-            case "auth/user-disabled":
-              throw new Error("账号已被禁用");
-            case "auth/too-many-requests":
-              throw new Error("登录尝试次数过多，请稍后再试");
-            default:
-              throw new Error("登录失败，请检查邮箱和密码");
+          if (error instanceof Error && "code" in error) {
+            const firebaseError = error as { code: string };
+            switch (firebaseError.code) {
+              case "auth/user-not-found":
+                throw new Error("用户不存在");
+              case "auth/wrong-password":
+                throw new Error("密码错误");
+              case "auth/invalid-email":
+                throw new Error("邮箱格式不正确");
+              case "auth/user-disabled":
+                throw new Error("账号已被禁用");
+              case "auth/too-many-requests":
+                throw new Error("登录尝试次数过多，请稍后再试");
+              default:
+                throw new Error("登录失败，请检查邮箱和密码");
+            }
           }
+          throw new Error("登录失败，请检查邮箱和密码");
         }
       },
     }),
@@ -78,13 +87,21 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        // 将所有用户信息保存到 token 中
+        token.id = user.id;
         token.role = user.role;
+        token.createdAt = user.createdAt;
+        token.updatedAt = user.updatedAt;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        // 从 token 中恢复所有用户信息到 session
+        session.user.id = token.id;
         session.user.role = token.role;
+        session.user.createdAt = token.createdAt;
+        session.user.updatedAt = token.updatedAt;
       }
       return session;
     },
