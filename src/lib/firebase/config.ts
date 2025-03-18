@@ -14,6 +14,14 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+// 调试输出Firebase配置信息（移除敏感密钥）
+console.log("Firebase配置信息:", {
+  projectId: firebaseConfig.projectId,
+  storageBucket: firebaseConfig.storageBucket,
+  authDomain: firebaseConfig.authDomain,
+  // 排除敏感信息，如apiKey等
+});
+
 // Initialize Firebase
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

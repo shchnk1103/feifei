@@ -27,6 +27,8 @@ export interface EditorContentProps {
   onBlocksChange: (blocks: Block[]) => void;
   /** 封面图片变化时的回调 */
   onCoverImageChange: (imageUrl: string) => void;
+  /** 文章ID，用于图片存储 */
+  articleId?: string;
 }
 
 /**
@@ -35,9 +37,9 @@ export interface EditorContentProps {
  */
 export const EditorContent: React.FC<EditorContentProps> = ({
   blocks,
-  coverImage,
   onBlocksChange,
   onCoverImageChange,
+  articleId,
 }) => {
   const blocksLength = useMemo(() => blocks.length, [blocks]);
   const hasBlocks = blocksLength > 0;
@@ -149,7 +151,7 @@ export const EditorContent: React.FC<EditorContentProps> = ({
         animate={animations.coverImage.animate}
         transition={animations.coverImage.transition}
       >
-        <CoverImageEditor imageUrl={coverImage} onChange={onCoverImageChange} />
+        <CoverImageEditor onChange={onCoverImageChange} articleId={articleId} />
       </motion.div>
 
       {/* 内容块区域 */}

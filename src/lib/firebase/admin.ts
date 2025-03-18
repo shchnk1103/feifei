@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
 
 // 检查必要的环境变量
 const requiredEnvVars = [
@@ -20,6 +21,14 @@ for (const envVar of requiredEnvVars) {
   envVars[envVar] = value;
 }
 
+// 存储桶配置
+const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+console.log("Firebase配置信息:", {
+  projectId: envVars.FIREBASE_PROJECT_ID,
+  storageBucket: storageBucket,
+  clientEmail: envVars.FIREBASE_CLIENT_EMAIL.split("@")[0] + "@...",
+});
+
 // 初始化 Firebase Admin SDK
 let app;
 try {
@@ -29,9 +38,9 @@ try {
       credential: cert({
         projectId: envVars.FIREBASE_PROJECT_ID,
         clientEmail: envVars.FIREBASE_CLIENT_EMAIL,
-        // 环境变量中的换行符需要被正确解析
         privateKey: envVars.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
       }),
+      storageBucket: storageBucket,
     });
     console.log("Firebase Admin SDK 初始化成功");
   } else {
@@ -43,7 +52,7 @@ try {
   throw error;
 }
 
-// 导出 Firestore 实例
+// 初始化 Firestore
 let db: Firestore;
 try {
   db = getFirestore(app);
@@ -53,4 +62,17 @@ try {
   throw error;
 }
 
-export { db };
+// 初始化 Storage
+const adminStorage = getStorage(app);
+try {
+  const bucket = adminStorage.bucket();
+  console.log("Storage 配置信息:", {
+    bucketName: bucket.name,
+  });
+  console.log("Firebase Storage 初始化成功");
+} catch (error) {
+  console.error("Firebase Storage 初始化失败:", error);
+  throw error;
+}
+
+export { db, adminStorage };

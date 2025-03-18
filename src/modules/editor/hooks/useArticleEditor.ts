@@ -2,11 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Block } from "@/modules/editor/types/blocks";
-import {
-  Article,
-  ArticleStatus,
-  ArticleVisibility,
-} from "@/modules/blog/types/blog";
+import { Article, ArticleVisibility } from "@/modules/blog/types/blog";
 import { useArticle } from "@/modules/blog/hooks/useArticle";
 
 // 用于更新文章的类型
@@ -329,34 +325,56 @@ export function useArticleEditor(initialArticle: Article): ArticleEditorReturn {
     try {
       setSaveStatus("saving");
 
+      // 先保存最新内容
+      await saveArticle();
+
       // 创建发布对象
-      const publishData: UpdateableArticle = {
-        id: article.id,
+      const publishData = {
+        articleId: article.id,
         title,
         description:
           blocks.find((b) => b.type === "text")?.content.slice(0, 150) || "",
         imageSrc: coverImage,
         articleContent: {
-          ...article.articleContent,
           blocks,
+          version: article.articleContent?.version || 1,
         },
         tags,
-        status: "published" as ArticleStatus,
-        publishedAt: new Date(),
         visibility: "public" as ArticleVisibility,
       };
 
-      // 调用API发布
-      await updateArticle(publishData);
+      // 调用发布API
+      const response = await fetch("/api/articles/publish", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(publishData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "发布失败");
+      }
+
+      await response.json(); // 消费响应但不使用结果
+
+      // 更新本地状态
+      setInitialLoadedData({
+        title,
+        blocks,
+        imageSrc: coverImage,
+        tags,
+      });
 
       setSaveStatus("saved");
       alert("文章发布成功！");
     } catch (e) {
-      console.error("Error publishing article:", e);
+      console.error("发布文章失败:", e);
       setSaveStatus("error");
-      alert("发布失败，请稍后重试");
+      alert(e instanceof Error ? e.message : "发布失败，请稍后重试");
     }
-  }, [article, title, blocks, coverImage, tags, updateArticle]);
+  }, [article, title, blocks, coverImage, tags, saveArticle]);
 
   // 返回状态和函数
   return {
