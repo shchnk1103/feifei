@@ -206,22 +206,45 @@ export function useArticle<
    */
   const updateArticle = async (updatedArticle: U & { id: string }) => {
     try {
-      // 实际应用中，这里应该调用API
-      // const response = await fetch(`/api/articles/${articleId}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(updatedArticle),
-      // });
+      console.log(
+        "[调试] updateArticle 接收到的数据:",
+        JSON.stringify(updatedArticle, null, 2)
+      );
+
+      // 实际调用API更新数据库
+      const response = await fetch(`/api/articles/${updatedArticle.id}`, {
+        method: "PATCH", // 使用PATCH方法，与route.ts中定义的方法一致
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedArticle),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "API请求失败");
+      }
 
       // 更新本地状态
       if (article) {
-        setArticle({
+        // 创建更新后的完整文章对象
+        const updatedFullArticle = {
           ...article,
           ...updatedArticle,
           updatedAt: new Date(), // 更新修改时间
-        } as unknown as T);
+        } as unknown as T;
+
+        console.log(
+          "[调试] 更新后的完整文章对象:",
+          JSON.stringify(updatedFullArticle, null, 2)
+        );
+
+        // 更新状态
+        setArticle(updatedFullArticle);
+
+        // 返回更新后的完整文章
+        return updatedFullArticle as unknown as U & { id: string };
       }
 
+      console.log("[调试] 文章为空，仅返回更新部分");
       // 返回更新后的文章
       return updatedArticle;
     } catch (err) {

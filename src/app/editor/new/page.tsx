@@ -14,13 +14,14 @@ import {
   BasicInfoFormData,
 } from "@/modules/editor/components/BasicInfoForm";
 import { TemplateSelector } from "@/modules/editor/components/TemplateSelector";
+import { DraftSelector } from "@/modules/editor/components/DraftSelector";
 import {
   PermissionSettings,
   Visibility,
 } from "@/modules/editor/components/PermissionSettings";
 import styles from "./styles.module.css";
 
-type ArticleType = "blank" | "template" | "import";
+type ArticleType = "blank" | "template" | "import" | "draft";
 
 /**
  * 新建文章页面组件
@@ -46,23 +47,37 @@ export default function NewArticlePage() {
   const [showBasicInfo, setShowBasicInfo] = useState(false);
   const [showTemplate, setShowTemplate] = useState(false);
   const [showPermission, setShowPermission] = useState(false);
+  const [showDrafts, setShowDrafts] = useState(false);
 
   // 引用各个部分的 DOM 元素
   const basicInfoRef = useRef<HTMLDivElement>(null);
   const templateRef = useRef<HTMLDivElement>(null);
+  const draftRef = useRef<HTMLDivElement>(null);
   const permissionRef = useRef<HTMLDivElement>(null);
 
   // 处理文章类型选择
   const handleArticleTypeChange = (type: ArticleType) => {
     setArticleType(type);
-    setShowBasicInfo(true);
-    // 滚动到基本信息表单
-    setTimeout(() => {
-      basicInfoRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 100);
+
+    if (type === "draft") {
+      setShowDrafts(true);
+      // 滚动到草稿选择
+      setTimeout(() => {
+        draftRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    } else {
+      setShowBasicInfo(true);
+      // 滚动到基本信息表单
+      setTimeout(() => {
+        basicInfoRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
   };
 
   // 处理基本信息表单提交
@@ -99,6 +114,11 @@ export default function NewArticlePage() {
         block: "start",
       });
     }, 100);
+  };
+
+  // 处理草稿选择
+  const handleDraftSelect = (articleId: string) => {
+    router.push(`/editor/${articleId}`);
   };
 
   const handleSubmit = async () => {
@@ -148,6 +168,10 @@ export default function NewArticlePage() {
           article = await articleCreator.createFromImport(importOptions);
           break;
 
+        case "draft":
+          // draft 类型通过直接选择草稿处理，不会走到这里
+          throw new Error("请选择一个草稿文章继续编辑");
+
         default:
           article = await articleCreator.createBlankArticle(baseOptions);
       }
@@ -181,6 +205,12 @@ export default function NewArticlePage() {
             onChange={handleArticleTypeChange}
           />
         </section>
+
+        {showDrafts && articleType === "draft" && (
+          <section className={styles.formSection} ref={draftRef}>
+            <DraftSelector onSelect={handleDraftSelect} />
+          </section>
+        )}
 
         {showBasicInfo && (
           <section className={styles.formSection} ref={basicInfoRef}>

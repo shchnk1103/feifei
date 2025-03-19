@@ -14,9 +14,16 @@ export interface ImportArticleOptions extends BaseArticleOptions {
   importData: unknown;
 }
 
+// 草稿文章选项
+export interface DraftArticleOptions {
+  articleId: string;
+}
+
 // 文章创建器接口
 export interface ArticleCreator {
   createBlankArticle(options: BaseArticleOptions): Promise<Article>;
   createFromTemplate(options: TemplateArticleOptions): Promise<Article>;
   createFromImport(options: ImportArticleOptions): Promise<Article>;
+  openDraft(options: DraftArticleOptions): Promise<Article>;
+  deleteDraft(articleId: string): Promise<boolean>;
 }
