@@ -1,10 +1,10 @@
 "use client";
 
 import { memo } from "react";
-import { BiFile, BiBookContent, BiImport } from "react-icons/bi";
+import { BiFile, BiBookContent, BiImport, BiNotepad } from "react-icons/bi";
 import styles from "./styles.module.css";
 
-export type ArticleType = "blank" | "template" | "import";
+export type ArticleType = "blank" | "template" | "import" | "draft";
 
 interface ArticleTypeOption {
   type: ArticleType;
@@ -36,6 +36,12 @@ const articleTypes: ArticleTypeOption[] = [
     label: "导入文章",
     description: "从其他平台导入文章",
     icon: BiImport,
+  },
+  {
+    type: "draft",
+    label: "继续编辑",
+    description: "读取之前未发布的草稿文章",
+    icon: BiNotepad,
   },
 ];
 

@@ -34,6 +34,12 @@ export function AuthContent({
           {mode === "login" ? "登录" : "注册"}
         </RadixDialog.Title>
 
+        <RadixDialog.Description className={styles.description}>
+          {mode === "login"
+            ? "登录您的账户以继续访问"
+            : "创建新账户以获取访问权限"}
+        </RadixDialog.Description>
+
         <AuthTabs mode={mode} onModeChange={onModeChange} />
 
         <AnimatePresence mode="wait">

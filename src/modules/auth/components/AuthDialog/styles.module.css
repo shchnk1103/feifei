@@ -101,6 +101,10 @@
   @apply text-xl font-semibold mb-4 text-center;
 }
 
+.description {
+  @apply text-sm text-gray-600 dark:text-gray-400 mb-4 text-center;
+}
+
 .closeButton {
   position: absolute;
   right: 1rem;

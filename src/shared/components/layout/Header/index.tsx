@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useAuth } from "@/modules/auth";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { ThemeToggle } from "@/modules/theme";
 import { AuthDialog } from "@/modules/auth";
@@ -30,7 +29,6 @@ interface HeaderProps {
 }
 
 export function Header({ shrunk = false }: HeaderProps) {
-  const { logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
 
@@ -46,7 +44,7 @@ export function Header({ shrunk = false }: HeaderProps) {
         {/* Desktop Navigation */}
         <nav className={styles.desktopNav}>
           <NavItems />
-          <UserSection />
+          <UserSection setAuthDialogOpen={setIsAuthDialogOpen} />
           <ThemeToggle />
         </nav>
 
@@ -81,7 +79,11 @@ export function Header({ shrunk = false }: HeaderProps) {
                 >
                   <nav className={styles.mobileNavItems}>
                     <NavItems mobile onClose={() => setIsMenuOpen(false)} />
-                    <UserSection mobile onClose={() => setIsMenuOpen(false)} />
+                    <UserSection
+                      mobile
+                      onClose={() => setIsMenuOpen(false)}
+                      setAuthDialogOpen={setIsAuthDialogOpen}
+                    />
                     <ThemeToggle />
                   </nav>
                 </motion.div>
@@ -96,12 +98,13 @@ export function Header({ shrunk = false }: HeaderProps) {
             </>
           )}
         </AnimatePresence>
-
-        <AuthDialog
-          isOpen={isAuthDialogOpen}
-          onClose={() => setIsAuthDialogOpen(false)}
-        />
       </div>
+
+      {/* 在组件顶层渲染 AuthDialog */}
+      <AuthDialog
+        isOpen={isAuthDialogOpen}
+        onClose={() => setIsAuthDialogOpen(false)}
+      />
     </header>
   );
 }

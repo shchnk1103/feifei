@@ -13,12 +13,26 @@ const publicPaths = [
   "/api/auth/register",
 ];
 
+// 定义不需要验证的API路由正则表达式
+const publicApiPatterns = [
+  /^\/api\/articles$/, // 获取文章列表
+  /^\/api\/articles\/[^/]+$/, // 获取单篇文章详情
+  /^\/api\/articles\/[^/]+\/cover$/, // 获取文章封面图片
+];
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 检查是否是公开路径
   if (publicPaths.includes(pathname)) {
     return NextResponse.next();
+  }
+
+  // 检查是否匹配公开API路由模式
+  for (const pattern of publicApiPatterns) {
+    if (pattern.test(pathname)) {
+      return NextResponse.next();
+    }
   }
 
   try {

@@ -28,4 +28,51 @@ export class ArticleStorage {
       console.error("保存到本地存储失败:", error);
     }
   }
+
+  /**
+   * 获取所有本地草稿文章
+   * @returns {Article[]} 草稿文章列表
+   */
+  getAllDrafts(): Article[] {
+    try {
+      const drafts: Article[] = [];
+      // 遍历localStorage中所有key
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        // 检查是否是文章key
+        if (key && key.startsWith("article-")) {
+          const articleId = key.replace("article-", "");
+          const article = this.getFromLocal(articleId);
+          // 只返回未发布的草稿
+          if (article && article.status !== "published") {
+            drafts.push(article);
+          }
+        }
+      }
+      // 按最后修改时间排序，最新的在前面
+      return drafts.sort((a, b) => {
+        const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+        const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+        return dateB - dateA;
+      });
+    } catch (error) {
+      console.error("获取本地草稿失败:", error);
+      return [];
+    }
+  }
+
+  /**
+   * 从本地存储删除文章
+   * @param {string} articleId - 文章ID
+   * @returns {boolean} 删除是否成功
+   */
+  removeFromLocal(articleId: string): boolean {
+    try {
+      localStorage.removeItem(`article-${articleId}`);
+      return true;
+    } catch (error) {
+      console.error("从本地存储删除文章失败:", error);
+      return false;
+    }
+  }
 }

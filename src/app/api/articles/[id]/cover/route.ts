@@ -16,12 +16,7 @@ import { RouteHandlerParams } from "@/types/next-api";
  */
 export async function GET(request: NextRequest, context: RouteHandlerParams) {
   try {
-    // 验证用户身份
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "未授权操作" }, { status: 401 });
-    }
-
+    // 允许公开访问封面图片
     const params = await context.params;
     const id = params.id;
     if (!id) {

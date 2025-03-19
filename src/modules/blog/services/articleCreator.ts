@@ -4,6 +4,7 @@ import {
   BaseArticleOptions,
   TemplateArticleOptions,
   ImportArticleOptions,
+  DraftArticleOptions,
 } from "../types/creator";
 import { ArticleError } from "../errors/ArticleError";
 import { ArticleStorage } from "../storage/articleStorage";
@@ -276,6 +277,108 @@ export class DefaultArticleCreator implements ArticleCreator {
       throw error instanceof ArticleError
         ? error
         : new ArticleError("获取模板失败", "TEMPLATE_ERROR");
+    }
+  }
+
+  /**
+   * 打开已存在的草稿文章
+   * @param options 草稿文章选项
+   * @returns 文章数据
+   */
+  async openDraft(options: DraftArticleOptions): Promise<Article> {
+    try {
+      const { articleId } = options;
+
+      // 从本地存储获取文章
+      const article = this.articleStorage.getFromLocal(articleId);
+
+      if (!article) {
+        throw new ArticleError("找不到草稿文章", "NOT_FOUND");
+      }
+
+      // 如果需要，这里可以更新文章的访问时间或其他属性
+
+      return article;
+    } catch (error) {
+      console.error("打开草稿文章失败:", error);
+      throw error instanceof ArticleError
+        ? error
+        : new ArticleError("打开草稿文章失败", "OPEN_ERROR");
+    }
+  }
+
+  /**
+   * 删除草稿文章
+   * @param articleId 文章ID
+   * @returns 是否删除成功
+   */
+  async deleteDraft(articleId: string): Promise<boolean> {
+    try {
+      console.log(`开始删除草稿文章: ${articleId}`);
+
+      // 1. 从本地存储删除
+      const localDeleted = this.articleStorage.removeFromLocal(articleId);
+
+      // 2. 尝试从数据库中删除（使用 POST 方法）
+      try {
+        const response = await fetch("/api/articles/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await authService.getAuthToken()}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ articleId }),
+        });
+
+        // 检查响应状态
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`文章在数据库中删除成功: ${articleId}`, data.message);
+        } else {
+          // 尝试读取错误信息
+          try {
+            const errorData = await response.json();
+
+            // 特别处理权限错误
+            if (response.status === 403) {
+              console.warn(
+                `权限错误: 没有权限删除文章 ${articleId}。${
+                  errorData.details || ""
+                }`,
+                errorData
+              );
+
+              // 如果有必要，可以在这里向用户显示权限错误信息
+              // 例如通过某种通知机制
+              throw new ArticleError(
+                `没有权限删除文章。${errorData.details || ""}`,
+                "PERMISSION_ERROR"
+              );
+            } else {
+              console.warn(
+                `从数据库删除文章时出现问题: ${articleId}，状态码: ${response.status}`,
+                errorData.error || errorData.message
+              );
+            }
+          } catch {
+            console.warn(
+              `从数据库删除文章时出现问题: ${articleId}，状态码: ${response.status}`
+            );
+          }
+        }
+      } catch (dbError) {
+        // 数据库删除失败，但不影响本地删除结果
+        console.error(`从数据库删除文章失败: ${articleId}`, dbError);
+      }
+
+      // 3. 无论数据库删除是否成功，都返回本地删除结果
+      return localDeleted;
+    } catch (error) {
+      console.error(`删除草稿文章失败: ${articleId}`, error);
+      throw error instanceof ArticleError
+        ? error
+        : new ArticleError(`删除草稿文章失败: ${articleId}`, "DELETE_ERROR");
     }
   }
 }
