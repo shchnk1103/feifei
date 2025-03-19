@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { isAdmin } from "@/modules/auth/utils/auth";
-import { AuthDialog } from "@/modules/auth";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/modules/auth";
 
@@ -18,12 +17,16 @@ const styles = mergeStyles(mobileStyles, userStyles);
 interface UserSectionProps {
   mobile?: boolean;
   onClose?: () => void;
+  setAuthDialogOpen?: (isOpen: boolean) => void;
 }
 
-export function UserSection({ mobile = false, onClose }: UserSectionProps) {
+export function UserSection({
+  mobile = false,
+  onClose,
+  setAuthDialogOpen,
+}: UserSectionProps) {
   const { data: session } = useSession();
   const { logout } = useAuth();
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const Component = mobile ? motion.div : "div";
@@ -50,21 +53,15 @@ export function UserSection({ mobile = false, onClose }: UserSectionProps) {
 
   if (!session?.user) {
     return (
-      <>
-        <button
-          className={styles.loginLink}
-          onClick={() => {
-            setIsAuthDialogOpen(true);
-            onClose?.();
-          }}
-        >
-          登录
-        </button>
-        <AuthDialog
-          isOpen={isAuthDialogOpen}
-          onClose={() => setIsAuthDialogOpen(false)}
-        />
-      </>
+      <button
+        className={styles.loginLink}
+        onClick={() => {
+          setAuthDialogOpen?.(true);
+          onClose?.();
+        }}
+      >
+        登录
+      </button>
     );
   }
 

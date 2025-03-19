@@ -135,9 +135,6 @@ importers:
       postcss:
         specifier: ^8.5.2
         version: 8.5.3
-      prisma:
-        specifier: ^6.5.0
-        version: 6.5.0(typescript@5.8.2)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
@@ -5820,10 +5817,13 @@ snapshots:
       esbuild-register: 3.6.0(esbuild@0.25.1)
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
-  '@prisma/debug@6.5.0': {}
+  '@prisma/debug@6.5.0':
+    optional: true
 
-  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60': {}
+  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60':
+    optional: true
 
   '@prisma/engines@6.5.0':
     dependencies:
@@ -5831,16 +5831,19 @@ snapshots:
       '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
       '@prisma/fetch-engine': 6.5.0
       '@prisma/get-platform': 6.5.0
+    optional: true
 
   '@prisma/fetch-engine@6.5.0':
     dependencies:
       '@prisma/debug': 6.5.0
       '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
       '@prisma/get-platform': 6.5.0
+    optional: true
 
   '@prisma/get-platform@6.5.0':
     dependencies:
       '@prisma/debug': 6.5.0
+    optional: true
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -7051,6 +7054,7 @@ snapshots:
       esbuild: 0.25.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   esbuild@0.25.1:
     optionalDependencies:
@@ -7079,6 +7083,7 @@ snapshots:
       '@esbuild/win32-arm64': 0.25.1
       '@esbuild/win32-ia32': 0.25.1
       '@esbuild/win32-x64': 0.25.1
+    optional: true
 
   escalade@3.2.0: {}
 
@@ -8957,6 +8962,7 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   prompts@2.4.2:
     dependencies:
