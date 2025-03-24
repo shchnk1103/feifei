@@ -22,9 +22,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "storage.googleapis.com",
+        pathname: "/feifei-s-world.firebasestorage.app/**",
       },
       // Add other domains as needed
     ],
+    domains: ["storage.googleapis.com", "firebasestorage.googleapis.com"],
   },
   eslint: {
     ignoreDuringBuilds: true,

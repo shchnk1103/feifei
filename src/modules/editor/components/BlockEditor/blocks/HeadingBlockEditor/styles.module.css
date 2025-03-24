@@ -1,15 +1,19 @@
+/* 标题块样式 */
 .headingBlockWrapper {
   position: relative;
-  width: 100%;
+  margin: 0;
   padding: 0.25rem;
+  width: 100%;
   border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
+/* 活动状态下的标题块 */
 .activeHeadingBlock {
   background-color: var(--tag-bg);
 }
 
+/* 标题输入框基础样式 */
 .headingBlockEditor {
   width: 100%;
   background-color: transparent;
@@ -21,7 +25,7 @@
   font-family: inherit;
 }
 
-/* 标题级别样式 */
+/* 不同级别标题样式 */
 .h1 {
   font-size: 2.25rem;
   line-height: 1.2;
@@ -42,20 +46,34 @@
   opacity: 0.6;
 }
 
-/* 标题级别选择器 - 新样式 */
+/* 标题级别选择器样式 - 定位到左上方 */
 .headingLevelSelector {
   position: absolute;
-  left: 0.5rem;
-  top: -2.5rem;
-  opacity: 1; /* 确保在显示时是完全不透明的 */
+  left: 0;
+  top: -32px;
   transition: all 0.2s ease-in-out;
   background-color: var(--background);
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 3px;
-  z-index: 20; /* 确保在BlockControls上方 */
-  /* 增加动画入场效果 */
+  z-index: 100;
+  pointer-events: auto;
+  min-width: 50px;
+}
+
+/* 选择器显示状态 */
+.visibleSelector {
+  opacity: 1;
+  visibility: visible;
   animation: fadeIn 0.2s ease-in-out;
+  pointer-events: auto;
+}
+
+/* 选择器隐藏状态 */
+.hiddenSelector {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 @keyframes fadeIn {
@@ -69,6 +87,7 @@
   }
 }
 
+/* 级别选择按钮 */
 .levelSelect {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -77,12 +96,23 @@
   color: var(--foreground);
   font-size: 0.75rem;
   cursor: pointer;
-  appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-  padding-right: 1.5rem;
+  position: relative;
   transition: border-color 0.2s ease, background-color 0.2s ease;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.levelSelect::after {
+  content: "";
+  display: inline-block;
+  margin-left: 0.5rem;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
 }
 
 .levelSelect:hover {
@@ -96,6 +126,49 @@
   box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
+/* 下拉菜单 */
+.headingDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background-color: var(--background);
+  border-radius: 4px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 102;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+/* 下拉选项 */
+.headingOption {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  border: none;
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: bold;
+  transition: background-color 0.1s ease;
+}
+
+.headingOption:hover,
+.headingOption:focus {
+  background-color: var(--tag-bg);
+  outline: none;
+}
+
+/* 活动选项 */
+.activeOption {
+  background-color: var(--tag-bg);
+  color: var(--primary);
+}
+
 @media (max-width: 768px) {
   .headingLevelSelector {
     position: static;
@@ -106,6 +179,12 @@
     justify-content: flex-start;
     background-color: transparent;
     animation: none;
+  }
+
+  .headingDropdown {
+    position: absolute;
+    left: 0;
+    min-width: 100px;
   }
 
   .h1 {

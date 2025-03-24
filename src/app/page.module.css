@@ -55,7 +55,7 @@
   scroll-snap-stop: always;
 }
 
-/* 列表容器，sticky 达到“磁铁”效果，top 值提高以预留足够空间给 header */
+/* 列表容器，sticky 达到"磁铁"效果，top 值提高以预留足够空间给 header */
 .listContainer {
   position: sticky;
   top: 80px; /* 将原来的 60px 调整为 80px，根据 header 高度进行调整 */
@@ -171,7 +171,8 @@
 }
 
 .hero {
-  @apply relative w-full; height: calc(100vh - var(--header-height));
+  @apply relative w-full;
+  height: calc(100vh - var(--header-height));
 }
 
 .content {
@@ -185,4 +186,12 @@
   .content {
     padding: 2rem 0;
   }
+}
+
+/* 错误消息样式 */
+.errorMessage {
+  @apply mt-4 mx-auto max-w-lg p-4 rounded-lg text-center;
+  background-color: var(--error-bg, rgba(254, 226, 226, 0.8));
+  color: var(--error-text, rgb(185, 28, 28));
+  border: 1px solid var(--error-border, rgb(248, 113, 113));
 }

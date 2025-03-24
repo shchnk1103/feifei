@@ -11,6 +11,9 @@ const publicPaths = [
   "/about",
   "/api/auth/login",
   "/api/auth/register",
+  "/api/home", // 首页数据API
+  "/api/carousel", // 轮播图数据API
+  "/api/banner", // 横幅数据API
 ];
 
 // 定义不需要验证的API路由正则表达式
@@ -18,6 +21,10 @@ const publicApiPatterns = [
   /^\/api\/articles$/, // 获取文章列表
   /^\/api\/articles\/[^/]+$/, // 获取单篇文章详情
   /^\/api\/articles\/[^/]+\/cover$/, // 获取文章封面图片
+  /^\/api\/carousel\/.*$/, // 获取轮播图相关数据
+  /^\/api\/banner\/.*$/, // 获取横幅相关数据
+  /^\/api\/home\/.*$/, // 获取首页相关数据
+  /^\/images\/.*$/, // 允许访问图片资源
 ];
 
 export async function middleware(request: NextRequest) {
@@ -84,7 +91,8 @@ export const config = {
      * - api/auth (登录注册接口)
      * - _next (Next.js 系统文件)
      * - public (静态文件)
+     * - images (图片资源)
      */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)",
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|public|images).*)",
   ],
 };

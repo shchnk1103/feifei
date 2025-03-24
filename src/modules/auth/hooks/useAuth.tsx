@@ -174,7 +174,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // 注册成功后自动登录
-      await login(email, password);
+      logger.info("注册成功，开始自动登录");
+      try {
+        await login(email, password);
+        logger.info("自动登录成功");
+      } catch (loginError) {
+        logger.error("注册后自动登录失败", { error: loginError });
+        throw loginError;
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;

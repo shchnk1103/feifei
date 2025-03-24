@@ -33,11 +33,13 @@ export function Card({
   return (
     <Link href={href} className={cn(styles.card, className)}>
       <div className={styles.imageWrapper}>
+        {/* TODO: 图片优化 */}
         <Image
           src={image.src}
           alt={image.alt}
           width={1200}
           height={600}
+          unoptimized={true}
           className={styles.image}
         />
       </div>

@@ -14,6 +14,10 @@ const handler = NextAuth({
         password: { label: "密码", type: "password" },
       },
       async authorize(credentials) {
+        console.log("NextAuth开始认证", {
+          hasEmail: !!credentials?.email,
+          hasPassword: !!credentials?.password,
+        });
         if (!credentials?.email || !credentials?.password) {
           throw new Error("请输入邮箱和密码");
         }
@@ -41,8 +45,36 @@ const handler = NextAuth({
           }
 
           const now = Date.now();
-          const createdAt = userData.createdAt?.toMillis() || now;
-          const updatedAt = userData.updatedAt?.toMillis() || now;
+
+          // 处理可能是字符串或Firestore时间戳的日期
+          let createdAt = now;
+          let updatedAt = now;
+
+          if (userData.createdAt) {
+            if (typeof userData.createdAt === "string") {
+              // 如果是ISO字符串格式
+              createdAt = new Date(userData.createdAt).getTime();
+            } else if (typeof userData.createdAt.toMillis === "function") {
+              // 如果是Firestore时间戳
+              createdAt = userData.createdAt.toMillis();
+            } else if (userData.createdAt.seconds) {
+              // 如果是Firestore时间戳对象但没有toMillis方法
+              createdAt = userData.createdAt.seconds * 1000;
+            }
+          }
+
+          if (userData.updatedAt) {
+            if (typeof userData.updatedAt === "string") {
+              // 如果是ISO字符串格式
+              updatedAt = new Date(userData.updatedAt).getTime();
+            } else if (typeof userData.updatedAt.toMillis === "function") {
+              // 如果是Firestore时间戳
+              updatedAt = userData.updatedAt.toMillis();
+            } else if (userData.updatedAt.seconds) {
+              // 如果是Firestore时间戳对象但没有toMillis方法
+              updatedAt = userData.updatedAt.seconds * 1000;
+            }
+          }
 
           return {
             id: userCredential.user.uid,
@@ -56,7 +88,13 @@ const handler = NextAuth({
             updatedAt,
           };
         } catch (error: unknown) {
-          console.error("认证错误:", error);
+          console.error("NextAuth认证错误:", error, {
+            code:
+              error instanceof Error && "code" in error
+                ? (error as { code: string }).code
+                : "unknown",
+            message: error instanceof Error ? error.message : String(error),
+          });
 
           // 处理 Firebase 认证错误
           if (error instanceof Error && "code" in error) {

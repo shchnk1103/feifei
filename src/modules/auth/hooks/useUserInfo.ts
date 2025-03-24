@@ -19,7 +19,7 @@ export function useUserInfo() {
       ? ({
           id: user.uid,
           email: user.email || "",
-          name: user.displayName || user.email?.split("@")[0] || "",
+          name: user.name || user.email?.split("@")[0] || "",
           role: "user",
           createdAt: new Date(),
           updatedAt: new Date(),
