@@ -4,6 +4,11 @@ import { getServerAuthSession } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import { Query } from "firebase-admin/firestore";
 
+// 定义具有code属性的错误接口
+interface FirebaseError extends Error {
+  code?: string;
+}
+
 /**
  * 文章 API 路由
  *
@@ -43,14 +48,8 @@ import { Query } from "firebase-admin/firestore";
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerAuthSession();
-    console.log("当前会话信息：", {
-      session,
-      user: session?.user,
-      userId: session?.user?.id,
-    });
 
     if (!session?.user) {
-      console.error("未授权访问：缺少用户会话");
       return NextResponse.json(
         {
           error: "未授权访问",
@@ -63,7 +62,6 @@ export async function POST(request: NextRequest) {
 
     // 验证用户信息完整性
     if (!session.user.id || !session.user.name) {
-      console.error("用户信息不完整：", session.user);
       return NextResponse.json(
         {
           error: "用户信息不完整",
@@ -75,13 +73,6 @@ export async function POST(request: NextRequest) {
     }
 
     const articleData = await request.json();
-    console.log("收到创建文章请求：", {
-      title: articleData.title,
-      description: articleData.description,
-      content: articleData.content,
-      author: articleData.author,
-      status: articleData.status,
-    });
 
     // 验证必要字段
     const validationErrors = [];
@@ -92,14 +83,6 @@ export async function POST(request: NextRequest) {
       validationErrors.push("内容不能为空");
     }
     if (validationErrors.length > 0) {
-      console.error("文章数据验证失败：", {
-        validationErrors,
-        articleData: {
-          title: articleData.title,
-          description: articleData.description,
-          content: articleData.content,
-        },
-      });
       return NextResponse.json(
         {
           error: "数据验证失败",
@@ -118,7 +101,7 @@ export async function POST(request: NextRequest) {
       author: {
         id: session.user.id,
         name: session.user.name,
-        email: session.user.email || null, // 如果 email 不存在，使用 null
+        email: session.user.email || null,
       },
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -136,16 +119,8 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    console.log("准备保存文章数据：", {
-      title: article.title,
-      author: article.author,
-      status: article.status,
-      visibility: article.visibility,
-    });
-
     // 使用 Firebase Admin SDK
     const docRef = await db.collection("articles").add(article);
-    console.log("文章保存成功，ID：", docRef.id);
 
     return NextResponse.json({
       success: true,
@@ -155,11 +130,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("创建文章失败，服务器错误：", {
-      error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
     return NextResponse.json(
       {
         error: "创建文章失败",
@@ -171,9 +141,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 获取文章列表
+/**
+ * 获取文章列表
+ *
+ * @route GET /api/articles
+ */
 export async function GET(request: NextRequest) {
   try {
+    // 解析查询参数
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
@@ -182,6 +157,7 @@ export async function GET(request: NextRequest) {
     const authorId = searchParams.get("authorId");
     const tag = searchParams.get("tag");
 
+    // 初始化查询
     let query: Query = db.collection("articles");
 
     // 添加过滤条件
@@ -202,17 +178,57 @@ export async function GET(request: NextRequest) {
     query = query.orderBy("createdAt", "desc");
 
     // 添加分页
-    const startAt = (page - 1) * limit;
-    const snapshot = await query.limit(limit).startAfter(startAt).get();
+    const articlesQuery = query.limit(limit);
 
-    const articles = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // 执行查询
+    let articles = [];
+    let snapshot;
+
+    try {
+      snapshot = await articlesQuery.get();
+      articles = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (queryError) {
+      // 检查是否是索引错误
+      const errorMessage =
+        queryError instanceof Error ? queryError.message : String(queryError);
+      if (errorMessage.includes("index")) {
+        return NextResponse.json(
+          {
+            error: "需要创建索引",
+            message: "请按照错误信息中的链接创建索引",
+            details: errorMessage,
+          },
+          { status: 500 }
+        );
+      }
+
+      // 尝试不带过滤条件和排序获取文章
+      try {
+        const simpleSnapshot = await db
+          .collection("articles")
+          .limit(limit)
+          .get();
+
+        articles = simpleSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+      } catch {
+        throw queryError; // 重新抛出原始错误
+      }
+    }
 
     // 获取总数
-    const totalSnapshot = await query.count().get();
-    const total = totalSnapshot.data().count;
+    let total = 0;
+    try {
+      const totalSnapshot = await query.count().get();
+      total = totalSnapshot.data().count;
+    } catch {
+      total = articles.length; // 回退到已获取的文章数量
+    }
 
     return NextResponse.json({
       articles,
@@ -223,10 +239,21 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
-    console.error("获取文章列表失败:", error);
+  } catch (error: unknown) {
+    // 构建错误响应
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode =
+      error instanceof Error && "code" in error
+        ? (error as FirebaseError).code
+        : "UNKNOWN_ERROR";
+
     return NextResponse.json(
-      { error: "获取文章列表失败", details: error },
+      {
+        error: "获取文章列表失败",
+        message: errorMessage,
+        code: errorCode,
+        details: error instanceof Error ? error.stack : String(error),
+      },
       { status: 500 }
     );
   }

@@ -3,7 +3,6 @@
 import { Carousel } from "@/shared";
 import { ListSection } from "@/modules/blog/components/ListSection";
 import styles from "./page.module.css";
-import { articles } from "@/data/articles";
 import type { ImageAsset } from "@/shared";
 
 const images: ImageAsset[] = [
@@ -46,11 +45,7 @@ export default function Home() {
       </section>
 
       <section className={styles.content}>
-        <ListSection
-          title="最新文章"
-          subtitle="发现更多精彩内容"
-          articles={articles}
-        />
+        <ListSection title="最新文章" subtitle="发现更多精彩内容" />
       </section>
     </div>
   );
