@@ -92,6 +92,7 @@ export function RegisterForm({ onClose }: RegisterFormProps) {
           className={styles.input}
         />
       </div>
+
       <div>
         <input
           type="text"
@@ -102,6 +103,7 @@ export function RegisterForm({ onClose }: RegisterFormProps) {
           className={styles.input}
         />
       </div>
+
       <div>
         <input
           type="password"
@@ -112,6 +114,7 @@ export function RegisterForm({ onClose }: RegisterFormProps) {
           className={styles.input}
         />
       </div>
+
       <div>
         <input
           type="password"
@@ -122,7 +125,9 @@ export function RegisterForm({ onClose }: RegisterFormProps) {
           className={styles.input}
         />
       </div>
+
       {error && <p className={styles.error}>{error}</p>}
+
       <button type="submit" className={styles.button} disabled={loading}>
         {loading ? "注册中..." : "注册"}
       </button>
