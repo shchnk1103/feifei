@@ -39,7 +39,9 @@ export async function PATCH(request: NextRequest, context: RouteHandlerParams) {
   }
 }
 
-// 获取文章
+/**
+ * 获取单个文章的接口
+ */
 export async function GET(request: NextRequest, context: RouteHandlerParams) {
   try {
     const params = await context.params;
@@ -49,16 +51,23 @@ export async function GET(request: NextRequest, context: RouteHandlerParams) {
       return NextResponse.json({ error: "文章ID不能为空" }, { status: 400 });
     }
 
-    const articleRef = db.collection("articles").doc(id);
-    const articleSnap = await articleRef.get();
+    console.log(`正在通过API获取文章[${id}]`);
+    const doc = await db.collection("articles").doc(id).get();
 
-    if (!articleSnap.exists) {
+    if (!doc.exists) {
       return NextResponse.json({ error: "文章不存在" }, { status: 404 });
     }
 
-    return NextResponse.json(articleSnap.data());
+    // 返回带ID的文章数据
+    return NextResponse.json({
+      id: doc.id,
+      ...doc.data(),
+    });
   } catch (error) {
-    console.error("获取文章失败:", error);
-    return NextResponse.json({ error: "获取文章失败" }, { status: 500 });
+    console.error(`获取文章出错:`, error);
+    return NextResponse.json(
+      { error: "获取文章失败", message: (error as Error).message },
+      { status: 500 }
+    );
   }
 }

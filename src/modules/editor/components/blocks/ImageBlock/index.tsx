@@ -52,6 +52,10 @@ export const ImageBlock = memo(function ImageBlock({
 
   const alt = getImageAlt(customAlt || content || "", caption || "");
 
+  // 检查imageUrl是否为空字符串
+  const hasValidImageUrl = imageUrl && imageUrl.trim() !== "";
+  const showImageError = error || !hasValidImageUrl;
+
   return (
     <figure
       ref={ref}
@@ -67,10 +71,10 @@ export const ImageBlock = memo(function ImageBlock({
           styles.imageWrapper,
           sharedStyles.imageContainer,
           isLoading && sharedStyles.loading,
-          error && sharedStyles.error
+          showImageError && sharedStyles.error
         )}
       >
-        {!error ? (
+        {!showImageError ? (
           <Image
             src={imageUrl}
             alt={alt}
@@ -84,10 +88,12 @@ export const ImageBlock = memo(function ImageBlock({
           />
         ) : (
           <div className={styles.errorPlaceholder}>
-            <span role="alert">图片加载失败</span>
+            <span role="alert">
+              {!hasValidImageUrl ? "没有提供图片" : "图片加载失败"}
+            </span>
           </div>
         )}
-        {isLoading && <LoadingPlaceholder />}
+        {isLoading && !showImageError && <LoadingPlaceholder />}
       </div>
       {caption && <figcaption className={styles.caption}>{caption}</figcaption>}
     </figure>
