@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
-import styles from "./page.module.css";
-import { ArticleHeader } from "@/modules/blog/components/ArticleHeader";
-import { ArticleContent } from "@/modules/blog/components/ArticleContent";
+import { ArticleClientPage } from "@/modules/blog/components/ArticleClientPage";
+import { Suspense } from "react";
 import {
   getAllArticleIds,
   getArticleFromStatic,
   normalizeArticle,
 } from "@/modules/blog/services/articleService";
 import { articles as staticArticles } from "@/data/articles";
-import { Article } from "@/modules/blog/types/blog";
+import styles from "./page.module.css";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -43,61 +42,50 @@ export default async function BlogPostPage({
   // 首先尝试从静态数据获取文章
   const staticArticle = getArticleFromStatic(id);
 
+  // 如果找到静态文章，直接渲染
+  if (staticArticle) {
+    return (
+      <Suspense
+        fallback={<div className={styles.loading}>正在加载文章...</div>}
+      >
+        <ArticleClientPage article={staticArticle} />
+      </Suspense>
+    );
+  }
+
   // 如果没有找到静态文章，则尝试获取数据库文章
-  if (!staticArticle) {
-    try {
-      // 构建绝对URL
-      const baseUrl = getBaseUrl();
-      const apiUrl = `${baseUrl}/api/articles/${id}`;
-      console.log(`尝试从API获取文章: ${apiUrl}`);
+  try {
+    // 构建绝对URL
+    const baseUrl = getBaseUrl();
+    const apiUrl = `${baseUrl}/api/articles/${id}`;
 
-      // 通过API端点从数据库获取
-      const res = await fetch(apiUrl, {
-        cache: "no-store",
-        // 确保始终解析为当前主机的API
-        next: {
-          revalidate: 0,
-        },
-      });
+    // 通过API端点从数据库获取
+    const res = await fetch(apiUrl, {
+      cache: "no-store",
+      next: {
+        revalidate: 0,
+      },
+    });
 
-      if (res.ok) {
-        const dbArticle = await res.json();
-        if (dbArticle) {
-          return renderArticle(normalizeArticle(dbArticle));
-        }
-      } else {
-        console.error(`API响应错误: ${res.status} ${res.statusText}`);
+    if (res.ok) {
+      const dbArticle = await res.json();
+      if (dbArticle) {
+        const normalizedArticle = normalizeArticle(dbArticle);
+        return (
+          <Suspense
+            fallback={<div className={styles.loading}>正在加载文章...</div>}
+          >
+            <ArticleClientPage article={normalizedArticle} />
+          </Suspense>
+        );
       }
-    } catch (error) {
-      console.error("获取数据库文章失败:", error);
     }
-  } else {
-    // 找到静态文章，直接渲染
-    return renderArticle(staticArticle);
+  } catch (error) {
+    console.error("获取数据库文章失败:", error);
   }
 
   // 如果两种方式都没有找到文章，则返回404
   notFound();
-}
-
-// 渲染文章组件
-function renderArticle(article: Article) {
-  return (
-    <article className={styles.article}>
-      <ArticleHeader
-        title={article.title}
-        author={article.author}
-        createdAt={article.createdAt}
-        tags={article.tags}
-        coverImage={article.imageSrc}
-      />
-      <ArticleContent
-        blocks={article.articleContent.blocks}
-        version={article.articleContent.version}
-        schema={article.articleContent.schema || ""}
-      />
-    </article>
-  );
 }
 
 export async function generateStaticParams() {

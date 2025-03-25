@@ -14,23 +14,27 @@ global.console = {
   warn: jest.fn(),
 };
 
-// 模拟 next/router
-jest.mock("next/router", () => ({
-  useRouter() {
-    return {
-      route: "/",
-      pathname: "",
-      query: {},
-      asPath: "",
-      push: jest.fn(),
-      events: {
-        on: jest.fn(),
-        off: jest.fn(),
-      },
-      beforePopState: jest.fn(() => null),
-      prefetch: jest.fn(() => null),
-    };
-  },
+// 模拟 next/navigation
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn().mockImplementation(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+    reload: jest.fn(),
+    refresh: jest.fn(),
+    events: {
+      on: jest.fn(),
+      off: jest.fn(),
+      emit: jest.fn(),
+    },
+    beforePopState: jest.fn(),
+    pathname: "/",
+    query: {},
+    asPath: "/",
+  })),
+  usePathname: jest.fn().mockImplementation(() => "/"),
+  useSearchParams: jest.fn().mockImplementation(() => new URLSearchParams()),
 }));
 
 // 添加全局模拟，如果需要
