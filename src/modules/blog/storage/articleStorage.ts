@@ -1,5 +1,8 @@
 import { Article } from "../types/blog";
 
+// 检查是否在浏览器环境
+const isBrowser = typeof window !== "undefined";
+
 export class ArticleStorage {
   /**
    * 从本地存储获取文章
@@ -7,6 +10,8 @@ export class ArticleStorage {
    * @returns {Article | null} 文章数据或null
    */
   getFromLocal(articleId: string): Article | null {
+    if (!isBrowser) return null;
+
     try {
       const data = localStorage.getItem(`article-${articleId}`);
       return data ? JSON.parse(data) : null;
@@ -22,6 +27,8 @@ export class ArticleStorage {
    * @param {Article} article - 文章数据
    */
   saveToLocal(articleId: string, article: Article): void {
+    if (!isBrowser) return;
+
     try {
       localStorage.setItem(`article-${articleId}`, JSON.stringify(article));
     } catch (error) {
@@ -34,6 +41,8 @@ export class ArticleStorage {
    * @returns {Article[]} 草稿文章列表
    */
   getAllDrafts(): Article[] {
+    if (!isBrowser) return [];
+
     try {
       const drafts: Article[] = [];
       // 遍历localStorage中所有key
@@ -67,6 +76,8 @@ export class ArticleStorage {
    * @returns {boolean} 删除是否成功
    */
   removeFromLocal(articleId: string): boolean {
+    if (!isBrowser) return false;
+
     try {
       localStorage.removeItem(`article-${articleId}`);
       return true;

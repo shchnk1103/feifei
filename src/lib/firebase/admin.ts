@@ -1,3 +1,7 @@
+// 警告: 此文件仅供服务器端使用
+// 只在API routes和Server Components中直接导入此文件
+// 不要在客户端组件或Pages路由组件中导入此文件
+
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";

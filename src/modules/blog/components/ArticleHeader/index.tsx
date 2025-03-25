@@ -2,6 +2,9 @@ import { formatDate } from "@/shared/utils/date";
 import Image from "next/image";
 import styles from "./styles.module.css";
 
+// 默认头像路径
+const DEFAULT_AVATAR = "/images/default-avatar.png";
+
 interface ArticleHeaderProps {
   title: string;
   author: {
@@ -23,12 +26,14 @@ export const ArticleHeader = ({
 }: ArticleHeaderProps) => (
   <header className={styles.header}>
     <div className={styles.cover}>
+      {/* TODO: 图片优化 */}
       <Image
         src={coverImage}
         alt={title}
         width={1920}
         height={1080}
         priority
+        unoptimized={true}
         className={styles.image}
       />
     </div>
@@ -38,15 +43,17 @@ export const ArticleHeader = ({
 
       <div className={styles.info}>
         <div className={styles.author}>
-          {author.avatar && (
-            <Image
-              src={author.avatar}
-              alt={author.name}
-              width={40}
-              height={40}
-              className={styles.avatar}
-            />
-          )}
+          <Image
+            src={
+              author.avatar && author.avatar.trim() !== ""
+                ? author.avatar
+                : DEFAULT_AVATAR
+            }
+            alt={author.name}
+            width={40}
+            height={40}
+            className={styles.avatar}
+          />
           <span className={styles.authorName}>{author.name}</span>
         </div>
         <time dateTime={createdAt.toISOString()}>{formatDate(createdAt)}</time>

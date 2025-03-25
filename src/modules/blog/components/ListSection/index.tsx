@@ -6,61 +6,13 @@ import { Article } from "@/modules/blog/types/blog";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { articles as staticArticlesData } from "@/data/articles";
+import {
+  DBArticle,
+  mergeArticles,
+} from "@/modules/blog/services/articleService";
 
-// 定义Firestore Timestamp接口
-interface FirestoreTimestamp {
-  toDate: () => Date;
-  seconds: number;
-  nanoseconds: number;
-}
-
-// 定义API返回的文章类型
-interface ApiArticle {
-  id: string;
-  slug: string;
-  title: string;
-  description: string;
-  author: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  imageSrc?: string; // 可能为空
-  articleContent: {
-    blocks: unknown[]; // 使用unknown代替any，因为我们不会直接操作blocks
-    version: number;
-    schema?: string;
-    lastEditedBy?: string;
-  };
-  content: string;
-  createdAt: string | FirestoreTimestamp; // API可能返回字符串或Timestamp
-  updatedAt: string | FirestoreTimestamp;
-  publishedAt?: string | FirestoreTimestamp;
-  status: string;
-  visibility: string;
-  allowComments: boolean;
-  tags: string[];
-  category?: string;
-  metadata: {
-    wordCount: number;
-    readingTime: number;
-    views: number;
-    likes: number;
-  };
-  seoTitle?: string;
-  seoDescription?: string;
-}
-
-// 定义API响应类型
-interface ArticleApiResponse {
-  articles: ApiArticle[];
-  pagination?: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
+// 导入响应类型，但使用另一个名称避免冲突
+import type { ArticleApiResponse as ApiResponse } from "@/modules/blog/services/articleService";
 
 interface ListSectionProps {
   title: string;
@@ -71,7 +23,7 @@ export function ListSection({ title, subtitle }: ListSectionProps) {
   const router = useRouter();
   const { user, isAdmin } = useAuth();
   const [staticArticles, setStaticArticles] = useState<Article[]>([]);
-  const [dbArticles, setDbArticles] = useState<ApiArticle[]>([]);
+  const [dbArticles, setDbArticles] = useState<DBArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,38 +31,6 @@ export function ListSection({ title, subtitle }: ListSectionProps) {
   useEffect(() => {
     setStaticArticles(staticArticlesData);
   }, []);
-
-  // 安全转换日期值为Date对象
-  const safeDate = (dateValue: unknown): Date | undefined => {
-    // 处理Firestore Timestamp
-    if (
-      dateValue &&
-      typeof dateValue === "object" &&
-      "toDate" in dateValue &&
-      typeof (dateValue as FirestoreTimestamp).toDate === "function"
-    ) {
-      return (dateValue as FirestoreTimestamp).toDate();
-    }
-
-    // 处理字符串日期
-    if (typeof dateValue === "string") {
-      try {
-        const date = new Date(dateValue);
-        if (!isNaN(date.getTime())) {
-          return date;
-        }
-      } catch {
-        // 忽略无效日期字符串
-      }
-    }
-
-    // 已经是Date对象
-    if (dateValue instanceof Date && !isNaN(dateValue.getTime())) {
-      return dateValue;
-    }
-
-    return undefined;
-  };
 
   // 从数据库获取文章
   useEffect(() => {
@@ -128,7 +48,8 @@ export function ListSection({ title, subtitle }: ListSectionProps) {
           );
         }
 
-        const data = (await response.json()) as ArticleApiResponse;
+        const data = (await response.json()) as ApiResponse;
+        // 确保数据转换为正确的类型
         setDbArticles(data.articles || []);
       } catch (err) {
         console.error("获取文章失败:", err);
@@ -141,55 +62,9 @@ export function ListSection({ title, subtitle }: ListSectionProps) {
     fetchArticles();
   }, []);
 
-  // 合并处理文章数据
+  // 合并处理文章数据，使用共享服务
   const mergedArticles = useMemo(() => {
-    // 将API返回的文章转换为应用内的Article类型
-    const validDbArticles = dbArticles.map((article: ApiArticle) => {
-      // 确保每篇文章都有图片
-      const imageSrc = article.imageSrc || "/images/default-article.jpg";
-
-      // 安全转换日期
-      const createdAt = safeDate(article.createdAt) || new Date();
-      const updatedAt = safeDate(article.updatedAt) || createdAt;
-      const publishedAt = article.publishedAt
-        ? safeDate(article.publishedAt)
-        : undefined;
-
-      return {
-        ...article,
-        imageSrc,
-        createdAt,
-        updatedAt,
-        publishedAt,
-      } as Article;
-    });
-
-    // 合并文章并去重
-    const articleIds = new Set();
-    const result: Article[] = [];
-
-    // 先添加静态文章
-    staticArticles.forEach((article) => {
-      if (!articleIds.has(article.id)) {
-        articleIds.add(article.id);
-        result.push(article);
-      }
-    });
-
-    // 再添加数据库文章
-    validDbArticles.forEach((article) => {
-      if (!articleIds.has(article.id)) {
-        articleIds.add(article.id);
-        result.push(article);
-      }
-    });
-
-    // 按日期排序（最新的排在前面）
-    return result.sort((a, b) => {
-      const dateA = a.publishedAt || a.createdAt;
-      const dateB = b.publishedAt || b.createdAt;
-      return dateB.getTime() - dateA.getTime();
-    });
+    return mergeArticles(staticArticles, dbArticles);
   }, [staticArticles, dbArticles]);
 
   const handleCreateArticle = () => {
