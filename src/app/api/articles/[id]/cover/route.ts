@@ -4,7 +4,13 @@ import { authOptions } from "@/lib/auth";
 import { adminStorage } from "@/lib/firebase/admin";
 import { Storage } from "firebase-admin/storage";
 import { NextRequest } from "next/server";
-import { RouteHandlerParams } from "@/types/next-api";
+
+// 参数类型，与Next.js App Router兼容
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
 /**
  * 获取文章封面图片
@@ -14,11 +20,10 @@ import { RouteHandlerParams } from "@/types/next-api";
  * @param context 上下文对象，包含路由参数
  * @returns 返回封面图片URL
  */
-export async function GET(request: NextRequest, context: RouteHandlerParams) {
+export async function GET(request: NextRequest, props: Props) {
   try {
     // 允许公开访问封面图片
-    const params = await context.params;
-    const id = params.id;
+    const { id } = props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }
@@ -85,7 +90,7 @@ export async function GET(request: NextRequest, context: RouteHandlerParams) {
  * @param context 上下文对象，包含路由参数
  * @returns 成功或失败的响应
  */
-export async function POST(request: NextRequest, context: RouteHandlerParams) {
+export async function POST(request: NextRequest, props: Props) {
   try {
     // 验证用户身份
     const session = await getServerSession(authOptions);
@@ -93,8 +98,7 @@ export async function POST(request: NextRequest, context: RouteHandlerParams) {
       return NextResponse.json({ error: "未授权操作" }, { status: 401 });
     }
 
-    const params = await context.params;
-    const id = params.id;
+    const { id } = props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }
@@ -133,10 +137,7 @@ export async function POST(request: NextRequest, context: RouteHandlerParams) {
  * @param context 上下文对象，包含路由参数
  * @returns 成功或失败的响应
  */
-export async function DELETE(
-  request: NextRequest,
-  context: RouteHandlerParams
-) {
+export async function DELETE(request: NextRequest, props: Props) {
   try {
     // 验证用户身份
     const session = await getServerSession(authOptions);
@@ -144,8 +145,7 @@ export async function DELETE(
       return NextResponse.json({ error: "未授权操作" }, { status: 401 });
     }
 
-    const params = await context.params;
-    const id = params.id;
+    const { id } = props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }

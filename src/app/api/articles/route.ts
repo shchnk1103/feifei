@@ -3,10 +3,20 @@ import { db } from "@/lib/firebase/admin";
 import { getServerAuthSession } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import { Query } from "firebase-admin/firestore";
+import {
+  Article,
+  ArticleStatus,
+  ArticleVisibility,
+} from "@/modules/blog/types/blog";
 
 // 定义具有code属性的错误接口
 interface FirebaseError extends Error {
   code?: string;
+}
+
+// 定义API返回的文章类型
+export interface ApiArticle extends Omit<Article, "id"> {
+  id: string;
 }
 
 /**
@@ -75,7 +85,7 @@ export async function POST(request: NextRequest) {
     const articleData = await request.json();
 
     // 验证必要字段
-    const validationErrors = [];
+    const validationErrors: string[] = [];
     if (!articleData.title) {
       validationErrors.push("标题不能为空");
     }
@@ -152,8 +162,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const status = searchParams.get("status");
-    const visibility = searchParams.get("visibility");
+    const status = searchParams.get("status") as ArticleStatus | null;
+    const visibility = searchParams.get(
+      "visibility"
+    ) as ArticleVisibility | null;
     const authorId = searchParams.get("authorId");
     const tag = searchParams.get("tag");
 
@@ -181,7 +193,7 @@ export async function GET(request: NextRequest) {
     const articlesQuery = query.limit(limit);
 
     // 执行查询
-    let articles = [];
+    let articles: ApiArticle[] = [];
     let snapshot;
 
     try {
@@ -189,7 +201,7 @@ export async function GET(request: NextRequest) {
       articles = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as ApiArticle[];
     } catch (queryError) {
       // 检查是否是索引错误
       const errorMessage =
@@ -215,7 +227,7 @@ export async function GET(request: NextRequest) {
         articles = simpleSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
+        })) as ApiArticle[];
       } catch {
         throw queryError; // 重新抛出原始错误
       }

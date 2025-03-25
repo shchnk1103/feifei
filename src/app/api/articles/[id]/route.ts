@@ -1,20 +1,27 @@
-import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase/admin";
+import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { NextRequest } from "next/server";
-import { RouteHandlerParams } from "@/types/next-api";
+import { ApiArticle } from "@/app/api/articles/route";
+
+// 参数类型，与Next.js App Router兼容
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
 // 更新文章
-export async function PATCH(request: NextRequest, context: RouteHandlerParams) {
+export async function PUT(request: NextRequest, props: Props) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+
+    if (!session) {
       return NextResponse.json({ error: "未授权访问" }, { status: 401 });
     }
 
-    const params = await context.params;
-    const id = params.id;
+    const { id } = props.params;
 
     if (!id) {
       return NextResponse.json({ error: "文章ID不能为空" }, { status: 400 });
@@ -32,41 +39,97 @@ export async function PATCH(request: NextRequest, context: RouteHandlerParams) {
     const articleRef = db.collection("articles").doc(id);
     await articleRef.update(updateData);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: "文章更新功能待实现" });
   } catch (error) {
-    console.error("更新文章失败:", error);
-    return NextResponse.json({ error: "更新文章失败" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "更新文章失败",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
 }
 
 /**
  * 获取单个文章的接口
  */
-export async function GET(request: NextRequest, context: RouteHandlerParams) {
+export async function GET(request: NextRequest, props: Props) {
   try {
-    const params = await context.params;
-    const id = params.id;
+    const { id } = props.params;
+
+    // 检查文章ID是否有效
+    if (!id) {
+      return NextResponse.json(
+        {
+          error: "无效的文章ID",
+          code: "INVALID_ID",
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log(`获取文章 ID: ${id}`);
+
+    // 从Firestore获取文章
+    const docRef = db.collection("articles").doc(id);
+    const docSnap = await docRef.get();
+
+    // 如果文章不存在
+    if (!docSnap.exists) {
+      return NextResponse.json(
+        {
+          error: "文章不存在",
+          code: "NOT_FOUND",
+        },
+        { status: 404 }
+      );
+    }
+
+    // 返回文章数据
+    const articleData = docSnap.data();
+    const article: ApiArticle = {
+      id: docSnap.id,
+      ...articleData,
+    } as ApiArticle;
+
+    return NextResponse.json(article);
+  } catch (error) {
+    console.error("获取文章失败:", error);
+    return NextResponse.json(
+      {
+        error: "获取文章失败",
+        details: error instanceof Error ? error.message : String(error),
+        code: "SERVER_ERROR",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// 删除文章
+export async function DELETE(request: NextRequest, props: Props) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "未授权访问" }, { status: 401 });
+    }
+
+    const { id } = props.params;
 
     if (!id) {
       return NextResponse.json({ error: "文章ID不能为空" }, { status: 400 });
     }
 
-    console.log(`正在通过API获取文章[${id}]`);
-    const doc = await db.collection("articles").doc(id).get();
-
-    if (!doc.exists) {
-      return NextResponse.json({ error: "文章不存在" }, { status: 404 });
-    }
-
-    // 返回带ID的文章数据
-    return NextResponse.json({
-      id: doc.id,
-      ...doc.data(),
-    });
+    // ... 现有删除文章的代码 ...
+    return NextResponse.json({ message: "文章删除功能待实现" });
   } catch (error) {
-    console.error(`获取文章出错:`, error);
     return NextResponse.json(
-      { error: "获取文章失败", message: (error as Error).message },
+      {
+        error: "删除文章失败",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }

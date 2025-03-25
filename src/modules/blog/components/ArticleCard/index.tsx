@@ -1,13 +1,17 @@
 import { Card } from "@/shared/components/ui/Card";
-import { Article } from "@/modules/blog/types/blog"; // 修改导入路径
+import { Article } from "@/modules/blog/types/blog";
 import { formatDate } from "@/shared/utils/date";
 import styles from "./styles.module.css";
 
-interface ListItemProps {
+interface ArticleCardProps {
   article: Article;
 }
 
-export function ListItem({ article }: ListItemProps) {
+/**
+ * 文章卡片组件
+ * 用于在列表中显示文章摘要信息
+ */
+export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Card
       href={`/blog/${article.id}`}
@@ -18,8 +22,8 @@ export function ListItem({ article }: ListItemProps) {
       title={article.title}
       description={article.description}
       meta={{
-        author: article.author.name, // 修改：使用作者名称
-        authorAvatar: article.author.avatar, // 新增：作者头像
+        author: article.author.name,
+        authorAvatar: article.author.avatar,
         date: formatDate(article.createdAt),
         tags: article.tags,
       }}
