@@ -14,6 +14,7 @@ const publicPaths = [
   "/api/home", // 首页数据API
   "/api/carousel", // 轮播图数据API
   "/api/banner", // 横幅数据API
+  "/blog", // 博客列表页
 ];
 
 // 定义不需要验证的API路由正则表达式
@@ -25,6 +26,7 @@ const publicApiPatterns = [
   /^\/api\/banner\/.*$/, // 获取横幅相关数据
   /^\/api\/home\/.*$/, // 获取首页相关数据
   /^\/images\/.*$/, // 允许访问图片资源
+  /^\/blog\/[^/]+$/, // 博客文章详情页
 ];
 
 export async function middleware(request: NextRequest) {
