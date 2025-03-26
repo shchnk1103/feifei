@@ -3,7 +3,7 @@
 import { memo, useEffect, useState } from "react";
 import { BiSearch, BiLoader } from "react-icons/bi";
 import styles from "./styles.module.css";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 
 interface Template {
   id: string;
@@ -121,7 +121,7 @@ export const TemplateSelector = memo(function TemplateSelector({
             className={styles.templateCard}
             onClick={() => onSelect(template.id)}
           >
-            <Image
+            <OptimizedImage
               src={template.thumbnail}
               alt={template.name}
               width={300}

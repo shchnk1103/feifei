@@ -1,21 +1,31 @@
 .container {
-  @apply w-full px-4;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .center {
-  @apply flex flex-col items-center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .small {
-  @apply max-w-2xl mx-auto;
+  max-width: 42rem; /* 2xl = 42rem */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .medium {
-  @apply max-w-4xl mx-auto;
+  max-width: 56rem; /* 4xl = 56rem */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .large {
-  @apply max-w-6xl mx-auto;
+  max-width: 72rem; /* 6xl = 72rem */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (max-width: 640px) {

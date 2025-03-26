@@ -1,60 +1,278 @@
 .footer {
-  @apply w-full py-12 mt-auto;
-  background: var(--footer-bg);
-  border-top: 1px solid var(--color-border);
+  width: 100%;
+  padding: 3rem 0;
+  margin-top: auto;
+  background: rgba(var(--background-rgb), 0.8);
+  border-top: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  position: relative;
+  z-index: var(--z-index-base);
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-color),
+    transparent
+  );
+  opacity: 0.3;
 }
 
 .container {
-  @apply mx-auto px-4 max-w-7xl;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-width: 80rem;
 }
 
 .content {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-8 mb-8;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .content {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .section {
-  @apply space-y-4;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .title {
-  @apply text-lg font-semibold;
-  color: var(--color-text);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.25rem;
+  width: 2rem;
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: 1px;
 }
 
 .description {
-  @apply text-sm;
-  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--foreground-secondary);
+}
+
+/* 社交媒体链接 */
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(var(--foreground-rgb), 0.05);
+  color: var(--foreground-secondary);
+  transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+  transform: translateY(-3px);
+  background: rgba(var(--accent-color-rgb), 0.2);
+  color: var(--accent-color);
+  box-shadow: 0 5px 15px rgba(var(--accent-color-rgb), 0.15);
 }
 
 .nav {
-  @apply flex flex-col space-y-2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .nav a {
-  @apply text-sm transition-colors;
-  color: var(--color-text-secondary);
+  color: var(--foreground-secondary);
+  font-size: 0.875rem;
+  position: relative;
+  transition: color 0.2s ease;
+  width: fit-content;
+}
+
+.nav a::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
 }
 
 .nav a:hover {
-  color: var(--color-primary);
+  color: var(--accent-color);
+}
+
+.nav a:hover::before {
+  width: 100%;
+}
+
+/* 联系方式链接 */
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground-secondary);
+  position: relative;
+  transition: all 0.2s ease;
+  height: 1.75rem;
+}
+
+.contactLink:hover {
+  color: var(--accent-color);
+  transform: translateX(3px);
+}
+
+.contactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: rgba(var(--foreground-rgb), 0.05);
+  color: var(--foreground-muted);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.contactIcon svg {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.contactLink:hover .contactIcon {
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-color);
+}
+
+.contactText {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+}
+
+.contactLink:hover .contactText {
+  color: var(--accent-color);
 }
 
 .bottom {
-  @apply pt-8 text-sm text-center border-t;
-  color: var(--color-text-muted);
-  border-color: var(--color-border);
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  border-top: 1px solid rgba(var(--foreground-rgb), 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bottom::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--foreground-muted),
+    transparent
+  );
+  opacity: 0.2;
+}
+
+/* 底部链接 */
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.footerLinks a {
+  color: var(--foreground-muted);
+  font-size: 0.75rem;
+  transition: color 0.2s ease;
+}
+
+.footerLinks a:hover {
+  color: var(--accent-color);
+}
+
+.divider {
+  color: var(--foreground-muted);
+  opacity: 0.5;
 }
 
 @media (max-width: 768px) {
   .footer {
-    @apply py-8;
+    padding: 2rem 0;
   }
 
   .content {
-    @apply gap-6;
+    gap: 1.5rem;
   }
 
   .section {
-    @apply space-y-3;
+    gap: 0.75rem;
+  }
+
+  .title::after {
+    width: 1.5rem;
+  }
+
+  .socialIcon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .contactIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .bottom {
+    gap: 0.25rem;
   }
 }

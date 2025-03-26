@@ -1,0 +1,44 @@
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.pageDescription {
+  text-align: center;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+.settingsWrapper {
+  padding: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    margin: 20px auto;
+  }
+
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+
+  .pageDescription {
+    margin-bottom: 30px;
+  }
+}
+
+/* 深色模式适配 */
+:global(.dark) .pageDescription {
+  color: #9ca3af;
+}

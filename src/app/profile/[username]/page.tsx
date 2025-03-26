@@ -4,7 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserInfo } from "@/modules/auth";
 import styles from "./profile.module.css";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import { getUserAvatar } from "@/modules/auth/types/user";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
@@ -140,7 +140,7 @@ export default function ProfilePage() {
     <div className={styles.container}>
       <div className={styles.profileHeader}>
         <div className={styles.avatarContainer}>
-          <Image
+          <OptimizedImage
             src={getUserAvatar(userInfo)}
             alt={`${displayName}的头像`}
             width={120}

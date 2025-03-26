@@ -1,5 +1,5 @@
 import { BiPencil, BiX } from "react-icons/bi";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import styles from "../styles.module.css";
 
 interface CoverImageDisplayProps {
@@ -33,7 +33,7 @@ export function CoverImageDisplay({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <Image
+      <OptimizedImage
         src={imageUrl}
         alt="封面图片"
         className={styles.coverImage}

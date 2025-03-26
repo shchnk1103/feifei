@@ -20,19 +20,20 @@ export function Stack({
   className,
   ...props
 }: StackProps) {
+  const classes = [
+    styles.stack,
+    styles[direction],
+    styles[`spacing-${spacing}`],
+    styles[`align-${align}`],
+    styles[`justify-${justify}`],
+    wrap ? styles.wrap : "",
+    className || "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      className={`
-        ${styles.stack}
-        ${styles[direction]}
-        ${styles[`spacing-${spacing}`]}
-        ${styles[`align-${align}`]}
-        ${styles[`justify-${justify}`]}
-        ${wrap ? styles.wrap : ""}
-        ${className || ""}
-      `}
-      {...props}
-    >
+    <div className={classes} {...props}>
       {children}
     </div>
   );

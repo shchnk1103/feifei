@@ -1,15 +1,40 @@
 /* Theme toggle in mobile nav */
 .mobileNavItems :global(.theme-toggle) {
-  @apply mt-4;
+  margin-top: 1rem;
+}
+
+/* 桌面端显示和隐藏的主题切换 */
+.desktopThemeToggle {
+  display: none; /* 默认隐藏 */
+}
+
+.mobileThemeToggle {
+  display: block; /* 默认显示 */
+}
+
+/* 在桌面端显示固定位置的主题切换按钮，隐藏导航中的按钮 */
+@media (min-width: 768px) {
+  .desktopThemeToggle {
+    display: block; /* 桌面端显示 */
+  }
+
+  .mobileThemeToggle {
+    display: none; /* 桌面端隐藏 */
+  }
 }
 
 /* Overlay */
 .overlay {
-  @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
-  z-index: 49;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: var(--z-index-modal);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
+  will-change: opacity;
 }
 
 .overlay.open {
@@ -24,4 +49,108 @@
 
 .dialogWrapper :global(.radix-dialog-content) {
   z-index: 101 !important;
+}
+
+/* 更新Header样式，增强毛玻璃效果 */
+.header {
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--header-border);
+  background: var(--header-bg-blur);
+  box-shadow: var(--header-shadow);
+  z-index: var(--z-index-header);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* 滚动缩小后的header样式 */
+.shrunk {
+  height: calc(var(--header-height) * 0.85);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  background: var(--header-bg);
+}
+
+/* Logo样式增强 */
+.logo {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent-color) 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.4s ease;
+  font-size: 1.5rem;
+  transform: translateZ(0);
+}
+
+.logo:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, var(--accent-color) 0%, #60a5fa 100%);
+  transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: 2px;
+}
+
+.logo:hover:after {
+  width: 100%;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+/* 增加导航菜单项的玻璃效果 */
+.navItem a {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.navItem a:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(var(--accent-rgb), 0),
+    rgba(var(--accent-rgb), 0.05),
+    rgba(var(--accent-rgb), 0)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.navItem a:hover {
+  background: rgba(var(--accent-rgb), 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform: translateY(-2px);
+}
+
+.navItem a:hover:before {
+  opacity: 1;
+}
+
+/* 给用户区域添加玻璃效果 */
+.userProfileStyles :global(.user-profile-button) {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.userProfileStyles :global(.user-profile-button:hover) {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--glass-shadow);
 }

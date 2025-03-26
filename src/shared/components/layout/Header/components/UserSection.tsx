@@ -5,12 +5,13 @@ import { menuItemVariants } from "../animations";
 import { mergeStyles } from "@/shared/utils/styles";
 import mobileStyles from "../styles/mobile.module.css";
 import userStyles from "../styles/user.module.css";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { isAdmin } from "@/modules/auth/utils/auth";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/modules/auth";
+import { Portal } from "@/shared/components/ui/Portal";
 
 const styles = mergeStyles(mobileStyles, userStyles);
 
@@ -29,6 +30,7 @@ export function UserSection({
   const { logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const Component = mobile ? motion.div : "div";
   const props = mobile ? { variants: menuItemVariants } : {};
   const className = mobile ? styles.mobileUserSection : styles.userSection;
@@ -41,7 +43,9 @@ export function UserSection({
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
       }
@@ -79,16 +83,32 @@ export function UserSection({
     }
   };
 
+  // 计算下拉菜单位置
+  const getDropdownPosition = () => {
+    if (mobile) return {};
+
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      return {
+        top: `${rect.bottom + window.scrollY}px`,
+        right: `${window.innerWidth - rect.right}px`,
+      };
+    }
+
+    return {};
+  };
+
   return (
     <Component {...props} className={className} data-testid="user-section">
-      <div className={styles.userDropdown} ref={dropdownRef}>
+      <div className={`${styles.userDropdown} ${styles.userProfileContainer}`}>
         {!mobile && (
           <button
-            className={styles.userProfileButton}
+            ref={buttonRef}
+            className={`${styles.userProfileButton} user-profile-button`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <div className={styles.userInfo}>
-              <Image
+              <OptimizedImage
                 src={session.user.image || "/images/default-avatar.png"}
                 alt={displayName}
                 width={32}
@@ -118,9 +138,46 @@ export function UserSection({
           </button>
         )}
 
-        {(isDropdownOpen || mobile) && (
-          <div className={styles.dropdownMenu}>
-            {mobile && (
+        {isDropdownOpen && !mobile ? (
+          <Portal>
+            <div
+              ref={dropdownRef}
+              className={styles.dropdownMenu}
+              style={getDropdownPosition()}
+            >
+              <Link
+                href={`/profile/${displayName}`}
+                className={styles.dropdownItem}
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  onClose?.();
+                }}
+              >
+                个人资料
+              </Link>
+              {userIsAdmin && (
+                <Link
+                  href="/admin"
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    onClose?.();
+                  }}
+                >
+                  管理后台
+                </Link>
+              )}
+              <button
+                className={`${styles.dropdownItem} ${styles.logoutButton}`}
+                onClick={handleLogout}
+              >
+                退出登录
+              </button>
+            </div>
+          </Portal>
+        ) : (
+          mobile && (
+            <div className={styles.dropdownMenu}>
               <div
                 className={
                   userIsAdmin
@@ -128,7 +185,7 @@ export function UserSection({
                     : styles.mobileUserInfo
                 }
               >
-                <Image
+                <OptimizedImage
                   src={session.user.image || "/images/default-avatar.png"}
                   alt={displayName}
                   width={40}
@@ -137,36 +194,36 @@ export function UserSection({
                 />
                 <span className={usernameClassName}>{displayName}</span>
               </div>
-            )}
-            <Link
-              href={`/profile/${displayName}`}
-              className={styles.dropdownItem}
-              onClick={() => {
-                setIsDropdownOpen(false);
-                onClose?.();
-              }}
-            >
-              个人资料
-            </Link>
-            {userIsAdmin && (
               <Link
-                href="/admin"
+                href={`/profile/${displayName}`}
                 className={styles.dropdownItem}
                 onClick={() => {
                   setIsDropdownOpen(false);
                   onClose?.();
                 }}
               >
-                管理后台
+                个人资料
               </Link>
-            )}
-            <button
-              className={`${styles.dropdownItem} ${styles.logoutButton}`}
-              onClick={handleLogout}
-            >
-              退出登录
-            </button>
-          </div>
+              {userIsAdmin && (
+                <Link
+                  href="/admin"
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    onClose?.();
+                  }}
+                >
+                  管理后台
+                </Link>
+              )}
+              <button
+                className={`${styles.dropdownItem} ${styles.logoutButton}`}
+                onClick={handleLogout}
+              >
+                退出登录
+              </button>
+            </div>
+          )
         )}
       </div>
     </Component>

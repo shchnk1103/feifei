@@ -1,18 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { motion, AnimatePresence } from "framer-motion";
 import { ImageAsset } from "@/shared/types/image";
 import styles from "./styles.module.css";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
+// Import Swiper styles - 使用分离导入避免依赖Tailwind
+import "swiper/css/bundle";
 
 interface CarouselProps {
   images: ImageAsset[];
@@ -88,7 +85,7 @@ export function Carousel({
                 transition={{ duration: 0.5 }}
               >
                 {mounted && (
-                  <Image
+                  <OptimizedImage
                     src={image.src}
                     alt={image.alt}
                     width={1920}
@@ -96,13 +93,9 @@ export function Carousel({
                     priority={index === 0}
                     quality={90}
                     className={styles.image}
-                    onLoad={() => handleImageLoad(index)}
+                    onLoadingComplete={() => handleImageLoad(index)}
                     placeholder="blur"
                     blurDataURL={image.blurDataURL}
-                    sizes="100vw"
-                    style={{
-                      objectFit: "cover",
-                    }}
                   />
                 )}
               </motion.div>

@@ -1,8 +1,8 @@
 // 导出组件
 export { ThemeToggle } from "./components/ThemeToggle";
 
-// 导出钩子
-export { useTheme } from "./hooks/useTheme";
+// 导出类型
+export type { Theme, ThemeContextType } from "./types/theme";
 
-// 导出上下文
-export { ThemeProvider } from "./contexts/ThemeProvider";
+// 导出上下文和Hook
+export { ThemeProvider, useTheme } from "./contexts/ThemeContext";
