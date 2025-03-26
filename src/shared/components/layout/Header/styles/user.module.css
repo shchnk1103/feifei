@@ -57,18 +57,30 @@
 }
 
 .dropdownMenu {
-  position: absolute;
-  top: 100%;
-  right: 0;
+  position: fixed;
   margin-top: var(--space-sm);
-  background-color: var(--background);
-  border: 1px solid var(--border-color);
+  background-color: rgba(var(--background-rgb), 0.85);
+  border: 1px solid var(--glass-border);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px var(--shadow-color),
-    0 2px 4px -1px var(--shadow-color);
+  box-shadow: var(--glass-shadow);
   min-width: 200px;
-  z-index: 50;
+  z-index: var(--z-index-dropdown);
   overflow: hidden;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  animation: fadeIn 0.2s ease;
+  transform-origin: top right;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .dropdownItem {
@@ -81,12 +93,13 @@
   color: var(--foreground);
   font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
   position: relative;
 }
 
 .dropdownItem:hover {
-  background-color: var(--card-bg-hover);
+  background-color: rgba(var(--accent-color-rgb), 0.1);
+  padding-left: calc(var(--space-md) + 4px);
 }
 
 /* 登录按钮样式 */
@@ -180,6 +193,8 @@
     align-items: center;
     gap: var(--space-xs);
     width: 100%;
+    z-index: inherit;
+    animation: none;
   }
 
   .dropdownItem {
@@ -194,6 +209,7 @@
   .dropdownItem:hover {
     background-color: var(--card-bg-hover);
     transform: translateX(var(--space-xs));
+    padding-left: var(--space-md);
   }
 
   /* 移动端登录按钮样式 */
@@ -214,14 +230,27 @@
     text-align: center;
   }
 
-  .logoutButton:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-    transform: translateX(var(--space-xs));
-  }
-
   /* 隐藏下拉箭头图标 */
   .dropdownIcon {
     display: none;
   }
+}
+
+/* 给用户区域添加玻璃效果 */
+.userProfileContainer :global(.user-profile-button) {
+  background: rgba(var(--foreground-rgb), 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.userProfileContainer :global(.user-profile-button:hover) {
+  background: rgba(var(--accent-rgb), 0.08);
+  box-shadow: var(--glass-shadow);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-rgb), 0.2);
 }

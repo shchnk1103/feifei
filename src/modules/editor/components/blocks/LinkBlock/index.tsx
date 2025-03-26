@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useState } from "react";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import { LinkBlock as LinkBlockType } from "@/modules/editor/types/blocks";
 import styles from "./styles.module.css";
 import clsx from "clsx";
@@ -31,14 +31,13 @@ export const LinkBlock = memo(function LinkBlock({
       <div className={styles.linkCard}>
         {metadata.imageUrl && !imageError && (
           <div className={styles.imageWrapper}>
-            <Image
+            <OptimizedImage
               src={metadata.imageUrl}
               alt={content}
               width={120}
               height={120}
               className={styles.image}
               onError={() => setImageError(true)}
-              loading="lazy"
             />
           </div>
         )}

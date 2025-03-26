@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import { ImageBlock as ImageBlockType } from "@/modules/editor/types/blocks";
 import { useImage } from "@/shared/hooks/useImage";
 import { LoadingPlaceholder } from "../shared/LoadingPlaceholder";
@@ -75,14 +75,13 @@ export const ImageBlock = memo(function ImageBlock({
         )}
       >
         {!showImageError ? (
-          <Image
+          <OptimizedImage
             src={imageUrl}
             alt={alt}
             width={width}
             height={height}
             className={clsx(styles.image, isLoading && sharedStyles.loading)}
             priority={false}
-            loading="lazy"
             onLoadingComplete={handleLoadComplete}
             onError={handleError}
           />

@@ -1,14 +1,18 @@
 .card {
-  @apply block h-full overflow-hidden rounded-xl transition-all duration-300;
-  background: var(--card-bg);
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  transition: all 300ms;
   border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
-  transition: all var(--transition-normal);
+  background: var(--card-bg);
+  box-shadow: 0 2px 10px var(--card-shadow);
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px var(--card-shadow);
+  box-shadow: 0 6px 15px var(--card-shadow);
+  background: var(--card-bg-hover);
 }
 
 /* Variants */
@@ -52,48 +56,124 @@
   width: 100%;
 }
 
-.imageWrapper {
-  @apply overflow-hidden;
-  width: 100%;
-  height: 200px;
+.vertical {
+  display: flex;
+  flex-direction: column;
 }
 
-.image {
-  @apply object-cover transition-transform duration-500;
-  width: 100%;
-  height: 100%;
+.horizontal {
+  display: flex;
+  flex-direction: row;
 }
 
-.card:hover .image {
+@media (max-width: 640px) {
+  .horizontal {
+    flex-direction: column;
+  }
+
+  .horizontal .imageWrapper {
+    width: 100%;
+    max-height: 200px;
+  }
+
+  .horizontal .content {
+    width: 100%;
+  }
+}
+
+.isLink:hover .title {
+  color: var(--accent-color);
+}
+
+.isLink:hover .image {
   transform: scale(1.05);
 }
 
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.horizontal .imageWrapper {
+  width: 40%;
+  height: auto;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms;
+}
+
+.noImage {
+  background: linear-gradient(
+    to right,
+    var(--accent-color),
+    rgba(59, 130, 246, 0.5)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+}
+
 .content {
-  @apply p-6 flex flex-col gap-4;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .title {
-  @apply text-xl font-bold leading-tight line-clamp-2;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   color: var(--card-title);
 }
 
 .description {
-  @apply text-sm leading-relaxed line-clamp-2;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   color: var(--card-description);
 }
 
 .meta {
-  @apply flex items-center justify-between mt-auto pt-4 border-t;
-  border-color: var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
 }
 
 .info {
-  @apply flex items-center gap-3 text-sm;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .author {
-  @apply font-medium;
+  font-weight: 500;
   color: var(--card-author);
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
 }
 
 .datetime {
@@ -101,11 +181,16 @@
 }
 
 .tags {
-  @apply flex flex-wrap gap-2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .tag {
-  @apply px-2 py-1 text-xs rounded-full transition-colors;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  transition: all 200ms;
   background: var(--tag-bg);
   color: var(--tag-text);
 }
@@ -114,24 +199,42 @@
   background: var(--tag-bg-hover);
 }
 
+/* Compact variant */
+.compact .content {
+  padding: 1rem;
+}
+
+.compact .title {
+  font-size: 1.125rem;
+}
+
+.compact .meta {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
 @media (max-width: 768px) {
   .content {
-    @apply p-4;
+    padding: 1rem;
   }
 
   .title {
-    @apply text-lg;
+    font-size: 1.125rem;
   }
 
   .meta {
-    @apply flex-col items-start gap-3;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .info {
-    @apply w-full justify-between;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .tags {
-    @apply w-full;
+    width: 100%;
   }
 }

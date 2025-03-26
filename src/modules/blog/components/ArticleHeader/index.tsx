@@ -1,5 +1,5 @@
 import { formatDate } from "@/shared/utils/date";
-import Image from "next/image";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 import styles from "./styles.module.css";
 
 // 默认头像路径
@@ -26,14 +26,13 @@ export const ArticleHeader = ({
 }: ArticleHeaderProps) => (
   <header className={styles.header}>
     <div className={styles.cover}>
-      {/* TODO: 图片优化 */}
-      <Image
+      {/* 使用OptimizedImage替代Image */}
+      <OptimizedImage
         src={coverImage}
         alt={title}
         width={1920}
         height={1080}
         priority
-        unoptimized={true}
         className={styles.image}
       />
     </div>
@@ -43,7 +42,7 @@ export const ArticleHeader = ({
 
       <div className={styles.info}>
         <div className={styles.author}>
-          <Image
+          <OptimizedImage
             src={
               author.avatar && author.avatar.trim() !== ""
                 ? author.avatar

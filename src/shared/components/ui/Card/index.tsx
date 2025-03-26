@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/shared/utils/cn";
+import { OptimizedImage } from "../OptimizedImage";
 import styles from "./styles.module.css";
 
 interface CardMetaProps {
@@ -33,24 +33,27 @@ export function Card({
   return (
     <Link href={href} className={cn(styles.card, className)}>
       <div className={styles.imageWrapper}>
-        {/* TODO: 图片优化 */}
-        <Image
+        <OptimizedImage
           src={image.src}
           alt={image.alt}
           width={1200}
           height={600}
-          unoptimized={true}
           className={styles.image}
         />
       </div>
+
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
+
         <p className={styles.description}>{description}</p>
+
         <div className={styles.meta}>
           <div className={styles.info}>
             <span className={styles.author}>{meta.author}</span>
+
             <time className={styles.datetime}>{meta.date}</time>
           </div>
+
           {meta.tags && (
             <div className={styles.tags}>
               {meta.tags.map((tag) => (

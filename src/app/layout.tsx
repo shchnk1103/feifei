@@ -1,32 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { ThemeProvider } from "@/modules/theme";
-import { Header, Footer } from "@/shared";
-import { AuthProvider } from "@/modules/auth";
-import { SessionProvider } from "@/shared/components/providers/SessionProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { AppContextProvider } from "@/shared/contexts/AppContextProvider";
+import { Header, Footer } from "@/shared";
 import "@/styles/globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-  preload: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  display: "swap",
-  subsets: ["latin"],
-  preload: true,
-});
 
 export const metadata: Metadata = {
   title: "Feifei",
   description: "A blog platform for sharing thoughts and ideas.",
   keywords: ["博客", "技术", "生活", "前端开发"],
   authors: [{ name: "FeiとFei" }],
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -43,25 +29,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
-      >
-        <SessionProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <div className="flex min-h-screen flex-col">
-                <Header />
+      <body className="min-h-screen antialiased">
+        <AppContextProvider>
+          <div className="flex min-h-screen flex-col">
+            <Header />
 
-                <main className="flex-1">{children}</main>
+            <main className="flex-1">{children}</main>
 
-                <Footer />
-              </div>
+            <Footer />
+          </div>
 
-              <Analytics />
-              <SpeedInsights />
-            </ThemeProvider>
-          </AuthProvider>
-        </SessionProvider>
+          <Analytics />
+          <SpeedInsights />
+        </AppContextProvider>
       </body>
     </html>
   );

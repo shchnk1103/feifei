@@ -1,7 +1,4 @@
 .themeToggle {
-  position: fixed;
-  bottom: var(--space-lg);
-  right: var(--space-lg);
   padding: var(--space-sm);
   border-radius: var(--radius-md);
   background: var(--card-bg);
@@ -11,17 +8,39 @@
   font-size: var(--font-size-xl);
   transition: transform var(--transition-fast),
     background-color var(--transition-fast);
-  z-index: var(--z-header);
-  @apply p-2 rounded-lg transition-colors duration-200;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition-property: color, background-color;
+  transition-duration: 200ms;
   color: var(--color-text);
 }
 
-.themeToggle:hover {
-  transform: scale(1.1);
-  background: var(--card-hover-bg);
+/* 桌面端固定在右下角 */
+@media (min-width: 768px) {
+  .themeToggle {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 100;
+    opacity: 0.8;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    background: rgba(var(--accent-color-rgb), 0.2);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* 只在桌面版，当hover时样式变化 */
+  .themeToggle:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    background: rgba(var(--accent-color-rgb), 0.3);
+    box-shadow: var(--glass-shadow);
+  }
 }
 
 .themeToggle:focus-visible {
-  @apply outline-none ring-2;
+  outline: none;
+  ring-width: 2px;
+  ring-style: solid;
   ring-color: var(--color-primary);
 }

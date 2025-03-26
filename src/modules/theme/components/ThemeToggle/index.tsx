@@ -1,23 +1,21 @@
 "use client";
 
-import { useTheme } from "../../contexts/ThemeProvider";
+import { useTheme } from "../../contexts/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import styles from "./styles.module.css";
 
+/**
+ * 主题切换按钮组件
+ * 允许用户在浅色、深色和系统主题之间切换
+ */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-
-  const toggleTheme = () => {
-    if (theme === "light") setTheme("dark");
-    else if (theme === "dark") setTheme("system");
-    else setTheme("light");
-  };
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button
       onClick={toggleTheme}
       className={styles.themeToggle}
-      aria-label="Toggle theme"
+      aria-label="切换主题"
     >
       <AnimatePresence mode="wait" initial={false}>
         {theme === "light" && (

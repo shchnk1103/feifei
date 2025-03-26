@@ -1,11 +1,58 @@
 .desktopNav {
-  @apply hidden md:flex items-center gap-6;
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: flex;
+  }
 }
 
 .navItem {
-  @apply flex items-center gap-6;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .navItem a {
-  @apply transition-colors hover:text-primary relative text-sm font-medium;
+  position: relative;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 0;
+}
+
+.navItem a:hover {
+  color: var(--accent-color);
+}
+
+/* 添加导航链接下划线效果 */
+.navItem a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
+  opacity: 0;
+}
+
+.navItem a:hover::after {
+  width: 100%;
+  opacity: 1;
+}
+
+/* 当前活动页面的链接样式 */
+.navItem a.active {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.navItem a.active::after {
+  width: 100%;
+  opacity: 1;
 }
