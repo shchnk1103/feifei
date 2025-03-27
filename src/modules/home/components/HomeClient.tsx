@@ -38,11 +38,19 @@ export function HomeClient({
         <Carousel
           images={images}
           autoplay={true}
-          interval={5000}
-          showNavigation={true}
-          showPagination={true}
-          effect="fade"
-          height="calc(100vh - var(--header-height))"
+          interval={8000}
+          showNavigation={false}
+          showPagination={false}
+          effect="coverflow"
+          height="80vh"
+          borderRadius="16px"
+          coverflowRotate={35}
+          coverflowDepth={180}
+          coverflowStretch={0}
+          coverflowModifier={1.2}
+          coverflowSlidesPerView={1.8}
+          objectFit="cover"
+          className={styles.homeCarousel}
         />
       </section>
 

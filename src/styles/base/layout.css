@@ -1,0 +1,22 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--background);
+  background-image: radial-gradient(
+      at 10% 10%,
+      rgba(var(--accent-color-rgb), 0.1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(
+      at 90% 20%,
+      rgba(var(--accent-color-rgb), 0.08) 0px,
+      transparent 50%
+    ),
+    radial-gradient(
+      at 50% 70%,
+      rgba(var(--accent-color-rgb), 0.05) 0px,
+      transparent 70%
+    );
+  background-attachment: fixed;
+}

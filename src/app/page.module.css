@@ -1,6 +1,59 @@
 .pageContainer {
-  @apply flex flex-col relative;
+  position: relative;
   min-height: calc(100vh - var(--header-height));
+  width: 100%;
+}
+
+.homeContainer {
+  width: 100%;
+  max-width: 80rem; /* 与 header 容器一致 */
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: relative;
+}
+
+/* 响应式调整 */
+@media (min-width: 768px) {
+  .homeContainer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .homeContainer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* 更大屏幕尺寸的调整 */
+@media (min-width: 1280px) {
+  .homeContainer {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .homeContainer {
+    max-width: 85%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .homeContainer {
+    max-width: 90%;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: 1.2rem;
+  color: var(--foreground-secondary);
 }
 
 /* 整体容器样式，设置足够的高度确保页面可滚动 */

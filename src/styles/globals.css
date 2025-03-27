@@ -1,5 +1,6 @@
 @import "./base/variables.css";
 @import "./base/reset.css";
+@import "./base/layout.css";
 @import "./base/util.css";
 @import "./themes/theme.css";
 @import "./utils/animations.css";
@@ -34,9 +35,11 @@
   --z-index-content: 10;
   --z-index-header: 150;
   --z-index-dropdown: 200;
-  --z-index-modal: 300;
-  --z-index-toast: 400;
-  --z-index-tooltip: 500;
+  --z-index-modal: 900;
+  --z-index-dialog: 9999;
+  --z-index-dialog-content: 10000;
+  --z-index-toast: 10100;
+  --z-index-tooltip: 10200;
 
   --footer-bg: #f1f1f1;
   --shadow-color: rgba(0, 0, 0, 0.1);
@@ -103,9 +106,11 @@
   --z-index-content: 10;
   --z-index-header: 150;
   --z-index-dropdown: 200;
-  --z-index-modal: 300;
-  --z-index-toast: 400;
-  --z-index-tooltip: 500;
+  --z-index-modal: 900;
+  --z-index-dialog: 9999;
+  --z-index-dialog-content: 10000;
+  --z-index-toast: 10100;
+  --z-index-tooltip: 10200;
 
   --footer-bg: #262626;
   --shadow-color: rgba(0, 0, 0, 0.3);
