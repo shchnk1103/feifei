@@ -56,13 +56,19 @@ export default async function Home() {
   const articles = mergeArticles(staticArticlesData, dbArticles);
 
   return (
-    <Suspense fallback={<div className={styles.loading}>正在加载内容...</div>}>
-      <HomeClient
-        images={images}
-        articles={articles}
-        title="最新文章"
-        subtitle="发现更多精彩内容"
-      />
-    </Suspense>
+    <div className={styles.pageContainer}>
+      <div className={styles.homeContainer}>
+        <Suspense
+          fallback={<div className={styles.loading}>正在加载内容...</div>}
+        >
+          <HomeClient
+            images={images}
+            articles={articles}
+            title="最新文章"
+            subtitle="发现更多精彩内容"
+          />
+        </Suspense>
+      </div>
+    </div>
   );
 }

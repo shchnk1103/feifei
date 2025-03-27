@@ -1,21 +1,31 @@
 .overlay {
+  background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
   inset: 0;
-  z-index: 50;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  z-index: var(--z-index-dialog);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
 }
 
 .content {
   position: fixed;
-  left: 50%;
   top: 50%;
-  z-index: 50;
+  left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 0.5rem;
-  background-color: white;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 500px;
+  overflow-y: auto;
+  background-color: var(--card-bg, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  z-index: var(--z-index-dialog-content);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--card-border, rgba(0, 0, 0, 0.1));
+  will-change: transform, opacity;
 }
 
 :global(.dark) .content {
@@ -24,30 +34,67 @@
 
 .closeButton {
   position: absolute;
-  right: 1rem;
-  top: 1rem;
-  border-radius: 0.125rem;
-  opacity: 0.7;
-  ring-offset-color: white;
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--foreground-muted, #666);
+  transition: all 0.2s ease;
 }
 
 .closeButton:hover {
-  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--foreground, #000);
 }
 
-.closeButton:focus {
-  outline: none;
-  ring-width: 2px;
-  ring-color: var(--primary-color);
-  ring-offset: 2px;
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
 }
 
-.closeButton span {
-  height: 1rem;
-  width: 1rem;
+.title {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--foreground, #000);
+  padding-right: 2rem; /* 为关闭按钮留出空间 */
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--foreground-muted, #666);
+  margin-bottom: 1rem;
+}
+
+.dialogContent {
+  flex: 1;
+}
+
+/* 移动设备适配 */
+@media (max-width: 640px) {
+  .content {
+    width: 90vw;
+    padding: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+}
+
+/* 动画优化 */
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .content {
+    transition: none !important;
+    animation: none !important;
+  }
 }

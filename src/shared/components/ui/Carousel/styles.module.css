@@ -3,8 +3,9 @@
   width: 100%;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.05);
-  min-height: 400px;
-  max-height: calc(100vh - var(--header-height)); /* 添加最小高度 */
+  min-height: 300px;
+  max-height: calc(90vh - var(--header-height));
+  border-radius: 18px;
 }
 
 .thumbs-bottom {
@@ -86,12 +87,59 @@
 .swiper {
   width: 100%;
   height: 100%;
+  padding: 20px 0;
 }
 
 .slide {
   position: relative;
   width: 100%;
   height: 100%;
+  transition: transform 0.5s ease-out;
+}
+
+/* 图片容器样式 */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Coverflow特效样式 */
+.coverflowSwiper {
+  padding: 10px 0;
+  perspective: 1500px;
+  overflow: visible;
+}
+
+/* Coverflow幻灯片样式 */
+.coverflowSlide {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1); /* 平滑的过渡曲线 */
+}
+
+/* 非活动幻灯片的基础样式 */
+.carouselSlide:global(.swiper-slide:not(.swiper-slide-active)) {
+  transform: scale(0.85);
+  opacity: 0.7;
+  filter: blur(1px);
+  transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Coverflow效果的非活动幻灯片 */
+.carouselSlide:global(.swiper-effect-coverflow)
+  .carouselSlide:global(.swiper-slide:not(.swiper-slide-active)) {
+  transform: scale(0.85);
+  opacity: 0.75;
+  filter: none; /* 移除模糊效果，以便更好地观察3D旋转 */
+}
+
+/* Coverflow效果的活动幻灯片 */
+.carouselSlide:global(.swiper-effect-coverflow)
+  .carouselSlide:global(.swiper-slide-active) {
+  z-index: 10;
+  transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .slideWrapper {
@@ -99,63 +147,171 @@
   width: 100%;
   height: 100%;
   aspect-ratio: 16/9;
-  min-height: 400px;
-  max-height: calc(100vh - var(--header-height));
-  background: rgba(0, 0, 0, 0.1); /* 添加背景色便于调试 */
+  min-height: 300px;
+  max-height: calc(90vh - var(--header-height));
+  background: rgba(0, 0, 0, 0.1);
+  transform-origin: center center;
+  transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Coverflow特定的slideWrapper样式 */
+.coverflowSlide .slideWrapper {
+  transform-style: preserve-3d;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backface-visibility: hidden;
+  height: 100%;
+  width: 100%;
+  /* 竖向照片适配 */
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .slideWrapper::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: #e5e7eb; /* bg-gray-200 */
+  background-color: #e5e7eb;
   z-index: 0;
 }
 
-/* Navigation Buttons */
-.carouselContainer :global(.swiper-button-prev),
-.carouselContainer :global(.swiper-button-next) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  border-radius: 50%;
-  color: white;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* 活动幻灯片的样式 */
+.carouselSlide:global(.swiper-slide-active) .slideWrapper {
+  transform: scale(1);
+  opacity: 1;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  height: calc(100% - 20px); /* 仅保留上下10px的间距 */
+  margin: 10px auto;
+}
+
+/* Coverflow活动幻灯片 */
+.carouselSlide:global(.swiper-effect-coverflow)
+  .carouselSlide:global(.swiper-slide-active)
+  .slideWrapper {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateZ(0); /* 确保活动幻灯片没有任何变形 */
+  height: calc(100% - 20px); /* 仅保留上下10px的间距 */
+  margin: 10px auto;
+}
+
+/* 基础图片样式 */
+.image {
+  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  z-index: 1;
+  transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
+}
+
+/* Coverflow图片样式 */
+.coverflowImage {
+  will-change: transform;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  /* 垂直照片处理 */
+  object-position: center center;
+  max-height: 100%;
+  min-width: 100%;
+  max-width: none;
+}
+
+/* 图片缩放和悬停效果 */
+.carouselSlide:global(.swiper-slide-active) .image {
+  transform: scale(1);
+  object-fit: cover;
+  height: 100% !important;
+}
+
+.carouselSlide:global(.swiper-slide-active):hover .image {
+  transform: scale(1.02);
+}
+
+/* 分页指示器增强样式 */
+.carouselContainer :global(.swiper-pagination-bullet) {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 300ms;
+  backdrop-filter: blur(4px);
+  margin: 0 5px;
+}
+
+.carouselContainer :global(.swiper-pagination-bullet-active) {
+  width: 2rem;
+  background-color: white;
+  opacity: 1;
+  transform: scale(1.2);
+  border-radius: 4px;
+}
+
+/* 动态分页样式增强 */
+.carouselContainer :global(.swiper-pagination-bullets-dynamic) {
+  overflow: visible;
+  bottom: 15px !important;
+}
+
+.carouselContainer
+  :global(.swiper-pagination-bullets-dynamic)
+  :global(.swiper-pagination-bullet) {
+  transition: transform 0.5s, width 0.5s, opacity 0.5s;
+}
+
+/* 为Coverflow特效增加动态阴影 */
+.carouselSlide:global(.swiper-effect-coverflow)
+  .carouselSlide:global(.swiper-slide)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+  z-index: 2;
+  pointer-events: none;
   opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-.carouselContainer :global(.swiper-button-prev) {
-  left: 1.5rem;
+.carouselSlide:global(.swiper-effect-coverflow)
+  .carouselSlide:global(.swiper-slide-active)::after {
+  opacity: 1;
 }
 
-.carouselContainer :global(.swiper-button-next) {
-  right: 1.5rem;
+/* 响应式调整 */
+@media (max-width: 768px) {
+  /* 适应更小的屏幕 */
+  .coverflowSlide .slideWrapper {
+    min-height: 250px;
+  }
+
+  /* 移动设备上的分页 */
+  .carouselContainer :global(.swiper-pagination-bullet) {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  .carouselContainer :global(.swiper-pagination-bullet-active) {
+    width: 1.5rem;
+  }
+
+  /* 移动设备上的Coverflow效果调整 */
+  .coverflowSwiper {
+    padding: 25px 0;
+  }
+
+  /* 减少与顶部的距离 */
+  .carouselContainer {
+    margin-top: 10px;
+  }
 }
 
-.carouselContainer :global(.swiper-button-prev:hover),
-.carouselContainer :global(.swiper-button-next:hover) {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-}
-
-.carouselContainer :global(.swiper-button-prev:active),
-.carouselContainer :global(.swiper-button-next:active) {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.carouselContainer :global(.swiper-button-prev::after),
-.carouselContainer :global(.swiper-button-next::after) {
-  font-size: 1.125rem;
-  font-weight: 700;
-  font-size: 1.25rem !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+/* 鼠标滚轮交互增强 */
+.carouselContainer :global(.swiper-mousewheel) {
+  overflow: visible;
 }
 
 /* Pagination */
@@ -174,107 +330,43 @@
   opacity: 0.5;
 }
 
-.carouselContainer :global(.swiper-pagination-bullet) {
-  width: 0.5rem;
-  height: 0.5rem;
-  background: rgba(255, 255, 255, 0.5);
-  transition: all 300ms;
-  backdrop-filter: blur(4px);
-}
-
-.carouselContainer :global(.swiper-pagination-bullet-active) {
-  width: 1.5rem;
-  background-color: white;
-  opacity: 1;
-  transform: scale(1.2);
-  border-radius: 4px;
-}
-
-/* Remove or comment out the unprefixed global selector */
-/* :global(.swiper-pagination-bullet-active) {
-  opacity: 1 !important;
-  transform: scale(1.2);
-} */
-
-/* Responsive */
-@media (max-width: 768px) {
-  .carouselContainer :global(.swiper-button-prev),
-  .carouselContainer :global(.swiper-button-next) {
-    width: 36px;
-    height: 36px;
-  }
-
-  .carouselContainer :global(.swiper-button-prev::after),
-  .carouselContainer :global(.swiper-button-next::after) {
-    font-size: 1rem !important;
-  }
-
-  .carouselContainer :global(.swiper-button-prev) {
-    left: 0.75rem;
-  }
-
-  .carouselContainer :global(.swiper-button-next) {
-    right: 0.75rem;
-  }
-
-  .thumbs-right {
-    flex-direction: column;
-  }
-
-  .thumbs-right .thumbsSwiper {
-    width: 100%;
-    height: 100px;
-  }
-}
-
-/* Hover Effects */
-.carouselContainer:hover :global(.swiper-button-prev),
-.carouselContainer:hover :global(.swiper-button-next) {
-  opacity: 1;
-}
-
-/* Navigation */
-.navigationButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
+/* 懒加载指示器 */
+.swiperLazyPreloader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  margin-left: -21px;
+  margin-top: -21px;
+  z-index: 10;
+  transform-origin: 50%;
+  box-sizing: border-box;
+  border: 4px solid var(--color-primary, #555);
   border-radius: 50%;
-  color: white;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  opacity: 0;
+  border-top-color: transparent;
+  animation: swiper-preloader-spin 1s infinite linear;
 }
 
-.navigationButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+@keyframes swiper-preloader-spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.navigationButton:active {
-  transform: translateY(-50%) scale(0.95);
+/* 在暗色主题下使用白色边框 */
+.carouselContainer:global(.dark-theme) .swiperLazyPreloader {
+  border-color: rgba(255, 255, 255, 0.5);
+  border-top-color: transparent;
 }
 
-.navigationButtonPrev {
-  composes: navigationButton;
-  left: 1.5rem;
+/* 添加活跃幻灯片专用样式 */
+.activeSlide {
+  height: calc(100% - 20px) !important;
+  margin: 10px 0;
 }
 
-.navigationButtonNext {
-  composes: navigationButton;
-  right: 1.5rem;
-}
-
-/* 在 Carousel 组件中添加这些类名 */
-.carouselContainer :global(.swiper-button-prev) {
-  left: 1.5rem;
-}
-
-.carouselContainer :global(.swiper-button-next) {
-  right: 1.5rem;
+.activeImage {
+  height: 100% !important;
+  object-fit: cover;
 }

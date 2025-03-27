@@ -29,12 +29,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="min-h-screen antialiased">
+      <body className="antialiased">
         <AppContextProvider>
-          <div className="flex min-h-screen flex-col">
+          <div className="layout">
             <Header />
 
-            <main className="flex-1">{children}</main>
+            <main className="main">{children}</main>
 
             <Footer />
           </div>
