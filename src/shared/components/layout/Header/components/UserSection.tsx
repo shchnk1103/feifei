@@ -1,24 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { menuItemVariants } from "../animations";
-import { mergeStyles } from "@/shared/utils/styles";
-import mobileStyles from "../styles/mobile.module.css";
-import userStyles from "../styles/user.module.css";
-import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { isAdmin } from "@/modules/auth/utils/auth";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/modules/auth";
-import { Portal } from "@/shared/components/ui/Portal";
-
-const styles = mergeStyles(mobileStyles, userStyles);
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
+import { ChevronDown } from "@/shared/components/icons/ChevronDown";
+import { OptimizedImage } from "@/shared/components/ui/OptimizedImage";
 
 interface UserSectionProps {
   mobile?: boolean;
   onClose?: () => void;
-  setAuthDialogOpen?: (isOpen: boolean) => void;
+  setAuthDialogOpen: (open: boolean) => void;
 }
 
 export function UserSection({
@@ -26,15 +19,14 @@ export function UserSection({
   onClose,
   setAuthDialogOpen,
 }: UserSectionProps) {
-  const { data: session } = useSession();
-  const { logout } = useAuth();
+  const { data: session, status } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const Component = mobile ? motion.div : "div";
-  const props = mobile ? { variants: menuItemVariants } : {};
-  const className = mobile ? styles.mobileUserSection : styles.userSection;
-  const usernameClassName = mobile ? styles.mobileUsername : styles.username;
+
+  const { ref } = useOnClickOutside<HTMLDivElement>(() =>
+    setIsDropdownOpen(false)
+  );
 
   // 只在非移动端时添加点击外部关闭下拉菜单的事件
   useEffect(() => {
@@ -55,10 +47,25 @@ export function UserSection({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobile]);
 
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    if (mobile && onClose) {
+      onClose();
+    }
+  };
+
+  const handleOpenAuthDialog = () => {
+    setAuthDialogOpen(true);
+    if (mobile && onClose) {
+      onClose();
+    }
+  };
+
+  // 如果未登录，显示登录按钮
   if (!session?.user) {
     return (
       <button
-        className={styles.loginLink}
+        className="user-button login-button"
         onClick={() => {
           setAuthDialogOpen?.(true);
           onClose?.();
@@ -69,163 +76,147 @@ export function UserSection({
     );
   }
 
-  const userIsAdmin = isAdmin(session.user);
-  const displayName =
-    session.user.name || session.user.email?.split("@")[0] || "未命名用户";
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setIsDropdownOpen(false);
-      onClose?.();
-    } catch (error) {
-      console.error("登出失败:", error);
-    }
-  };
-
-  // 计算下拉菜单位置
-  const getDropdownPosition = () => {
-    if (mobile) return {};
-
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      return {
-        top: `${rect.bottom + window.scrollY}px`,
-        right: `${window.innerWidth - rect.right}px`,
-      };
-    }
-
-    return {};
-  };
-
-  return (
-    <Component {...props} className={className} data-testid="user-section">
-      <div className={`${styles.userDropdown} ${styles.userProfileContainer}`}>
-        {!mobile && (
-          <button
-            ref={buttonRef}
-            className={`${styles.userProfileButton} user-profile-button`}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+  // 如果是移动端
+  if (mobile) {
+    return (
+      <div className="mobile-user-section">
+        {status === "authenticated" && session?.user ? (
+          <div
+            className={
+              session.user.role === "admin"
+                ? "mobile-user-info-admin"
+                : "mobile-user-info"
+            }
           >
-            <div className={styles.userInfo}>
+            <div className="user-avatar-container">
               <OptimizedImage
                 src={session.user.image || "/images/default-avatar.png"}
-                alt={displayName}
-                width={32}
-                height={32}
-                className={styles.avatar}
+                alt={session.user.name || "User"}
+                width={80}
+                height={80}
+                className="user-avatar"
               />
-              <span className={usernameClassName}>{displayName}</span>
-              <svg
-                className={`${styles.dropdownIcon} ${
-                  isDropdownOpen ? styles.open : ""
-                }`}
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.5 4.5L6 8L9.5 4.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
             </div>
-          </button>
-        )}
-
-        {isDropdownOpen && !mobile ? (
-          <Portal>
+            <span className="mobile-username">{session.user.name}</span>
             <div
-              ref={dropdownRef}
-              className={styles.dropdownMenu}
-              style={getDropdownPosition()}
+              className="user-actions"
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+                marginTop: "0.5rem",
+              }}
             >
-              <Link
-                href={`/profile/${displayName}`}
-                className={styles.dropdownItem}
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  onClose?.();
-                }}
-              >
-                个人资料
-              </Link>
-              {userIsAdmin && (
-                <Link
-                  href="/admin"
-                  className={styles.dropdownItem}
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    onClose?.();
-                  }}
-                >
+              {session.user.role === "admin" && (
+                <Link href="/admin" className="user-button" onClick={onClose}>
                   管理后台
                 </Link>
               )}
+              <Link href="/profile" className="user-button" onClick={onClose}>
+                个人资料
+              </Link>
               <button
-                className={`${styles.dropdownItem} ${styles.logoutButton}`}
                 onClick={handleLogout}
+                className="user-button logout-button"
               >
                 退出登录
               </button>
             </div>
-          </Portal>
+          </div>
         ) : (
-          mobile && (
-            <div className={styles.dropdownMenu}>
-              <div
-                className={
-                  userIsAdmin
-                    ? styles.mobileUserInfoWithAdmin
-                    : styles.mobileUserInfo
-                }
-              >
-                <OptimizedImage
-                  src={session.user.image || "/images/default-avatar.png"}
-                  alt={displayName}
-                  width={40}
-                  height={40}
-                  className={styles.avatar}
-                />
-                <span className={usernameClassName}>{displayName}</span>
-              </div>
-              <Link
-                href={`/profile/${displayName}`}
-                className={styles.dropdownItem}
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  onClose?.();
-                }}
-              >
-                个人资料
-              </Link>
-              {userIsAdmin && (
-                <Link
-                  href="/admin"
-                  className={styles.dropdownItem}
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    onClose?.();
-                  }}
-                >
-                  管理后台
-                </Link>
-              )}
-              <button
-                className={`${styles.dropdownItem} ${styles.logoutButton}`}
-                onClick={handleLogout}
-              >
-                退出登录
-              </button>
-            </div>
-          )
+          <div
+            className="login-container"
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              margin: "1rem 0",
+            }}
+          >
+            <button
+              onClick={handleOpenAuthDialog}
+              className="user-button"
+              style={{ fontSize: "1.1rem", padding: "1rem" }}
+            >
+              登录 / 注册
+            </button>
+            <p
+              style={{
+                fontSize: "0.9rem",
+                opacity: 0.7,
+                textAlign: "center",
+                margin: "0.5rem 0",
+              }}
+            >
+              登录后体验更多功能
+            </p>
+          </div>
         )}
       </div>
-    </Component>
+    );
+  }
+
+  // 桌面端
+  return (
+    <div className="user-section">
+      {status === "authenticated" && session?.user ? (
+        <div className="relative" ref={ref}>
+          <div
+            className="user-profile"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <div className="user-info">
+              <OptimizedImage
+                src={session.user.image || "/images/default-avatar.png"}
+                alt={session.user.name || "User"}
+                width={36}
+                height={36}
+                className="user-avatar"
+              />
+              <span className="user-name">{session.user.name}</span>
+            </div>
+            <ChevronDown
+              className={`dropdown-icon ${isDropdownOpen ? "open" : ""}`}
+            />
+          </div>
+
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                className="dropdown-menu"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {session.user.role === "admin" && (
+                  <Link href="/admin" className="dropdown-item">
+                    管理后台
+                  </Link>
+                )}
+                <Link href="/profile" className="dropdown-item">
+                  个人资料
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item logout-button"
+                >
+                  退出登录
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <button
+          onClick={() => setAuthDialogOpen(true)}
+          className="login-button"
+        >
+          登录 / 注册
+        </button>
+      )}
+    </div>
   );
 }

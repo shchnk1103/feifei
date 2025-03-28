@@ -1,0 +1,39 @@
+/* 消息组件样式 */
+.message {
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-md);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 32rem;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+/* 错误消息样式 */
+.error-message {
+  background-color: var(--error-bg, rgba(254, 226, 226, 0.8));
+  color: var(--error-color);
+  border: 1px solid var(--error-border, rgba(248, 113, 113, 0.5));
+}
+
+/* 成功消息样式 */
+.success-message {
+  background-color: var(--success-bg, rgba(209, 250, 229, 0.8));
+  color: var(--success-color);
+  border: 1px solid var(--success-border, rgba(16, 185, 129, 0.5));
+}
+
+/* 警告消息样式 */
+.warning-message {
+  background-color: var(--warning-bg, rgba(254, 243, 199, 0.8));
+  color: var(--warning-color);
+  border: 1px solid var(--warning-border, rgba(245, 158, 11, 0.5));
+}
+
+/* 信息消息样式 */
+.info-message {
+  background-color: var(--info-bg, rgba(219, 234, 254, 0.8));
+  color: var(--accent-color);
+  border: 1px solid var(--info-border, rgba(59, 130, 246, 0.5));
+}

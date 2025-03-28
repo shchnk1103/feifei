@@ -1,247 +1,36 @@
+/* 导入基础样式 */
 @import "./base/variables.css";
 @import "./base/reset.css";
-@import "./base/layout.css";
-@import "./base/util.css";
-@import "./themes/theme.css";
+
+/* 导入布局样式 */
+@import "./layouts/layout.css";
+@import "./layouts/page.css";
+@import "./layouts/home.css";
+
+/* 导入工具类 */
+@import "./utils/utilities.css";
 @import "./utils/animations.css";
+@import "./utils/z-index.css";
 
-:root,
-[data-theme="light"] {
-  --background: #ffffff;
-  --background-rgb: 255, 255, 255;
-  --foreground: #1a1a1a;
-  --foreground-rgb: 26, 26, 26;
-  --foreground-secondary: #4a4a4a;
-  --foreground-muted: #888;
-  --tag-bg: rgba(0, 0, 0, 0.05);
-  --tag-text: #666666;
-  --tag-bg-hover: rgba(0, 0, 0, 0.1);
+/* 导入主题样式 */
+@import "./themes/theme.css";
+@import "./themes/button.css";
+@import "./themes/header.css";
+@import "./themes/glass.css";
+@import "./themes/card.css";
 
-  /* 增强Header相关变量 */
-  --header-bg: rgba(255, 255, 255, 0.95);
-  --header-bg-blur: rgba(255, 255, 255, 0.85);
-  --header-border: rgba(0, 0, 0, 0.05);
-  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  --header-height: 64px;
+/* 导入组件样式 */
+/* @import "./components/button.css"; */
+@import "./components/card.css";
+@import "./components/tag.css";
+@import "./components/form.css";
+@import "./components/header.css";
+@import "./components/header-fixed.css";
+@import "./components/footer.css";
+@import "./components/scroll.css";
+@import "./components/message.css";
 
-  /* 毛玻璃效果变量 */
-  --glass-blur: 12px;
-  --glass-opacity: 0.8;
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-
-  /* z-index层级变量，明确定义不同元素的显示层级 */
-  --z-index-base: 1;
-  --z-index-content: 10;
-  --z-index-header: 150;
-  --z-index-dropdown: 200;
-  --z-index-modal: 900;
-  --z-index-dialog: 9999;
-  --z-index-dialog-content: 10000;
-  --z-index-toast: 10100;
-  --z-index-tooltip: 10200;
-
-  --footer-bg: #f1f1f1;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --card-bg: #ffffff;
-  --card-bg-hover: #f8f8f8;
-  --card-border: rgba(0, 0, 0, 0.1);
-  --card-shadow: rgba(0, 0, 0, 0.1);
-  --card-title: #000000;
-  --card-description: #666666;
-  --card-author: #333333;
-  --card-time: #666666;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-hover-color: rgba(255, 255, 255, 0.2);
-  --url-bg: rgba(0, 0, 0, 0.1);
-  --player-bg: rgba(0, 0, 0, 0.2);
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --transition-fast: 0.15s;
-  --transition-normal: 0.3s;
-  --transition-slow: 0.5s;
-  --footer-height: 60px;
-  --max-width: 1200px;
-  --prose-bg: #ffffff;
-  --prose-text: #333333;
-  --prose-headings: #000000;
-  --accent-color: #3b82f6;
-  --accent-color-rgb: 59, 130, 246;
-}
-
-[data-theme="dark"] {
-  --background: #1a1a1a;
-  --background-rgb: 26, 26, 26;
-  --foreground: #ffffff;
-  --foreground-rgb: 255, 255, 255;
-  --foreground-secondary: #e0e0e0;
-  --foreground-muted: #a0a0a0;
-  --tag-bg: rgba(255, 255, 255, 0.1);
-  --tag-text: #ffffff;
-  --tag-bg-hover: rgba(255, 255, 255, 0.15);
-
-  /* 增强Header相关变量 */
-  --header-bg: rgba(0, 0, 0, 0.95);
-  --header-bg-blur: rgba(10, 10, 10, 0.85);
-  --header-border: rgba(255, 255, 255, 0.05);
-  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-
-  /* 毛玻璃效果变量 */
-  --glass-blur: 12px;
-  --glass-opacity: 0.7;
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-
-  /* z-index层级变量 - 暗色模式中保持一致 */
-  --z-index-base: 1;
-  --z-index-content: 10;
-  --z-index-header: 150;
-  --z-index-dropdown: 200;
-  --z-index-modal: 900;
-  --z-index-dialog: 9999;
-  --z-index-dialog-content: 10000;
-  --z-index-toast: 10100;
-  --z-index-tooltip: 10200;
-
-  --footer-bg: #262626;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --card-bg-hover: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --card-shadow: rgba(0, 0, 0, 0.3);
-  --card-title: #ffffff;
-  --card-description: #999999;
-  --card-author: #ffffff;
-  --card-time: #999999;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-hover-color: rgba(255, 255, 255, 0.15);
-  --url-bg: rgba(0, 0, 0, 0.2);
-  --player-bg: rgba(0, 0, 0, 0.3);
-  --prose-bg: #000000;
-  --prose-text: #dddddd;
-  --prose-headings: #ffffff;
-  --accent-color: #60a5fa;
-  --accent-color-rgb: 96, 165, 250;
-}
-
-/* 基础样式 */
-html {
-  scroll-behavior: smooth;
-  text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* 隐藏滚动条 */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-html::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
-}
-
-body {
-  min-height: 100vh;
-  font-family: var(--font-geist-sans);
-  background: var(--background);
-  color: var(--foreground);
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-main {
-  flex: 1;
-  min-height: calc(100vh - var(--header-height) - var(--footer-height));
-  /* padding-top: var(--header-height); */
-}
-
-/* 通用组件样式 */
-.container {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  max-width: var(--container-width);
-}
-
-.card {
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
-  background: var(--card-bg);
-  border: 1px solid var(--color-border);
-}
-
-.tag {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  display: inline-flex;
-  align-items: center;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-}
-
-/* 通用工具类 */
-.text-balance {
-  text-wrap: balance;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.min-h-screen {
-  min-height: 100vh;
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.flex-1 {
-  flex: 1;
-}
-
-.antialiased {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* 表单和交互元素的样式 */
-:focus-visible {
-  outline: none;
-  ring: 2px solid var(--color-primary);
-}
-
-::selection {
-  background: var(--foreground);
-  color: var(--background);
-}
-
-/* 为编辑器页面添加的全局变量 */
+/* 编辑器特定变量 */
 :root {
   --primary-color: var(--accent-color);
   --primary-color-alpha: color-mix(
@@ -258,6 +47,12 @@ main {
   --error-bg: color-mix(in srgb, #ef4444 10%, var(--background));
   --error-border: color-mix(in srgb, #ef4444 20%, transparent);
   --error-color: #ef4444;
+  --success-bg: color-mix(in srgb, #10b981 10%, var(--background));
+  --success-border: color-mix(in srgb, #10b981 20%, transparent);
+  --warning-bg: color-mix(in srgb, #f59e0b 10%, var(--background));
+  --warning-border: color-mix(in srgb, #f59e0b 20%, transparent);
+  --info-bg: color-mix(in srgb, var(--accent-color) 10%, var(--background));
+  --info-border: color-mix(in srgb, var(--accent-color) 20%, transparent);
   --button-text: #ffffff;
 }
 
@@ -270,5 +65,18 @@ main {
       var(--accent-color) 60%,
       #000000
     );
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
   }
 }

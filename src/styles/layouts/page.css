@@ -1,0 +1,73 @@
+/* 页面容器相关布局 */
+.home-container {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+  position: relative;
+}
+
+/* 英雄区布局 */
+.hero {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+}
+
+/* 内容区布局 */
+.content {
+  position: relative;
+  width: 100%;
+  background: var(--background);
+  min-height: 100vh;
+  padding: 4rem 0;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: 1.2rem;
+  color: var(--foreground-secondary);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .home-container {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+
+  .content {
+    padding: 2rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-container {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+/* 更大屏幕尺寸的调整 */
+@media (min-width: 1280px) {
+  .home-container {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .home-container {
+    max-width: 85%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .home-container {
+    max-width: 90%;
+  }
+}

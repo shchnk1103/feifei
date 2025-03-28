@@ -1,0 +1,33 @@
+/* Z-Index 工具样式 */
+
+/* 确保所有主内容区域在合适的层级 */
+.content-layer {
+  position: relative;
+  z-index: var(--z-normal);
+}
+
+/* 确保轮播图和其他可能有高z-index的UI元素不会超过header */
+.swiper-container,
+.swiper-wrapper,
+.swiper-slide,
+.carousel-container,
+.carousel-wrapper,
+.carousel-slide {
+  z-index: var(--z-normal) !important;
+}
+
+/* 确保内容元素不会覆盖固定定位元素 */
+.fixed-element {
+  z-index: var(--z-index-header);
+  position: relative;
+}
+
+/* 强制放置元素在顶部 */
+.z-top {
+  z-index: var(--z-tooltip) !important;
+}
+
+/* 强制放置元素在底部 */
+.z-bottom {
+  z-index: var(--z-below) !important;
+}

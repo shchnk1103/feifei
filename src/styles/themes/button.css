@@ -1,0 +1,123 @@
+/* 按钮组件变量 */
+:root {
+  /* 按钮基础 */
+  --button-radius: var(--radius-md, 6px);
+  --button-font-weight: var(--font-weight-medium, 500);
+  --button-transition: var(--transition-fast, 0.15s ease);
+  --button-border-width: 1px;
+  --button-focus-ring-width: 2px;
+  --button-focus-ring-offset: 2px;
+  --button-icon-spacing: 8px;
+  --button-disabled-opacity: 0.6;
+
+  /* 按钮颜色 - 主要 */
+  --button-primary-bg: var(--button-primary-bg, var(--primary-color, #3f51b5));
+  --button-primary-text: var(--button-primary-text, #ffffff);
+  --button-primary-border: transparent;
+  --button-primary-hover-bg: var(
+    --button-primary-hover,
+    var(--primary-hover, #303f9f)
+  );
+  --button-primary-active-bg: var(--primary-active, #1a237e);
+  --button-primary-focus-ring: rgba(63, 81, 181, 0.3);
+
+  /* 按钮颜色 - 次要 */
+  --button-secondary-bg: var(--button-secondary-bg, var(--card-bg, #f5f5f5));
+  --button-secondary-text: var(
+    --button-secondary-text,
+    var(--text-primary, #171717)
+  );
+  --button-secondary-border: var(--card-border, rgba(0, 0, 0, 0.1));
+  --button-secondary-hover-bg: var(
+    --button-secondary-hover,
+    var(--card-bg-hover, #ebebeb)
+  );
+  --button-secondary-active-bg: #e0e0e0;
+  --button-secondary-focus-ring: rgba(0, 0, 0, 0.1);
+
+  /* 按钮颜色 - 幽灵 */
+  --button-ghost-bg: transparent;
+  --button-ghost-text: var(--text-primary, #171717);
+  --button-ghost-border: transparent;
+  --button-ghost-hover-bg: rgba(0, 0, 0, 0.05);
+  --button-ghost-active-bg: rgba(0, 0, 0, 0.1);
+  --button-ghost-focus-ring: rgba(0, 0, 0, 0.1);
+
+  /* 按钮颜色 - 危险 */
+  --button-danger-bg: var(--error-color, #e53935);
+  --button-danger-text: #ffffff;
+  --button-danger-border: transparent;
+  --button-danger-hover-bg: #f44336;
+  --button-danger-active-bg: #d32f2f;
+  --button-danger-focus-ring: rgba(229, 57, 53, 0.3);
+
+  /* 按钮颜色 - 成功 */
+  --button-success-bg: var(--success-color, #10b981);
+  --button-success-text: #ffffff;
+  --button-success-border: transparent;
+  --button-success-hover-bg: #0ea271;
+  --button-success-active-bg: #0c8b61;
+  --button-success-focus-ring: rgba(16, 185, 129, 0.3);
+
+  /* 按钮颜色 - 警告 */
+  --button-warning-bg: var(--warning-color, #f59e0b);
+  --button-warning-text: #ffffff;
+  --button-warning-border: transparent;
+  --button-warning-hover-bg: #e08c09;
+  --button-warning-active-bg: #cc7a08;
+  --button-warning-focus-ring: rgba(245, 158, 11, 0.3);
+
+  /* 按钮尺寸 - 小 */
+  --button-small-padding-x: var(--space-sm, 0.5rem);
+  --button-small-padding-y: var(--space-xs, 0.25rem);
+  --button-small-font-size: var(--font-size-sm, 0.875rem);
+  --button-small-height: 32px;
+
+  /* 按钮尺寸 - 中 */
+  --button-medium-padding-x: var(--space-md, 1rem);
+  --button-medium-padding-y: var(--space-sm, 0.5rem);
+  --button-medium-font-size: var(--font-size-base, 1rem);
+  --button-medium-height: 40px;
+
+  /* 按钮尺寸 - 大 */
+  --button-large-padding-x: var(--space-lg, 1.5rem);
+  --button-large-padding-y: var(--space-md, 1rem);
+  --button-large-font-size: var(--font-size-lg, 1.125rem);
+  --button-large-height: 48px;
+
+  /* 加载动画 */
+  --button-spinner-size: 16px;
+  --button-spinner-border-width: 2px;
+  --button-spinner-border-color: rgba(255, 255, 255, 0.3);
+  --button-spinner-border-top-color: #ffffff;
+  --button-spinner-duration: 1s;
+}
+
+/* 暗色模式覆盖 */
+[data-theme="dark"] {
+  /* 按钮颜色 - 主要 */
+  --button-primary-bg: var(--button-primary-bg, var(--primary-color, #5c6bc0));
+  --button-primary-hover-bg: var(
+    --button-primary-hover,
+    var(--primary-hover, #7986cb)
+  );
+  --button-primary-active-bg: #3949ab;
+  --button-primary-focus-ring: rgba(92, 107, 192, 0.3);
+
+  /* 按钮颜色 - 次要 */
+  --button-secondary-bg: var(--button-secondary-bg, #2d2d35);
+  --button-secondary-text: var(--button-secondary-text, #e0e0e0);
+  --button-secondary-border: var(--card-border, rgba(255, 255, 255, 0.1));
+  --button-secondary-hover-bg: var(--button-secondary-hover, #3d3d45);
+  --button-secondary-active-bg: #4d4d55;
+  --button-secondary-focus-ring: rgba(255, 255, 255, 0.1);
+
+  /* 按钮颜色 - 幽灵 */
+  --button-ghost-text: #e0e0e0;
+  --button-ghost-hover-bg: rgba(255, 255, 255, 0.1);
+  --button-ghost-active-bg: rgba(255, 255, 255, 0.15);
+  --button-ghost-focus-ring: rgba(255, 255, 255, 0.1);
+
+  /* 加载动画 - 暗色模式可能需要调整对比度 */
+  --button-spinner-border-color: rgba(255, 255, 255, 0.2);
+}

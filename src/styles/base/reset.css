@@ -2,9 +2,9 @@
 *,
 *::before,
 *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 /* 设置核心body默认值 */
@@ -14,23 +14,27 @@ html {
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-geist-sans);
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans);
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 让图片更容易处理 */
-img,
-picture,
-video,
-canvas,
-svg {
+img {
   display: block;
   max-width: 100%;
 }
@@ -48,20 +52,12 @@ a {
 }
 
 /* 重置按钮 */
-button {
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
-
-/* 移除表单内置排版样式 */
-input,
 button,
-textarea,
-select {
+input,
+select,
+textarea {
   font: inherit;
+  color: inherit;
 }
 
 /* 避免文本溢出 */
@@ -79,4 +75,22 @@ h6 {
 #root,
 #__next {
   isolation: isolate;
+}
+
+/* 移除表格边框间距 */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 移除文本选择样式 */
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* 移除焦点轮廓 */
+:focus-visible {
+  outline: none;
+  ring: 2px solid var(--accent-color);
 }

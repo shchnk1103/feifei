@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { HomeClient } from "@/modules/home/components/HomeClient";
 import { articles as staticArticlesData } from "@/data/articles";
 import { mergeArticles } from "@/modules/blog/services/articleService";
-import styles from "./page.module.css";
 import type { ImageAsset } from "@/shared";
 
 // 轮播图片数据
@@ -56,19 +55,15 @@ export default async function Home() {
   const articles = mergeArticles(staticArticlesData, dbArticles);
 
   return (
-    <div className={styles.pageContainer}>
-      <div className={styles.homeContainer}>
-        <Suspense
-          fallback={<div className={styles.loading}>正在加载内容...</div>}
-        >
-          <HomeClient
-            images={images}
-            articles={articles}
-            title="最新文章"
-            subtitle="发现更多精彩内容"
-          />
-        </Suspense>
-      </div>
+    <div className="home-container">
+      <Suspense fallback={<div className="loading">正在加载内容...</div>}>
+        <HomeClient
+          images={images}
+          articles={articles}
+          title="最新文章"
+          subtitle="发现更多精彩内容"
+        />
+      </Suspense>
     </div>
   );
 }

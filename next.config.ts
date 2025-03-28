@@ -63,7 +63,7 @@ const nextConfig = {
 // https://nextjs.org/docs/advanced-features/security-headers
 const ContentSecurityPolicy = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' *.doublehy0n.com *.vercel-scripts.com *.googletagmanager.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' *.doublehy0n.com *.vercel-scripts.com *.googletagmanager.com *.google.com *.googleapis.com;
     style-src 'self' 'unsafe-inline';
     img-src * blob: data:;
     media-src 'none';

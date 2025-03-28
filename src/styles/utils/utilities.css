@@ -1,0 +1,129 @@
+/* 文本工具类 */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* 布局工具类 */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* 间距工具类 */
+.m-0 {
+  margin: 0;
+}
+.m-1 {
+  margin: var(--space-xs);
+}
+.m-2 {
+  margin: var(--space-sm);
+}
+.m-3 {
+  margin: var(--space-md);
+}
+.m-4 {
+  margin: var(--space-lg);
+}
+.m-5 {
+  margin: var(--space-xl);
+}
+
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: var(--space-xs);
+}
+.p-2 {
+  padding: var(--space-sm);
+}
+.p-3 {
+  padding: var(--space-md);
+}
+.p-4 {
+  padding: var(--space-lg);
+}
+.p-5 {
+  padding: var(--space-xl);
+}
+
+/* 显示工具类 */
+.hidden {
+  display: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+/* 滚动条工具类 */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 其他工具类 */
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.rounded {
+  border-radius: var(--radius-md);
+}
+
+.rounded-full {
+  border-radius: var(--radius-full);
+}
+
+.shadow {
+  box-shadow: 0 1px 3px var(--shadow-color);
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 6px var(--shadow-color);
+}
