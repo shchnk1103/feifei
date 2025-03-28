@@ -1,46 +1,50 @@
 .themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: var(--space-sm);
-  border-radius: var(--radius-md);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: none;
   cursor: pointer;
-  font-size: var(--font-size-xl);
-  transition: transform var(--transition-fast),
-    background-color var(--transition-fast);
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition-property: color, background-color;
-  transition-duration: 200ms;
-  color: var(--color-text);
+  color: var(--foreground);
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* 桌面端固定在右下角 */
+.themeToggle svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2px;
+}
+
+.themeToggle:hover {
+  transform: scale(1.1);
+  color: var(--accent-color);
+}
+
+/* 移除以前的桌面端特殊样式，因为现在我们使用全局样式来处理 */
 @media (min-width: 768px) {
   .themeToggle {
-    position: fixed;
-    bottom: var(--space-lg);
-    right: var(--space-lg);
-    z-index: 100;
-    opacity: 0.8;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    background: rgba(var(--accent-color-rgb), 0.2);
-    border: 1px solid var(--glass-border);
+    position: static;
+    bottom: unset;
+    right: unset;
+    z-index: unset;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    opacity: 1;
   }
 
-  /* 只在桌面版，当hover时样式变化 */
   .themeToggle:hover {
-    transform: scale(1.1);
-    opacity: 1;
-    background: rgba(var(--accent-color-rgb), 0.3);
-    box-shadow: var(--glass-shadow);
+    background: transparent;
+    box-shadow: none;
   }
 }
 
 .themeToggle:focus-visible {
-  outline: none;
-  ring-width: 2px;
-  ring-style: solid;
-  ring-color: var(--color-primary);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }

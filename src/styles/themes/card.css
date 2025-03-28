@@ -1,0 +1,26 @@
+/* 卡片主题样式 */
+:root {
+  /* 亮色主题卡片样式 */
+  --card-bg: #ffffff;
+  --card-bg-hover: #f8f8f8;
+  --card-border: rgba(0, 0, 0, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --card-title: #000000;
+  --card-description: #666666;
+  --card-author: #333333;
+  --card-time: #666666;
+  --card-padding: var(--space-md);
+  --card-radius: var(--radius-md);
+}
+
+[data-theme="dark"] {
+  /* 暗色主题卡片样式 */
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-bg-hover: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-title: #ffffff;
+  --card-description: #999999;
+  --card-author: #ffffff;
+  --card-time: #999999;
+}

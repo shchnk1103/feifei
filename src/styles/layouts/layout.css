@@ -1,0 +1,78 @@
+/* 主布局容器 */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans);
+  line-height: var(--line-height-normal);
+  overflow-x: hidden;
+}
+
+/* 确保UI元素层级正确 - header始终保持在内容上方 */
+.site-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: var(--z-normal);
+}
+
+/* 确保主要内容在内容区域正确的z-index层级 */
+.main-content {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  z-index: var(--z-normal);
+  padding-top: var(--header-height); /* 为固定header预留空间 */
+}
+
+/* 主布局 */
+main {
+  flex: 1;
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+/* 容器布局 */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+  max-width: var(--max-width);
+  width: 100%;
+}
+
+/* 卡片布局 */
+.card {
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px var(--card-shadow);
+}
+
+/* 标签布局 */
+.tag {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  display: inline-flex;
+  align-items: center;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  transition: all var(--transition-fast);
+}
+
+.tag:hover {
+  background: var(--tag-bg-hover);
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .container {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+}

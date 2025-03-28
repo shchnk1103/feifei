@@ -1,0 +1,115 @@
+/* 首页布局 */
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  /* 顶部增加足够的padding，为固定定位的header留出空间 */
+  padding-top: calc(var(--header-height) + 2rem);
+  position: relative;
+  z-index: var(--z-normal);
+}
+
+.home-hero {
+  width: 100%;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: var(--z-normal);
+}
+
+.home-carousel {
+  max-width: 100%;
+  margin: 0 auto;
+  max-height: 70vh;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  position: relative;
+  z-index: var(--z-normal);
+}
+
+.home-content {
+  padding: 2rem 0 4rem;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.home-header-text {
+  flex: 1;
+}
+
+.home-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.home-subtitle {
+  font-size: 1.1rem;
+  color: var(--foreground-muted);
+  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.home-create-button {
+  margin-left: 2rem;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.home-no-articles {
+  text-align: center;
+  padding: 3.5rem;
+  color: var(--foreground-muted);
+  grid-column: 1/-1;
+  font-size: 1.1rem;
+  background: rgba(var(--foreground-rgb), 0.02);
+  border-radius: var(--radius-md);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .home-page {
+    padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  .home-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-create-button {
+    margin-left: 0;
+    margin-top: 1rem;
+    align-self: flex-start;
+  }
+
+  .home-carousel {
+    max-width: 100%;
+    max-height: 60vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 1.5rem;
+  }
+
+  .home-subtitle {
+    font-size: 1rem;
+  }
+
+  .home-carousel {
+    max-height: 50vh;
+  }
+}

@@ -1,0 +1,26 @@
+/* 固定在左上角的header样式 */
+.header-fixed {
+  position: fixed;
+  top: var(--space-md);
+  left: var(--space-md);
+  background: var(--header-bg);
+  color: var(--foreground);
+  font-size: 2rem;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  z-index: var(--z-index-header);
+  transition: all var(--transition-normal);
+
+  /* 保证只显示一行 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* header缩小时的样式 */
+.header-shrunk {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 1.5rem;
+  box-shadow: 0 1px 4px var(--shadow-color);
+}

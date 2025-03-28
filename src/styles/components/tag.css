@@ -1,0 +1,107 @@
+/* 标签基础样式 */
+.tag {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  display: inline-flex;
+  align-items: center;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  transition: all var(--transition-fast);
+  line-height: 1;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag:hover {
+  background: var(--tag-bg-hover);
+}
+
+/* 带图标的标签 */
+.tag-with-icon {
+  gap: var(--space-xs);
+}
+
+.tag-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* 标签尺寸变体 */
+.tag-sm {
+  padding: calc(var(--space-xs) / 2) var(--space-xs);
+  font-size: var(--font-size-xs);
+}
+
+.tag-lg {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-base);
+}
+
+/* 标签颜色变体 */
+.tag-primary {
+  background: color-mix(in srgb, var(--accent-color) 15%, transparent);
+  color: var(--accent-color);
+}
+
+.tag-primary:hover {
+  background: color-mix(in srgb, var(--accent-color) 25%, transparent);
+}
+
+.tag-success {
+  background: color-mix(in srgb, var(--success-color) 15%, transparent);
+  color: var(--success-color);
+}
+
+.tag-success:hover {
+  background: color-mix(in srgb, var(--success-color) 25%, transparent);
+}
+
+.tag-warning {
+  background: color-mix(in srgb, var(--warning-color) 15%, transparent);
+  color: var(--warning-color);
+}
+
+.tag-warning:hover {
+  background: color-mix(in srgb, var(--warning-color) 25%, transparent);
+}
+
+.tag-error {
+  background: color-mix(in srgb, var(--error-color) 15%, transparent);
+  color: var(--error-color);
+}
+
+.tag-error:hover {
+  background: color-mix(in srgb, var(--error-color) 25%, transparent);
+}
+
+/* 可关闭的标签 */
+.tag-closable {
+  padding-right: var(--space-xs);
+}
+
+.tag-close-button {
+  margin-left: var(--space-xs);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background var(--transition-fast);
+}
+
+.tag-close-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* 标签组 */
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}

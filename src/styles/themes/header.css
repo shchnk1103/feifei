@@ -1,0 +1,25 @@
+/* 头部主题样式 */
+:root {
+  /* 亮色主题头部样式 */
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --header-bg-blur: rgba(255, 255, 255, 0.85);
+  --header-border: rgba(0, 0, 0, 0.05);
+  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --header-height: 64px;
+  --header-text: var(--foreground);
+  --header-link: var(--foreground-secondary);
+  --header-link-hover: var(--accent-color);
+  --header-active: var(--accent-color);
+}
+
+[data-theme="dark"] {
+  /* 暗色主题头部样式 */
+  --header-bg: rgba(0, 0, 0, 0.95);
+  --header-bg-blur: rgba(10, 10, 10, 0.85);
+  --header-border: rgba(255, 255, 255, 0.05);
+  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  --header-text: var(--foreground);
+  --header-link: var(--foreground-secondary);
+  --header-link-hover: var(--accent-color);
+  --header-active: var(--accent-color);
+}

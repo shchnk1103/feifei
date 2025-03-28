@@ -1,0 +1,107 @@
+/* 卡片基础样式 */
+.card {
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px var(--card-shadow);
+  padding: var(--space-md);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px var(--card-shadow);
+  transform: translateY(-2px);
+}
+
+/* 卡片标题 */
+.card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--card-title);
+  margin-bottom: var(--space-sm);
+  line-height: var(--line-height-tight);
+}
+
+/* 卡片描述 */
+.card-description {
+  font-size: var(--font-size-base);
+  color: var(--card-description);
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+/* 卡片元信息 */
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--card-time);
+  margin-top: var(--space-md);
+}
+
+/* 卡片作者 */
+.card-author {
+  font-weight: var(--font-weight-medium);
+  color: var(--card-author);
+}
+
+/* 卡片日期/时间 */
+.card-time {
+  color: var(--card-time);
+}
+
+/* 卡片图片容器 */
+.card-image {
+  margin: calc(var(--space-md) * -1);
+  margin-bottom: var(--space-md);
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.card-image:hover img {
+  transform: scale(1.05);
+}
+
+/* 卡片变体 */
+.card-compact {
+  padding: var(--space-sm);
+}
+
+.card-borderless {
+  border: none;
+}
+
+.card-elevated {
+  box-shadow: 0 4px 8px var(--card-shadow);
+}
+
+/* 卡片垂直布局 */
+.card-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 卡片水平布局 */
+.card-horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.card-horizontal .card-image {
+  width: 120px;
+  height: 120px;
+  margin: 0;
+  margin-right: var(--space-md);
+  flex-shrink: 0;
+}

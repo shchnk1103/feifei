@@ -1,0 +1,27 @@
+/* 毛玻璃效果主题样式 */
+:root {
+  /* 亮色主题毛玻璃效果 */
+  --glass-blur: 12px;
+  --glass-opacity: 0.8;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  --glass-background: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+  /* 暗色主题毛玻璃效果 */
+  --glass-blur: 12px;
+  --glass-opacity: 0.7;
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  --glass-background: rgba(10, 10, 10, 0.5);
+}
+
+/* 毛玻璃效果工具类 */
+.glassmorphism {
+  background: var(--glass-background);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}

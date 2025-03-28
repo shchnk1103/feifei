@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import type { ImageAsset } from "@/shared";
-import styles from "./styles.module.css";
+import { Button } from "@/shared/components/ui/Button";
 
 interface HomeClientProps {
   images: ImageAsset[];
@@ -33,8 +33,8 @@ export function HomeClient({
   };
 
   return (
-    <div className={styles.pageContainer}>
-      <section className={styles.hero}>
+    <div className="home-page">
+      <section className="home-hero">
         <Carousel
           images={images}
           autoplay={true}
@@ -50,37 +50,37 @@ export function HomeClient({
           coverflowModifier={1.2}
           coverflowSlidesPerView={1.8}
           objectFit="cover"
-          className={styles.homeCarousel}
+          className="home-carousel"
         />
       </section>
 
-      <section className={styles.content}>
+      <section className="home-content">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <header className={styles.header}>
-            <div className={styles.headerText}>
-              <h2 className={styles.title}>{title}</h2>
-              <p className={styles.subtitle}>{subtitle}</p>
+          <header className="home-header">
+            <div className="home-header-text">
+              <h2 className="home-title">{title}</h2>
+              <p className="home-subtitle">{subtitle}</p>
             </div>
 
             {/* 使用userIsAdmin变量检查权限 */}
             {user && userIsAdmin && (
-              <motion.button
-                className={styles.createButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
                 onClick={handleCreateArticle}
+                variant="primary"
+                size="medium"
+                className="home-create-button"
               >
                 创建文章
-              </motion.button>
+              </Button>
             )}
           </header>
 
           {/* 文章列表 */}
-          <div className={styles.grid}>
+          <div className="home-grid">
             {articles.map((article) => (
               <motion.div
                 key={article.id}
@@ -92,7 +92,7 @@ export function HomeClient({
               </motion.div>
             ))}
             {articles.length === 0 && (
-              <p className={styles.noArticles}>暂无文章</p>
+              <p className="home-no-articles">暂无文章</p>
             )}
           </div>
         </motion.div>

@@ -1,0 +1,86 @@
+/* 滚动容器通用样式 */
+.scroll-container {
+  height: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+
+  /* 隐藏滚动条 */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* 隐藏滚动条样式 */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 列表相关布局 */
+.list-section {
+  position: relative;
+  margin-top: 20px;
+  padding-top: 60px;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.list-container {
+  position: sticky;
+  top: 80px;
+  background-color: var(--card-bg);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  margin: var(--space-md);
+  height: calc(100% - 2rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--foreground-muted) transparent;
+}
+
+.list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list-container::-webkit-scrollbar-thumb {
+  background-color: var(--foreground-muted);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.list-container:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+.list-item {
+  background-color: var(--card-bg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 4px var(--shadow-color);
+}
+
+/* 轮播区域 */
+.carousel-section {
+  margin-top: 0;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
