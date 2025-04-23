@@ -80,4 +80,4 @@ pnpm build
 
 ## 许可证
 
-MIT
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
