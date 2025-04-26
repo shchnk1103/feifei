@@ -81,3 +81,8 @@ pnpm build
 ## 许可证
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## 赞助声明
+
+本项目由[VTEXS](http://www.vtexs.com/)友情赞助
+感谢 VTEXS 对本项目的支持！
