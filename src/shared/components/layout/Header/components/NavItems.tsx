@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { menuItemVariants } from "../animations";
 import { usePathname } from "next/navigation";
+import { itemVariants } from "../headerAnimations";
 
 interface NavItemsProps {
   mobile?: boolean;
@@ -13,7 +13,7 @@ interface NavItemsProps {
 export function NavItems({ mobile = false, onClose }: NavItemsProps) {
   const pathname = usePathname();
   const Component = mobile ? motion.div : "div";
-  const props = mobile ? { variants: menuItemVariants } : {};
+  const props = mobile ? { variants: itemVariants } : {};
 
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
@@ -24,7 +24,7 @@ export function NavItems({ mobile = false, onClose }: NavItemsProps) {
     return (
       <Component {...props} className="mobile-nav-item">
         <Link
-          href="/blog"
+          href="/"
           onClick={onClose}
           className={`nav-link ${isActive("/blog") ? "active" : ""}`}
         >

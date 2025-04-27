@@ -1,63 +1,97 @@
 "use client";
 
-import { Article } from "@/modules/blog/types/blog";
+import { Article, DEFAULT_ARTICLE } from "@/modules/blog/types/blog";
 import { ArticleEditor } from "./ArticleEditor";
 import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
-
-interface EditorClientPageProps {
-  initialArticle: Article;
+import { normalizeArticle } from "../utils/normalizeArticle";
+import { mergeArticle } from "../utils/mergeArticle";
+export interface EditorClientPageProps {
+  id: string;
 }
 
-export function EditorClientPage({ initialArticle }: EditorClientPageProps) {
+export function EditorClientPage({ id }: EditorClientPageProps) {
   const [article, setArticle] = useState<Article | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // 加载本地存储中的文章数据，如果有的话
   useEffect(() => {
-    try {
-      const storedArticle = localStorage.getItem(
-        `article-${initialArticle.id}`
-      );
+    async function fetchArticle() {
+      try {
+        let loadedArticle: Article | null = null;
 
-      if (storedArticle) {
-        // 解析本地存储数据
-        const parsedArticle = JSON.parse(storedArticle);
-
-        // 如果本地存储的文章ID与初始文章ID相同，则使用本地版本
-        if (parsedArticle.id === initialArticle.id) {
-          // 合并本地数据和初始数据，保留最新的编辑状态
-          setArticle({
-            ...initialArticle,
-            ...parsedArticle,
-            // 合并元数据，因为服务器可能有最新的统计信息
-            metadata: {
-              ...initialArticle.metadata,
-              ...parsedArticle.metadata,
+        if (id.startsWith("draft-")) {
+          // 新建草稿
+          loadedArticle = {
+            ...DEFAULT_ARTICLE,
+            id,
+            title: "未命名文章",
+            articleContent: {
+              ...DEFAULT_ARTICLE.articleContent,
+              blocks: [
+                {
+                  id: `block-${Date.now()}`,
+                  type: "heading",
+                  content: "开始写作吧",
+                  level: 1,
+                },
+                {
+                  id: `block-${Date.now() + 1}`,
+                  type: "text",
+                  content: "这是您新文章的开始。点击任何地方开始编辑...",
+                },
+              ],
             },
-          });
-          return;
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            status: "draft",
+          };
+        } else {
+          // 通过 API 获取已有文章
+          try {
+            const res = await fetch(`/api/articles/${id}`);
+            if (!res.ok) {
+              throw new Error("文章不存在");
+            }
+            loadedArticle = normalizeArticle(await res.json());
+          } catch {
+            loadedArticle = null;
+          }
         }
-      }
 
-      // 如果没有本地存储或ID不匹配，使用初始文章
-      setArticle(initialArticle);
-    } catch (err) {
-      console.error("加载本地存储文章失败:", err);
-      setError("加载本地保存的文章数据失败，使用服务器数据");
-      setArticle(initialArticle);
+        // 本地存储优先（仅在 loadedArticle 存在时合并）
+        if (loadedArticle) {
+          const storedArticle = localStorage.getItem(`article-${id}`);
+          if (storedArticle) {
+            const parsedArticle = normalizeArticle(JSON.parse(storedArticle));
+            if (parsedArticle.id === id) {
+              loadedArticle = mergeArticle(loadedArticle, parsedArticle);
+            }
+          }
+        }
+
+        if (!loadedArticle) {
+          setError("未找到该文章");
+        }
+        setArticle(loadedArticle);
+      } catch (err) {
+        console.log("加载文章失败", err);
+        setError("加载文章失败");
+        setArticle(null);
+      }
     }
-  }, [initialArticle]);
+
+    fetchArticle();
+  }, [id]);
+
+  // 优先显示错误信息
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   // 显示加载状态
   if (!article) {
     return <div className={styles.loading}>加载编辑器中...</div>;
   }
 
-  return (
-    <>
-      {error && <div className={styles.error}>{error}</div>}
-      <ArticleEditor initialArticle={article} />
-    </>
-  );
+  return <ArticleEditor initialArticle={article} />;
 }

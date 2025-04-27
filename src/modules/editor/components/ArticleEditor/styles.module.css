@@ -6,20 +6,6 @@
   background-color: var(--background);
 }
 
-.header {
-  position: sticky;
-  top: 64px; /* 假设主导航栏高度为 64px */
-  left: 0;
-  right: 0;
-  z-index: 40;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: var(--header-bg);
-  transition: all 0.3s ease;
-}
-
 .leftSection {
   display: flex;
   align-items: center;
@@ -79,7 +65,8 @@
   display: flex;
   flex: 1;
   position: relative;
-  min-height: calc(100vh - 64px); /* 减去header高度 */
+  min-height: calc(100vh - var(--header-height)); /* 减去header高度 */
+  padding-top: var(--header-height);
   background: var(--editor-bg);
   transition: background-color 0.3s ease;
 }
