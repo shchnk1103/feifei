@@ -23,7 +23,7 @@ type Props = {
 export async function GET(request: NextRequest, props: Props) {
   try {
     // 允许公开访问封面图片
-    const { id } = props.params;
+    const { id } = await props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }

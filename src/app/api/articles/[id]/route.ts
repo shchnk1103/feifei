@@ -56,7 +56,7 @@ export async function PUT(request: NextRequest, props: Props) {
  */
 export async function GET(request: NextRequest, props: Props) {
   try {
-    const { id } = props.params;
+    const { id } = await props.params;
 
     // 检查文章ID是否有效
     if (!id) {

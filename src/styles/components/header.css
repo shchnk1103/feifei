@@ -10,7 +10,7 @@
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(var(--foreground-rgb), 0.08);
   transition: all var(--transition-normal);
-  padding: 1.25rem 0;
+  padding: 1rem 0;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
   pointer-events: auto; /* 确保鼠标事件正常工作 */
 }

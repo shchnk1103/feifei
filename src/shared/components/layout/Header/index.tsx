@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
@@ -8,91 +7,30 @@ import { ThemeToggle } from "@/modules/theme";
 import { AuthDialog } from "@/modules/auth";
 import { NavItems } from "./components/NavItems";
 import { UserSection } from "./components/UserSection";
+import {
+  overlayVariants,
+  menuVariants,
+  itemsContainerVariants,
+  itemVariants,
+  themeToggleVariants,
+} from "./headerAnimations";
+import { useHeaderMenu } from "./hooks/useHeaderMenu";
+import { useAuthDialog } from "./hooks/useAuthDialog";
+import { useMounted } from "./hooks/useMounted";
 
 interface HeaderProps {
   shrunk?: boolean;
 }
 
 export function Header({ shrunk = false }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const { isMenuOpen, handleCloseMenu, handleToggleMenu, setIsAnimatingOut } =
+    useHeaderMenu();
+  const { isAuthDialogOpen, handleOpenAuthDialog, handleCloseAuthDialog } =
+    useAuthDialog(isMenuOpen, handleCloseMenu);
+  const isMounted = useMounted();
 
   // 锁定滚动
   useScrollLock(isMenuOpen);
-
-  // 统一处理菜单关闭逻辑
-  const handleCloseMenu = useCallback(() => {
-    if (isMenuOpen && !isAnimatingOut) {
-      setIsAnimatingOut(true);
-      // 允许动画完成后再更新状态
-      setTimeout(() => {
-        setIsMenuOpen(false);
-        setIsAnimatingOut(false);
-      }, 400); // 与动画持续时间同步
-    }
-  }, [isMenuOpen, isAnimatingOut]);
-
-  // 处理菜单切换
-  const handleToggleMenu = useCallback(() => {
-    if (isMenuOpen) {
-      handleCloseMenu();
-    } else {
-      setIsMenuOpen(true);
-    }
-  }, [isMenuOpen, handleCloseMenu]);
-
-  // 处理认证对话框的打开
-  const handleOpenAuthDialog = useCallback(() => {
-    // 如果菜单是打开的，先关闭它
-    if (isMenuOpen) {
-      handleCloseMenu();
-    }
-    setIsAuthDialogOpen(true);
-  }, [isMenuOpen, handleCloseMenu]);
-
-  // 处理认证对话框的关闭
-  const handleCloseAuthDialog = useCallback(() => {
-    setIsAuthDialogOpen(false);
-  }, []);
-
-  // 确保组件在客户端渲染后再显示内容
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // 当路由变化时自动关闭菜单
-  useEffect(() => {
-    const handleRouteChange = () => {
-      if (isMenuOpen) {
-        handleCloseMenu();
-      }
-    };
-
-    window.addEventListener("popstate", handleRouteChange);
-
-    return () => {
-      window.removeEventListener("popstate", handleRouteChange);
-    };
-  }, [isMenuOpen, handleCloseMenu]);
-
-  // 监听ESC键关闭菜单
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isMenuOpen) {
-        handleCloseMenu();
-      }
-    };
-
-    if (isMenuOpen) {
-      window.addEventListener("keydown", handleEscKey);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEscKey);
-    };
-  }, [isMenuOpen, handleCloseMenu]);
 
   if (!isMounted) {
     // 返回一个占位符，保持相同大小以避免布局偏移
@@ -111,106 +49,6 @@ export function Header({ shrunk = false }: HeaderProps) {
       </header>
     );
   }
-
-  // 动画配置
-  const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.3 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } },
-  };
-
-  const menuVariants = {
-    hidden: { opacity: 0, y: -20, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 25,
-        stiffness: 300,
-        duration: 0.3,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -20,
-      scale: 0.98,
-      transition: {
-        type: "spring",
-        damping: 25,
-        stiffness: 300,
-        duration: 0.3,
-      },
-    },
-  };
-
-  const itemsContainerVariants = {
-    visible: {
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.1,
-        staggerDirection: 1,
-        when: "beforeChildren",
-      },
-    },
-    exit: {
-      transition: {
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-        when: "afterChildren",
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 25,
-        stiffness: 200,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 20,
-      transition: {
-        type: "spring",
-        damping: 25,
-        stiffness: 200,
-      },
-    },
-  };
-
-  const themeToggleVariants = {
-    hidden: {
-      opacity: 0,
-      scale: 0.8,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 20,
-        stiffness: 300,
-        delay: 0.2,
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
 
   return (
     <>
