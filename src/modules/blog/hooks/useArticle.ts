@@ -213,14 +213,21 @@ export function useArticle<
 
       // 实际调用API更新数据库
       const response = await fetch(`/api/articles/${updatedArticle.id}`, {
-        method: "PATCH", // 使用PATCH方法，与route.ts中定义的方法一致
+        method: "PUT", // 使用PUT方法，与route.ts中定义的方法一致
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedArticle),
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "API请求失败");
+        let errorMessage = "API请求失败";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // 如果响应不是 JSON 格式，使用状态文本
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       // 更新本地状态

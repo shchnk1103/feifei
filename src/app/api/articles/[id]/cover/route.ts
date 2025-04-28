@@ -98,7 +98,7 @@ export async function POST(request: NextRequest, props: Props) {
       return NextResponse.json({ error: "未授权操作" }, { status: 401 });
     }
 
-    const { id } = props.params;
+    const { id } = await props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }
@@ -145,7 +145,7 @@ export async function DELETE(request: NextRequest, props: Props) {
       return NextResponse.json({ error: "未授权操作" }, { status: 401 });
     }
 
-    const { id } = props.params;
+    const { id } = await props.params;
     if (!id) {
       return NextResponse.json({ error: "缺少文章ID" }, { status: 400 });
     }

@@ -9,11 +9,6 @@ import {
   ArticleVisibility,
 } from "@/modules/blog/types/blog";
 
-// 定义具有code属性的错误接口
-interface FirebaseError extends Error {
-  code?: string;
-}
-
 // 定义API返回的文章类型
 export interface ApiArticle extends Omit<Article, "id"> {
   id: string;
@@ -158,6 +153,8 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+    console.log("开始处理文章列表请求");
+
     // 解析查询参数
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
@@ -169,24 +166,38 @@ export async function GET(request: NextRequest) {
     const authorId = searchParams.get("authorId");
     const tag = searchParams.get("tag");
 
+    console.log("查询参数:", {
+      page,
+      limit,
+      status,
+      visibility,
+      authorId,
+      tag,
+    });
+
     // 初始化查询
     let query: Query = db.collection("articles");
 
     // 添加过滤条件
     if (status) {
+      console.log("添加状态过滤:", status);
       query = query.where("status", "==", status);
     }
     if (visibility) {
+      console.log("添加可见性过滤:", visibility);
       query = query.where("visibility", "==", visibility);
     }
     if (authorId) {
+      console.log("添加作者ID过滤:", authorId);
       query = query.where("author.id", "==", authorId);
     }
     if (tag) {
+      console.log("添加标签过滤:", tag);
       query = query.where("tags", "array-contains", tag);
     }
 
     // 添加排序
+    console.log("添加创建时间排序");
     query = query.orderBy("createdAt", "desc");
 
     // 添加分页
@@ -197,16 +208,21 @@ export async function GET(request: NextRequest) {
     let snapshot;
 
     try {
+      console.log("执行查询...");
       snapshot = await articlesQuery.get();
       articles = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as ApiArticle[];
+      console.log("查询成功，获取文章数量:", articles.length);
     } catch (queryError) {
+      console.error("查询失败:", queryError);
+
       // 检查是否是索引错误
       const errorMessage =
         queryError instanceof Error ? queryError.message : String(queryError);
       if (errorMessage.includes("index")) {
+        console.error("需要创建索引:", errorMessage);
         return NextResponse.json(
           {
             error: "需要创建索引",
@@ -219,16 +235,18 @@ export async function GET(request: NextRequest) {
 
       // 尝试不带过滤条件和排序获取文章
       try {
+        console.log("尝试简单查询...");
         const simpleSnapshot = await db
           .collection("articles")
           .limit(limit)
           .get();
-
         articles = simpleSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })) as ApiArticle[];
-      } catch {
+        console.log("简单查询成功，获取文章数量:", articles.length);
+      } catch (simpleError) {
+        console.error("简单查询也失败:", simpleError);
         throw queryError; // 重新抛出原始错误
       }
     }
@@ -236,9 +254,12 @@ export async function GET(request: NextRequest) {
     // 获取总数
     let total = 0;
     try {
+      console.log("获取总数...");
       const totalSnapshot = await query.count().get();
       total = totalSnapshot.data().count;
-    } catch {
+      console.log("总数:", total);
+    } catch (countError) {
+      console.error("获取总数失败:", countError);
       total = articles.length; // 回退到已获取的文章数量
     }
 
@@ -248,23 +269,15 @@ export async function GET(request: NextRequest) {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
       },
     });
-  } catch (error: unknown) {
-    // 构建错误响应
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorCode =
-      error instanceof Error && "code" in error
-        ? (error as FirebaseError).code
-        : "UNKNOWN_ERROR";
-
+  } catch (error) {
+    console.error("处理文章列表请求失败:", error);
     return NextResponse.json(
       {
         error: "获取文章列表失败",
-        message: errorMessage,
-        code: errorCode,
-        details: error instanceof Error ? error.stack : String(error),
+        details: error instanceof Error ? error.message : String(error),
+        code: "SERVER_ERROR",
       },
       { status: 500 }
     );
