@@ -22,22 +22,73 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: rgba(243, 244, 246, 0.5);
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
   z-index: 1;
 }
 
 .loadingSpinner {
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #3498db;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.errorContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  color: #dc3545;
+  font-size: 14px;
+}
+
+.compressionOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.compressionProgress {
+  width: 80%;
+  max-width: 300px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.progressBar {
+  height: 6px;
+  background-color: #3498db;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.compressionProgress span {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #333;
 }
 
 @keyframes spin {
@@ -47,20 +98,6 @@
   100% {
     transform: rotate(360deg);
   }
-}
-
-/* 错误状态 */
-.errorContainer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  font-size: 14px;
-  text-align: center;
-  padding: 16px;
 }
 
 /* 响应式调整 */

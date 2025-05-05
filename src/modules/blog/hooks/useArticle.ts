@@ -187,8 +187,7 @@ export function useArticle<
             setLoading(false);
           }, 500);
         }
-      } catch (err) {
-        console.error("Failed to fetch article:", err);
+      } catch {
         setError("加载文章失败，请稍后再试");
         setLoading(false);
       }
@@ -206,11 +205,6 @@ export function useArticle<
    */
   const updateArticle = async (updatedArticle: U & { id: string }) => {
     try {
-      console.log(
-        "[调试] updateArticle 接收到的数据:",
-        JSON.stringify(updatedArticle, null, 2)
-      );
-
       // 实际调用API更新数据库
       const response = await fetch(`/api/articles/${updatedArticle.id}`, {
         method: "PUT", // 使用PUT方法，与route.ts中定义的方法一致
@@ -239,11 +233,6 @@ export function useArticle<
           updatedAt: new Date(), // 更新修改时间
         } as unknown as T;
 
-        console.log(
-          "[调试] 更新后的完整文章对象:",
-          JSON.stringify(updatedFullArticle, null, 2)
-        );
-
         // 更新状态
         setArticle(updatedFullArticle);
 
@@ -251,12 +240,10 @@ export function useArticle<
         return updatedFullArticle as unknown as U & { id: string };
       }
 
-      console.log("[调试] 文章为空，仅返回更新部分");
       // 返回更新后的文章
       return updatedArticle;
     } catch (err) {
-      console.error("Failed to update article:", err);
-      throw new Error("更新文章失败");
+      throw new Error("更新文章失败" + err);
     }
   };
 

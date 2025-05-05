@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useCoverImage } from "@/modules/editor/hooks/useCoverImage";
 import { UploadPlaceholder } from "./components/UploadPlaceholder";
 import { CoverImageDisplay } from "./components/CoverImageDisplay";
+import { ImageCropper } from "@/shared/components/ui/ImageCropper";
 import styles from "./styles.module.css";
 
 interface CoverImageEditorProps {
@@ -26,8 +27,13 @@ export function CoverImageEditor({
     isLoading,
     isDeleting,
     uploadProgress,
+    compressionProgress,
     uploadImage,
     removeImage,
+    showCropper,
+    selectedImage,
+    onCropComplete,
+    onCropCancel,
   } = useCoverImage(articleId);
 
   // 点击选择文件
@@ -40,8 +46,7 @@ export function CoverImageEditor({
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const newUrl = await uploadImage(file);
-        onChange(newUrl);
+        await uploadImage(file);
       } catch (error) {
         alert(
           error instanceof Error ? error.message : "上传图片失败，请稍后重试"
@@ -90,15 +95,24 @@ export function CoverImageEditor({
   // 如果没有图片，显示上传占位符
   if (!currentImageUrl) {
     return (
-      <UploadPlaceholder
-        isUploading={isUploading}
-        uploadProgress={uploadProgress}
-        fileInputRef={fileInputRef}
-        handleImageClick={handleImageClick}
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        handleFileChange={handleFileChange}
-      />
+      <>
+        <UploadPlaceholder
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+          fileInputRef={fileInputRef}
+          handleImageClick={handleImageClick}
+          handleMouseEnter={handleMouseEnter}
+          handleMouseLeave={handleMouseLeave}
+          handleFileChange={handleFileChange}
+        />
+        {showCropper && selectedImage && (
+          <ImageCropper
+            image={selectedImage}
+            onCropComplete={onCropComplete}
+            onCancel={onCropCancel}
+          />
+        )}
+      </>
     );
   }
 
@@ -108,6 +122,7 @@ export function CoverImageEditor({
         imageUrl={currentImageUrl}
         isUploading={isUploading}
         uploadProgress={uploadProgress}
+        compressionProgress={compressionProgress}
         isHovering={isHovering}
         onImageClick={handleImageClick}
         onRemove={handleRemove}
@@ -122,6 +137,13 @@ export function CoverImageEditor({
         style={{ display: "none" }}
         disabled={isUploading}
       />
+      {showCropper && selectedImage && (
+        <ImageCropper
+          image={selectedImage}
+          onCropComplete={onCropComplete}
+          onCancel={onCropCancel}
+        />
+      )}
     </>
   );
 }

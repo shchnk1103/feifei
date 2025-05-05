@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppContextProvider } from "@/shared/contexts/AppContextProvider";
 import { Header, Footer } from "@/shared";
 import "@/styles/globals.css";
+import "react-image-crop/dist/ReactCrop.css";
 
 export const metadata: Metadata = {
   title: "Feifei",

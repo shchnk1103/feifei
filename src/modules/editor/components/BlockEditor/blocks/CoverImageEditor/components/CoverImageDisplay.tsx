@@ -6,6 +6,7 @@ interface CoverImageDisplayProps {
   imageUrl: string;
   isUploading: boolean;
   uploadProgress: number;
+  compressionProgress: number;
   isHovering: boolean;
   onImageClick: () => void;
   onRemove: (e: React.MouseEvent) => void;
@@ -21,6 +22,7 @@ export function CoverImageDisplay({
   imageUrl,
   isUploading,
   uploadProgress,
+  compressionProgress,
   isHovering,
   onImageClick,
   onRemove,
@@ -39,16 +41,32 @@ export function CoverImageDisplay({
         className={styles.coverImage}
         width={1200}
         height={600}
+        enableCompression={false} // 禁用 OptimizedImage 的压缩，因为我们已经在 useCoverImage 中处理了
       />
 
       {isUploading && (
         <div className={styles.uploadingOverlay}>
           <div className={styles.uploadProgress}>
-            <div
-              className={styles.progressBar}
-              style={{ width: `${uploadProgress}%` }}
-            />
-            <span>{uploadProgress}%</span>
+            {compressionProgress > 0 && compressionProgress < 100 && (
+              <>
+                <div className={styles.progressLabel}>压缩中...</div>
+                <div
+                  className={styles.progressBar}
+                  style={{ width: `${compressionProgress}%` }}
+                />
+                <span>{Math.round(compressionProgress)}%</span>
+              </>
+            )}
+            {compressionProgress === 100 && (
+              <>
+                <div className={styles.progressLabel}>上传中...</div>
+                <div
+                  className={styles.progressBar}
+                  style={{ width: `${uploadProgress}%` }}
+                />
+                <span>{uploadProgress}%</span>
+              </>
+            )}
           </div>
         </div>
       )}
