@@ -113,9 +113,19 @@ export function UserSection({
                   管理后台
                 </Link>
               )}
-              <Link href="/profile" className="user-button" onClick={onClose}>
+
+              <Link
+                href={`/profile/${session.user.id}`}
+                className="user-button"
+                onClick={onClose}
+              >
                 个人资料
               </Link>
+
+              <Link href="/settings" className="user-button" onClick={onClose}>
+                设置
+              </Link>
+
               <button
                 onClick={handleLogout}
                 className="user-button logout-button"
@@ -196,9 +206,18 @@ export function UserSection({
                     管理后台
                   </Link>
                 )}
-                <Link href="/profile" className="dropdown-item">
+
+                <Link
+                  href={`/profile/${session.user.id}`}
+                  className="dropdown-item"
+                >
                   个人资料
                 </Link>
+
+                <Link href="/settings" className="dropdown-item">
+                  设置
+                </Link>
+
                 <button
                   onClick={handleLogout}
                   className="dropdown-item logout-button"

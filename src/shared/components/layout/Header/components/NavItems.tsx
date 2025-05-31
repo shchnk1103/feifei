@@ -26,9 +26,9 @@ export function NavItems({ mobile = false, onClose }: NavItemsProps) {
         <Link
           href="/"
           onClick={onClose}
-          className={`nav-link ${isActive("/blog") ? "active" : ""}`}
+          className={`nav-link ${isActive("/") ? "active" : ""}`}
         >
-          博客
+          首页
         </Link>
 
         <Link
@@ -38,25 +38,14 @@ export function NavItems({ mobile = false, onClose }: NavItemsProps) {
         >
           关于
         </Link>
-
-        <Link
-          href="/settings"
-          onClick={onClose}
-          className={`nav-link ${isActive("/settings") ? "active" : ""}`}
-        >
-          设置
-        </Link>
       </Component>
     );
   }
 
   return (
     <Component {...props} className="nav-items">
-      <Link
-        href="/blog"
-        className={`nav-link ${isActive("/blog") ? "active" : ""}`}
-      >
-        博客
+      <Link href="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
+        首页
       </Link>
 
       <Link
@@ -64,13 +53,6 @@ export function NavItems({ mobile = false, onClose }: NavItemsProps) {
         className={`nav-link ${isActive("/about") ? "active" : ""}`}
       >
         关于
-      </Link>
-
-      <Link
-        href="/settings"
-        className={`nav-link ${isActive("/settings") ? "active" : ""}`}
-      >
-        设置
       </Link>
     </Component>
   );

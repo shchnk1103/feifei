@@ -61,6 +61,7 @@ export function Header({ shrunk = false }: HeaderProps) {
           {/* Desktop Navigation */}
           <nav className="desktop-nav">
             <NavItems />
+
             <UserSection setAuthDialogOpen={handleOpenAuthDialog} />
           </nav>
 

@@ -20,7 +20,7 @@ interface ProfileFormData {
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const username = params.username as string;
+  const uid = params.uid as string;
   const { userInfo, displayName, isLoggedIn } = useUserInfo();
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,13 +62,10 @@ export default function ProfilePage() {
   useEffect(() => {
     // 检查当前登录用户是否是正在查看的个人资料
     const isCurrentUserProfile =
-      isLoggedIn &&
-      (displayName === username || // 通过显示名称匹配
-        userInfo.firebaseUser?.uid === username || // 通过 UID 匹配
-        userInfo.firebaseUser?.email?.split("@")[0] === username); // 通过邮箱用户名匹配
+      isLoggedIn && userInfo.firebaseUser?.uid === uid;
 
     setIsCurrentUser(isCurrentUserProfile);
-  }, [isLoggedIn, displayName, username, userInfo]);
+  }, [isLoggedIn, uid, userInfo]);
 
   // 处理表单输入变化
   const handleInputChange = (
@@ -152,7 +149,7 @@ export default function ProfilePage() {
           )}
         </div>
         <div className={styles.userInfo}>
-          <h1 className={styles.username}>{username}</h1>
+          <h1 className={styles.username}>{displayName}</h1>
           {userInfo.userData?.bio ? (
             <p className={styles.bio}>{userInfo.userData.bio}</p>
           ) : (
